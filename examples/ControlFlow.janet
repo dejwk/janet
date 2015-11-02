@@ -26,7 +26,7 @@ native "C" {
     }
     
     public native "C" String nativeReturnWRONG() {
-        printf(`#&"native return\n"`);
+        printf("%s", `#&"native return\n"`);
         /* DO NOT DO IT EVER!!! No return type check, and 
            "finally" clause semantics is broken. */
         return;
