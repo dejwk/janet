@@ -1,0 +1,41 @@
+# -*-Makefile-*-
+# This file defines system-dependent parameters. You should update
+# the file to match your system configuration.
+#
+# This file is only used to generate source files for Java parsers from
+# grammar description files.
+#
+
+# User Configurable Options
+
+MAKE        	= make
+MFLAGS		= -s
+SHELL       	= /bin/sh
+
+JAVAC = javac
+JAVAH = javah
+JAVA = java -classpath $(CLASSPATH):.:/home/dawidk/classes/jb.jar
+
+# End Of User Configurable Options
+
+.SUFFIXES:
+.SUFFIXES: .class .java $(SUFFIXES)
+
+PROJECT_HOME = `pwd`/..
+
+JHFLAGS = -jni
+
+CLASSDIR = $(PROJECT_HOME)/classes
+
+
+
+
+
+
+
+
+
+
+
+
+

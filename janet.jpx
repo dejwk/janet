@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--JBuilder XML Project-->
+<project>
+  <property category="build" name="CopyExtensions.1" value="txt"/>
+  <property category="debug.0" name="SmartStepRedefineClasses" value="0"/>
+  <property category="editor.general" name="line_ending.style" value="3"/>
+  <property category="generalFormatting" name="blockIndent" value="4"/>
+  <property category="generalFormatting" name="lineEndingStyle" value="3"/>
+  <property category="idl" name="ProcessIDL" value="false"/>
+  <property category="jbuilder.debug" name="NoTracingClasses.1" value=",java.*,1"/>
+  <property category="jbuilder.debug" name="NoTracingClasses.10" value=",com.borland.jbuilder.runtime,1"/>
+  <property category="jbuilder.debug" name="NoTracingClasses.11" value=",com.inprise.vbroker,1"/>
+  <property category="jbuilder.debug" name="NoTracingClasses.12" value=",com.visigenic,1"/>
+  <property category="jbuilder.debug" name="NoTracingClasses.13" value=",org.omg,1"/>
+  <property category="jbuilder.debug" name="NoTracingClasses.2" value=",javax.*,1"/>
+  <property category="jbuilder.debug" name="NoTracingClasses.3" value=",sun.*,1"/>
+  <property category="jbuilder.debug" name="NoTracingClasses.4" value=",com.sun.*,1"/>
+  <property category="jbuilder.debug" name="NoTracingClasses.5" value=",com.borland.jbcl,1"/>
+  <property category="jbuilder.debug" name="NoTracingClasses.6" value=",com.borland.sql,1"/>
+  <property category="jbuilder.debug" name="NoTracingClasses.7" value=",com.borland.dbswing,1"/>
+  <property category="jbuilder.debug" name="NoTracingClasses.8" value=",com.borland.datastore,1"/>
+  <property category="jbuilder.debug" name="NoTracingClasses.9" value=",com.borland.dx,1"/>
+  <property category="jbuilder.debug" name="ShowCurrentThreadOnly" value="1"/>
+  <property category="jbuilder.debug" name="Watches.1" value=",1,yylbeg,expression"/>
+  <property category="jbuilder.debug" name="Watches.10" value=",1,{pl.edu.agh.icsr.janet.yytree.YYVariableDeclarator@19f},expression"/>
+  <property category="jbuilder.debug" name="Watches.11" value=",1,pl.edu.agh.icsr.janet.natives.c.Writer.aux,expression"/>
+  <property category="jbuilder.debug" name="Watches.2" value=",1,yyls,expression"/>
+  <property category="jbuilder.debug" name="Watches.3" value=",1,yylex.pbeg,expression"/>
+  <property category="jbuilder.debug" name="Watches.4" value=",1,cls,expression"/>
+  <property category="jbuilder.debug" name="Watches.5" value=",1,loc,expression"/>
+  <property category="jbuilder.debug" name="Watches.6" value=",1,i,expression"/>
+  <property category="jbuilder.debug" name="Watches.7" value=",1,line.value,expression"/>
+  <property category="jbuilder.debug" name="Watches.8" value=",1,toString(),expression"/>
+  <property category="jbuilder.debug" name="Watches.9" value=",1,@ff,expression"/>
+  <property category="runtime.0" name="RunnableType" value="com.borland.jbuilder.runtime.ApplicationRunner"/>
+  <property category="runtime.0" name="application.class" value="pl.edu.agh.icsr.janet.Janet"/>
+  <property category="runtime.0" name="jsprunner.launchuri" value="/"/>
+  <property category="runtime.0" name="test.harness" value="junit.textui.TestRunner"/>
+  <property category="serverservices" name="disabled.services" value=""/>
+  <property category="sys" name="Author" value="Dawid Kurzyniec"/>
+  <property category="sys" name="AuthorLabel" value="@author"/>
+  <property category="sys" name="BackupPath" value="bak"/>
+  <property category="sys" name="BeansInstantiate" value="false"/>
+  <property category="sys" name="BraceStyle" value="0"/>
+  <property category="sys" name="ClassPath" value=""/>
+  <property category="sys" name="Company" value="NA"/>
+  <property category="sys" name="CompanyLabel" value="Company:"/>
+  <property category="sys" name="CompileOnDebug" value="0"/>
+  <property category="sys" name="CompileOnRun" value="0"/>
+  <property category="sys" name="Copyright" value="Copyright (c) Dawid Kurzyniec"/>
+  <property category="sys" name="CopyrightLabel" value="Copyright:"/>
+  <property category="sys" name="DefaultPackage" value="pl.edu.agh.icsr.janet.natives"/>
+  <property category="sys" name="DefaultPath" value="src"/>
+  <property category="sys" name="Description" value="Java Native Extensions"/>
+  <property category="sys" name="DescriptionLabel" value="Description:"/>
+  <property category="sys" name="DocPath" value="doc;util/doc;doc/utility-classes"/>
+  <property category="sys" name="EventMatch" value="false"/>
+  <property category="sys" name="EventStyle" value="1"/>
+  <property category="sys" name="ExcludeClassEnabled" value="0"/>
+  <property category="sys" name="IncludeTestPath" value="1"/>
+  <property category="sys" name="InstanceVisibility" value="0"/>
+  <property category="sys" name="JDK" value="java version 1.4.1_01-b01"/>
+  <property category="sys" name="LastTag" value="48"/>
+  <property category="sys" name="Libraries" value="Jb;lip"/>
+  <property category="sys" name="MakeStable" value="0"/>
+  <property category="sys" name="OutPath" value="classes"/>
+  <property category="sys" name="SourcePath" value="src;jbsrc;test"/>
+  <property category="sys" name="TestPath" value="test"/>
+  <property category="sys" name="Title" value="Janet"/>
+  <property category="sys" name="TitleLabel" value="Title:"/>
+  <property category="sys" name="Version" value="1.0"/>
+  <property category="sys" name="VersionLabel" value="@version"/>
+  <property category="sys" name="WorkingDirectory" value="."/>
+  <node name="jbf" type="Package"/>
+  <node name="pl.edu.agh.icsr.janet" type="Package"/>
+  <node name="pl.edu.agh.icsr.janet.natives" type="Package"/>
+  <node name="pl.edu.agh.icsr.janet.natives.c" type="Package"/>
+  <node name="pl.edu.agh.icsr.janet.reflect" type="Package"/>
+  <node name="pl.edu.agh.icsr.janet.tree" type="Package"/>
+  <node name="pl.edu.agh.icsr.janet.util" type="Package"/>
+  <node name="pl.edu.agh.icsr.janet.yytree" type="Package"/>
+  <node name="janet" type="Archive">
+    <property category="archiving" name="archiverClass" value="com.borland.jbuilder.wizard.archive.ApplicationArchiver"/>
+    <property category="archiving" name="extraDeployRoots.1" value="C:pl.edu.agh.icsr.janet.Janet"/>
+    <property category="archiving" name="extraDeployRoots.2" value="C:pl.edu.agh.icsr.janet.natives.c.Writer"/>
+    <property category="archiving" name="extraDeployRoots.3" value="C:pl.edu.agh.icsr.janet.natives.c.Parser"/>
+    <property category="archiving" name="outPathState" value="2"/>
+    <property category="archiving" name="targetCompressed" value="1"/>
+    <property category="archiving" name="targetPath" value="lib/janet.jar"/>
+  </node>
+  <node name="janet-util" type="Archive">
+    <property category="archiving" name="extraDeployRoots.1" value="C:pl.edu.agh.icsr.janet.util.*"/>
+    <property category="archiving" name="includeManifest" value="0"/>
+    <property category="archiving" name="outPathState" value="2"/>
+    <property category="archiving" name="targetCompressed" value="1"/>
+    <property category="archiving" name="targetPath" value="lib/janet-util.jar"/>
+  </node>
+  <node name="janet-util-doc" type="Javadoc">
+    <property category="javadoc" name="documentAllPackages" value="0"/>
+    <property category="javadoc" name="packages.1" value="pl.edu.agh.icsr.janet.util"/>
+    <property category="javadoc" name="scope" value="protected"/>
+    <property category="nodeJavadoc" name="directory" value="doc/utility-classes"/>
+    <property category="nodeJavadoc" name="displayAllOutput" value="0"/>
+  </node>
+  <file path="src/pl/edu/agh/icsr/janet/janet.y"/>
+</project>
