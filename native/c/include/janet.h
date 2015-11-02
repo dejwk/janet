@@ -286,7 +286,7 @@ static jobject _janet_assign_simple2simple(JNIEnv* _janet_jnienv,
 static _janet_multiref* _janet_assign_simple2locv(JNIEnv* _janet_jnienv, 
                                                   _janet_multiref* _janet_multirefs,
                                                   int _janet_multirefs_size,
-                                                  int* _janet_multiref_pos,
+                                                  unsigned int* _janet_multiref_pos,
                                                   _janet_multiref *volatile *pl,
                                                   jobject pr)
 {
@@ -486,7 +486,7 @@ struct _janet_exstruct {
   jmp_buf jmpbuf;
 };
 
-/*      /* one global (outermost) exception structure */
+/* one global (outermost) exception structure */
 
 /* static struct _janet_exstruct _janet_ex = { -1 }; */
 
