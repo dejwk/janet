@@ -11,7 +11,7 @@ CC=gcc
 
 ## LINUX ##
 #
-#CFLAGS=-shared
+#CFLAGS=-shared -fPIC
 #PLATFORM=linux
 
 ## SOLARIS ##
@@ -30,7 +30,7 @@ JAVA_HOME ?= ${shell which java | sed 's/\/bin\/java//'}
 PLATFORM ?= ${shell basename `find ${JAVA_HOME}/include/* -type d`}
 
 #try to guess CFLAGS
-CFLAGS ?= ${shell if test ${PLATFORM} = linux; then echo "-shared"; elif test ${PLATFORM} = solaris; then echo "-G"; else echo "-shared"; fi }
+CFLAGS ?= ${shell if test ${PLATFORM} = linux; then echo "-shared -fPIC"; elif test ${PLATFORM} = solaris; then echo "-G"; else echo "-shared"; fi }
 
 LIBRARY = libexamples.so
 
