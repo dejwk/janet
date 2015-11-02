@@ -572,7 +572,7 @@ enumnew:
                     continue enumnew;
                 }
                 // check result type
-                if (!returnTypeCompatible(oldmth, newmth)) {
+                if (!returnTypeSubstitutable(oldmth, newmth)) {
                     reportError(errtarget,
                         inhErrorText(oldmth, newmth, !multiInherit) +
                         "They must have the same return type (was " +
@@ -625,10 +625,18 @@ enumnew:
             exc.isSubclassOf(this.Error);
     }
 
-    private boolean returnTypeCompatible(IMethodInfo oldmth,
+    /* JLS 8.4.5 */
+    private boolean returnTypeSubstitutable(IMethodInfo oldmth,
         IMethodInfo newmth) throws ParseException
     {
-        return equals(newmth.getReturnType(), oldmth.getReturnType());
+        IClassInfo oldType = oldmth.getReturnType();
+        IClassInfo newType = newmth.getReturnType();
+        if (oldType.isPrimitive()) {
+            return equals(oldType, newType);
+        } else {
+            // Relaxed check - deferring to the Java compiler to enforce type substitutability.
+            return true; //newType.isAssignableFrom(oldType);
+        }
     }
 
     private boolean contextCompatible(IMethodInfo oldmth,
