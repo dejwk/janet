@@ -21,7 +21,7 @@ CC=gcc
 
 JANET_HOME = ../
 
-JANET=${JANET_HOME}/bin/janet.jar -comments
+JANET=${JANET_HOME}/janet.jar -comments
 
 #try to guess JAVA_HOME
 JAVA_HOME ?= ${shell which java | sed 's/\/bin\/java//'}

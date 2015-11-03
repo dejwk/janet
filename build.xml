@@ -7,8 +7,8 @@
  
   <property name="src.dir" value="src"/>
   <property name="build.dir" value="classes"/>
-  <property name="bin.dir" value="bin"/>
   <property name="examples.dir" value="examples"/>
+  <property name="release.dir" value="release"/>
 
   <target name="compile" description="Compile source tree java files">
     <mkdir dir="${build.dir}"/>
@@ -18,7 +18,7 @@
   </target>
  
   <target name="build" depends="compile">
-    <jar destfile="${bin.dir}/janet.jar" >
+    <jar destfile="janet.jar" >
       <fileset dir="${build.dir}"/>
       <fileset dir="src"
                includes="**/*.xml,**/*.properties,**/*.txt,**/*.ico" />
@@ -26,7 +26,45 @@
         <attribute name = "Main-Class" value = "pl.edu.agh.icsr.janet.Janet"/>
       </manifest>
     </jar>
-    <chmod file="${bin.dir}/janet.jar" perm="ugo+x"/>
+    <chmod file="janet.jar" perm="ugo+x"/>
+  </target>
+
+  <target name="build-util">
+    <ant dir="util"/>
+  </target>
+
+  <target name="build-util-doc">
+    <ant dir="util" target="javadoc"/>
+  </target>
+
+  <target name="release" depends="build,build-util,build-util-doc">
+    <mkdir dir="${release.dir}"/>
+    <copy todir="${release.dir}">
+      <fileset dir=".">
+        <include name="janet.jar"/>
+        <include name="util/janet-util.jar"/>
+        <include name="README"/>
+        <include name="license.html"/>
+        <include name="release-notes.html"/>
+      </fileset>
+    </copy>
+    <chmod file="${release.dir}/janet.jar" perm="ugo+x"/>
+    <copy todir="${release.dir}/doc">
+      <fileset dir="util/doc"/>
+    </copy>
+    <copy todir="${release.dir}/examples">
+      <fileset dir="${examples.dir}">
+        <include name="Main.java"/>
+        <include name="**/*.janet"/>
+        <include name="makefile"/>
+        <include name="README"/>
+        <include name="run"/>
+      </fileset>
+    </copy>
+    <chmod file="${release.dir}/examples/run" perm="ugo+x"/>
+    <copy todir="${release.dir}/native">
+      <fileset dir="native"/>
+    </copy>
   </target>
 
   <target name="build-examples" depends="build">
@@ -40,8 +78,10 @@
   </target>
 
   <target name="clean" description="Clean output directories">
+    <ant dir="util" target="clean"/>
+    <delete file="janet.jar"/>
     <delete dir="${build.dir}"/>
-    <delete dir="${bin.dir}"/>
+    <delete dir="${release.dir}"/>
     <delete>
       <fileset dir="." includes="**/*~" defaultexcludes="no"/>
     </delete>
