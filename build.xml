@@ -57,7 +57,7 @@
         <include name="Main.java"/>
         <include name="**/*.janet"/>
         <include name="makefile"/>
-        <include name="README"/>
+        <include name="README.md"/>
         <include name="run"/>
       </fileset>
     </copy>
