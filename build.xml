@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<project name="Java Native Extension (JANET)" default="info">
+   
+  <target name="info">
+     <echo>See http://dejwk.github.io/janet/</echo>
+  </target>
+ 
+  <property name="src.dir" value="src"/>
+  <property name="build.dir" value="classes"/>
+  <property name="bin.dir" value="bin"/>
+
+  <target name="compile" description="Compile source tree java files">
+    <mkdir dir="${build.dir}"/>
+    <javac destdir="${build.dir}" includeantruntime="false" source="1.6" target="1.6">
+       <src path="${src.dir}"/>
+    </javac>
+  </target>
+ 
+  <target name="build" depends="compile">
+    <jar destfile="${bin.dir}/janet.jar" >
+      <fileset dir="${build.dir}"/>
+      <fileset dir="src"
+               includes="**/*.xml,**/*.properties,**/*.txt,**/*.ico" />
+      <manifest>
+        <attribute name = "Main-Class" value = "pl.edu.agh.icsr.janet.Janet"/>
+      </manifest>
+    </jar>
+    <chmod file="${bin.dir}/janet.jar" perm="ugo+x"/>
+  </target>
+
+  <target name="clean" description="Clean output directories">
+    <delete dir="${build.dir}"/>
+    <delete dir="${bin.dir}"/>
+    <delete>
+      <fileset dir="." includes="**/*~" defaultexcludes="no"/>
+    </delete>
+  </target>  
+
+</project>
+
