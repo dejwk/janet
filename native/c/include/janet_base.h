@@ -80,38 +80,49 @@ extern _janet_fld _jf_janet_fields[];
 #define _JANET_FIELD(idx) (_janet_depfields[idx].id)
 #define _JANET_STRING(idx) (_janet_depstrings[idx].strref)
 
-#define _JANET_LOAD_CLASS(idx) \
+#define _JANET_LOAD_CLASS(idx, result) \
    do { \
       if (!_JANET_CLASS(idx) &&\
             !_j3_janet_loadClass(_janet_jnienv, &_janet_depclasses[idx],\
                                  _JANET__FILE__, _JANET__LINE__))\
-         return;\
+         return result;\
    } while (0)
 
-#define _JANET_LOAD_FIELD(idx) \
+#define _JANET_LOAD_CLASS_V(idx) _JANET_LOAD_CLASS(idx, )
+#define _JANET_LOAD_CLASS_N(idx) _JANET_LOAD_CLASS(idx, 0)
+
+#define _JANET_LOAD_FIELD(idx, result) \
    do { \
       if (!_JANET_FIELD(idx) &&\
             !_j4_janet_loadField(_janet_jnienv, &_janet_depfields[idx],\
                                  _JANET__FILE__, _JANET__LINE__))\
-         return;\
+         return result;\
    } while (0)
 
-#define _JANET_LOAD_METHOD(idx) \
+#define _JANET_LOAD_FIELD_V(idx) _JANET_LOAD_FIELD(idx, )
+#define _JANET_LOAD_FIELD_N(idx) _JANET_LOAD_FIELD(idx, 0)
+
+#define _JANET_LOAD_METHOD(idx, result) \
    do { \
       if (!_JANET_METHOD(idx) &&\
             !_j5_janet_loadMethod(_janet_jnienv, &_janet_depmethods[idx],\
                                   _JANET__FILE__, _JANET__LINE__))\
-         return;\
+         return result;\
    } while (0)
 
-#define _JANET_LOAD_STRING(idx) \
+#define _JANET_LOAD_METHOD_V(idx) _JANET_LOAD_METHOD(idx, )
+#define _JANET_LOAD_METHOD_N(idx) _JANET_LOAD_METHOD(idx, 0)
+
+#define _JANET_LOAD_STRING(idx, result) \
    do { \
       if (!_JANET_STRING(idx) &&\
             !_j9_janet_loadString(_janet_jnienv, &_janet_depstrings[idx],\
                                   _JANET__FILE__, _JANET__LINE__))\
-         return;\
+         return result;\
    } while (0)
      
+#define _JANET_LOAD_STRING_V(idx) _JANET_LOAD_STRING(idx, )
+#define _JANET_LOAD_STRING_N(idx) _JANET_LOAD_STRING(idx, 0)
 
 #ifndef NDEBUG
 #define _JANET__FILE__ __FILE__

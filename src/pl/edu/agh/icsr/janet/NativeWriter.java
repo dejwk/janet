@@ -277,8 +277,10 @@ public class NativeWriter {
             write("    jobject _janet_monitors[" + nsync + "] = { 0 };\n");
         }
 
+        String suffix = "_V";
         try {
             if (mth.getReturnType() != classMgr.VOID) {
+                suffix = "_N";
                 write("    " + mth.getReturnType().getJNIType() + " " +
                     "_janet_result;\n\n");
             }
@@ -290,12 +292,11 @@ public class NativeWriter {
             write("    _janet_arrhtable.data = _janet_arrhtdata;\n\n");
         }
 
-
         // linking classes
         for (Iterator i = mth.getUsedClassIdxs().iterator(); i.hasNext();) {
             int clsidx = ((Integer)i.next()).intValue();
             IClassInfo rcls = (IClassInfo)classes.get(clsidx);
-            write("    _JANET_LOAD_CLASS(" + clsidx + ");");
+            write("    _JANET_LOAD_CLASS" + suffix + "(" + clsidx + ");");
             write(settings.sourceComments()
                 ? " /* " + rcls.getJNIName() + " */\n"
                 : "\n");
@@ -308,7 +309,7 @@ public class NativeWriter {
                 IFieldInfo rfld = (IFieldInfo)fields.get(fldidx);
                 int clsidx = ((Integer)fldclsidxs.get(fldidx)).intValue();
                 IClassInfo rcls = (IClassInfo)classes.get(clsidx);
-                write("    _JANET_LOAD_FIELD(" + fldidx + ");");
+                write("    _JANET_LOAD_FIELD" + suffix + "(" + fldidx + ");");
                 write(settings.sourceComments()
                     ? " /* " + rcls.getJNIName() + "/" + rfld.getName() + " " +
                           rfld.getType().getSignature() +
@@ -326,7 +327,7 @@ public class NativeWriter {
                 IMethodInfo rmth = (IMethodInfo)methods.get(mthidx);
                 int clsidx = ((Integer)mthclsidxs.get(mthidx)).intValue();
                 IClassInfo rcls = (IClassInfo)classes.get(clsidx);
-                write("    _JANET_LOAD_METHOD(" + mthidx + ");");
+                write("    _JANET_LOAD_METHOD" + suffix + "(" + mthidx + ");");
                 write(settings.sourceComments()
                     ? " /* " + rcls.getJNIName() + "/" +
                         (rmth.isConstructor() ? "<init>" : rmth.getName()) +
@@ -341,7 +342,7 @@ public class NativeWriter {
         for (Iterator i = mth.getUsedStringsIdxs().iterator(); i.hasNext();) {
             int stridx = ((Integer)i.next()).intValue();
             String s = (String)strings.get(stridx);
-            write("    _JANET_LOAD_STRING(" + stridx + ");");
+            write("    _JANET_LOAD_STRING" + suffix + "(" + stridx + ");");
             write(settings.sourceComments()
                 ? " /* " + s + " */\n"
                 : "\n");
