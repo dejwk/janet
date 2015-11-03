@@ -29,7 +29,7 @@ native "C" {
         printf("%s", `#&"native return\n"`);
         /* DO NOT DO IT EVER!!! No return type check, and 
            "finally" clause semantics is broken. */
-        return;
+        return NULL;
         /* ... */
     }
 
