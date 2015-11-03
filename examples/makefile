@@ -47,25 +47,23 @@ CFLAGS += -ansi \
           -I$(JANET_HOME)/native/c/include
 
 FILES=$(JANET_HOME)/native/c/janet.c \
-      Arrays.c ArraysImpl.c Basic.c BasicImpl.c \
-      Cast.c CastImpl.c ControlFlow.c ControlFlowImpl.c \
-      Exceptions.c ExceptionsImpl.c HelloWorld.c HelloWorldImpl.c \
-      Literals.c LiteralsImpl.c Operators.c OperatorsImpl.c \
-      Strings.c StringsImpl.c Synchronized.c SynchronizedImpl.c
+      genfiles/Arrays.c genfiles/ArraysImpl.c genfiles/Basic.c genfiles/BasicImpl.c \
+      genfiles/Cast.c genfiles/CastImpl.c genfiles/ControlFlow.c genfiles/ControlFlowImpl.c \
+      genfiles/Exceptions.c genfiles/ExceptionsImpl.c genfiles/HelloWorld.c genfiles/HelloWorldImpl.c \
+      genfiles/Literals.c genfiles/LiteralsImpl.c genfiles/Operators.c genfiles/OperatorsImpl.c \
+      genfiles/Strings.c genfiles/StringsImpl.c genfiles/Synchronized.c genfiles/SynchronizedImpl.c
 
-all: libexamples.so Main.class
+all: $(LIBRARY) Main.class
 
 clean:
-	rm $(LIBRARY) *.c *.class *~ \
-           Arrays.java Basic.java Cast.java ControlFlow.java \
-	   Exceptions.java HelloWorld.java Literals.java Operators.java \
-           Strings.java Synchronized.java
+	rm -rf $(LIBRARY) *.class *~ genfiles
 
 %.class: %.java
-	$(JAVAC) *.java
+	$(JAVAC) *.java genfiles/*.java
 
-%.java %.c %Impl.c: %.janet
-	$(JANET) *.janet
+genfiles/%.java genfiles/%.c genfiles/%Impl.c: %.janet
+	mkdir genfiles
+	$(JANET) -d genfiles *.janet
 
 
 $(LIBRARY): $(FILES)
