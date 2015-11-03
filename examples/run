@@ -2,4 +2,4 @@
 
 DIR=`dirname $0`
 LD_LIBRARY_PATH=${DIR}:$LD_LIBRARY_PATH
-java -cp ${DIR}/.. -Djava.library.path=${LD_LIBRARY_PATH} examples.Main
+java -cp ${DIR}/classes -Djava.library.path=${LD_LIBRARY_PATH} examples.Main

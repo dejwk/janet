@@ -53,18 +53,18 @@ FILES=$(JANET_HOME)/native/c/janet.c \
       genfiles/Literals.c genfiles/LiteralsImpl.c genfiles/Operators.c genfiles/OperatorsImpl.c \
       genfiles/Strings.c genfiles/StringsImpl.c genfiles/Synchronized.c genfiles/SynchronizedImpl.c
 
-all: $(LIBRARY) Main.class
+all: $(LIBRARY) classes/examples/Main.class
 
 clean:
-	rm -rf $(LIBRARY) *.class *~ genfiles
+	rm -rf $(LIBRARY) *.class *~ genfiles classes
 
-%.class: %.java
-	$(JAVAC) *.java genfiles/*.java
+classes/examples/Main.class: *.java genfiles/*.java
+	mkdir -p classes
+	$(JAVAC) -d classes *.java genfiles/*.java
 
 genfiles/%.java genfiles/%.c genfiles/%Impl.c: %.janet
-	mkdir genfiles
+	mkdir -p genfiles
 	$(JANET) -d genfiles *.janet
-
 
 $(LIBRARY): $(FILES)
 	$(CC) $(CFLAGS) $^ -o $@
