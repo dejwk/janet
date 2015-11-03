@@ -36,9 +36,9 @@
 
 package pl.edu.agh.icsr.janet.natives.c;
 
+import pl.edu.agh.icsr.janet.natives.c.Tags.*;
 import pl.edu.agh.icsr.janet.natives.IWriter;
 import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.Writer.Substituter;
 import pl.edu.agh.icsr.janet.yytree.*;
 import pl.edu.agh.icsr.janet.reflect.*;
 import java.io.*;
