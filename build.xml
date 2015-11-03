@@ -8,6 +8,7 @@
   <property name="src.dir" value="src"/>
   <property name="build.dir" value="classes"/>
   <property name="bin.dir" value="bin"/>
+  <property name="examples.dir" value="examples"/>
 
   <target name="compile" description="Compile source tree java files">
     <mkdir dir="${build.dir}"/>
@@ -28,11 +29,28 @@
     <chmod file="${bin.dir}/janet.jar" perm="ugo+x"/>
   </target>
 
+  <target name="build-examples" depends="build">
+    <exec dir="${examples.dir}" executable="/usr/bin/make"/>
+  </target>
+
+  <target name="run-examples" depends="build-examples">
+    <exec dir="${examples.dir}" executable="/bin/sh">
+      <arg value="run"/>
+    </exec>
+  </target>
+
   <target name="clean" description="Clean output directories">
     <delete dir="${build.dir}"/>
     <delete dir="${bin.dir}"/>
     <delete>
       <fileset dir="." includes="**/*~" defaultexcludes="no"/>
+    </delete>
+    <delete dir="${examples.dir}/genfiles"/>
+    <delete dir="${examples.dir}/classes"/>
+    <delete>
+      <fileset dir="${examples.dir}" includes="**/*.so"/>
+      <fileset dir="${examples.dir}" includes="**/*.a"/>
+      <fileset dir="${examples.dir}" includes="**/*~" defaultexcludes="no"/>
     </delete>
   </target>  
 
