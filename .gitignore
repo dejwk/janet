@@ -6,3 +6,4 @@ examples/genfiles
 *.so
 *~
 util/doc
+*.tab.c
