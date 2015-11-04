@@ -1,0 +1,8 @@
+.eclipse
+classes
+release
+examples/genfiles
+*.jar
+*.so
+*~
+util/doc
