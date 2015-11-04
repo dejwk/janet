@@ -65,9 +65,8 @@ PureCParser.java: c_pure.tab.c ../Parser.template makefile
 		../Parser.template PureCParser.java
 
 clean:
-	rm StatementsParser.java BlockParser.java ExpressionParser.java PureCParser.java TokenTypes.java
-	rm *.tab.c
-	mv *~ \#*\# backup
+	rm -f StatementsParser.java BlockParser.java ExpressionParser.java PureCParser.java TokenTypes.java
+	rm -f *.tab.c
 
 
 

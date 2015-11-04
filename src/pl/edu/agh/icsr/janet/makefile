@@ -43,8 +43,8 @@ EmbeddedParser.java: janet_embedded.tab.c EmbeddedParser.template
 main: $(JAVA_PARSER) $(JAVA_TARGETS)
 
 clean:
-        rm $(JAVA_TARGETS)
-        mv *~ \#*\# backup
+        rm -f $(JAVA_TARGETS)
+        rm -f *.tab.c
 
 
 
