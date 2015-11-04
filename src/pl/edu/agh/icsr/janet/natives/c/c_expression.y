@@ -82,5 +82,5 @@ JavaEnd
 %%
 
     public int getInitialLexMode() { //int yymode) {
-	return Lexer.NATIVE_EXPRESSION;
+        return Lexer.NATIVE_EXPRESSION;
     }

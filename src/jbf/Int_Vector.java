@@ -86,11 +86,11 @@ class Int_Vector {
             extendto(newsz);
 // the following is suppressed on the assumption
 // that the elementype is a scalar
-//	} else {
-//	    int i;
-//	    for(i=newsz;i < _length;i++) {
-//		_contents[i] = 0;
-//	    }
+//      } else {
+//          int i;
+//          for(i=newsz;i < _length;i++) {
+//              _contents[i] = 0;
+//          }
         }
         _length = newsz;
     }
@@ -150,7 +150,7 @@ class Int_Vector {
         }
         _length--;
 // again, assume elemtype is scalar
-//	_contents[_length] = 0;
+//      _contents[_length] = 0;
     }
 
     public
@@ -210,7 +210,7 @@ class Int_Vector {
         }
         _length -= count;
 // again, assume elemtype is scalar
-//	for(int i=0;i<count;i++) {_contents[_length+i] = 0;}
+//      for(int i=0;i<count;i++) {_contents[_length+i] = 0;}
     }
 
     public

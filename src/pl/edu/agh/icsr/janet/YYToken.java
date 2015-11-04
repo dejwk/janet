@@ -21,77 +21,77 @@ public class YYToken implements YYResultReceiver {
     Object yylval;
 
     public YYToken() {
-	token_beg = new YYLocation();
-	token_end = new YYLocation();
-	text = new StringBuffer();
+        token_beg = new YYLocation();
+        token_end = new YYLocation();
+        text = new StringBuffer();
     }
 
     public void setTokenType(final int type) {
-	token_type = type;
+        token_type = type;
     }
 
     public int getTokenType() {
-	return token_type;
+        return token_type;
     }
 
     public StringBuffer text() {
-	return text;
+        return text;
     }
 
     public void clear() {
-	token_type = TokenTypes.YYNONE;
-	text.setLength(0);
+        token_type = TokenTypes.YYNONE;
+        text.setLength(0);
         yylval = null;
     }
 
     public YYLocation beg() {
-	return token_beg;
+        return token_beg;
     }
 
     public void setBeg(final YYLocation loc) {
-	token_beg.copyFrom(loc);
+        token_beg.copyFrom(loc);
     }
 
     public YYLocation end() {
-	return token_end;
+        return token_end;
     }
 
     public void setEnd(YYLocation loc) {
-	token_end.copyFrom(loc);
+        token_end.copyFrom(loc);
     }
 
     public void setText(StringBuffer buf) {
-	text.setLength(0);
-	text.append(buf);
+        text.setLength(0);
+        text.append(buf);
     }
 /*
     public Number getFloatingPointLiteral() {
-	int len = text.length();
-	char last = text.charAt(len-1);
+        int len = text.length();
+        char last = text.charAt(len-1);
 
-	if (last == 'f' || last == 'F') {
-	    return Float.valueOf(text.toString().substring(0, len-1));
-	} else if (last == 'd' || last == 'D') {
-	    return Double.valueOf(text.toString().substring(0, len-1));
-	} else {
-	    return Double.valueOf(text.toString().substring(0, len));
-	}
+        if (last == 'f' || last == 'F') {
+            return Float.valueOf(text.toString().substring(0, len-1));
+        } else if (last == 'd' || last == 'D') {
+            return Double.valueOf(text.toString().substring(0, len-1));
+        } else {
+            return Double.valueOf(text.toString().substring(0, len));
+        }
     }
 
     public char getCharacterLiteral() {
-	return character_literal;
+        return character_literal;
     }
 
     void setCharacterLiteral(char c) {
-	character_literal = c;
+        character_literal = c;
     }
 
     public String getStringLiteral() {
-	return string_literal;
+        return string_literal;
     }
 
     void setStringLiteral(String s) {
-	string_literal = s;
+        string_literal = s;
     }
 
     public YYStatement getNativeBlockBody() {
@@ -111,11 +111,11 @@ public class YYToken implements YYResultReceiver {
     }
 
     public int getEndPos() {
-	return end().charno0;
+        return end().charno0;
     }
 
     public String toString() {
-	return text.toString();
+        return text.toString();
     }
 
 

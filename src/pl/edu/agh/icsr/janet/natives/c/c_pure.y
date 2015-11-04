@@ -91,7 +91,7 @@ CBlock
 
 %%
     public int getInitialLexMode() { //int yymode) {
-	return Lexer.NATIVE_STATEMENTS;
+        return Lexer.NATIVE_STATEMENTS;
     }
 
     Stack chunks = new Stack();

@@ -26,8 +26,8 @@ class Preprocessor {
     }
 
     public Preprocessor(JanetSourceReader ibuf) {
-	this.ibuf = ibuf;
-	this.loc = ibuf.loc(); // shared location
+        this.ibuf = ibuf;
+        this.loc = ibuf.loc(); // shared location
     }
 
     public final JanetSourceReader ibuf() {
@@ -38,77 +38,77 @@ class Preprocessor {
      * (as described in Java Language Specification)
      */
     int readChar() throws IOException, LexException {
-	int c;
-	c = ibuf.nextChar();
+        int c;
+        c = ibuf.nextChar();
 
-	if (c != '\\') {
-	    uesc_start = false;
-	    return c;
-	}
+        if (c != '\\') {
+            uesc_start = false;
+            return c;
+        }
 
-	uesc_start = !uesc_start;
+        uesc_start = !uesc_start;
 
-	c = ibuf.nextChar();
-	if (c == '\\') {
-	    ibuf.backup();
-	    return '\\';
-	} else if (!uesc_start || c != 'u') {
-	    // \\u2020 or \x are not unicode escapes
-	    uesc_start = false;
-	    ibuf.backup();
-	    return '\\';
-	} else { // now it honestly is unicode escape
-	    do {
-		c = ibuf.nextChar();
-	    } while (c == 'u');
+        c = ibuf.nextChar();
+        if (c == '\\') {
+            ibuf.backup();
+            return '\\';
+        } else if (!uesc_start || c != 'u') {
+            // \\u2020 or \x are not unicode escapes
+            uesc_start = false;
+            ibuf.backup();
+            return '\\';
+        } else { // now it honestly is unicode escape
+            do {
+                c = ibuf.nextChar();
+            } while (c == 'u');
 
-	    int r = 0;
-	    for (int i=0; i<4; ++i) {
-		if (!JavaLexer.isAsciiHexDigit(c)) {
-		    throw new UnicodeEscapeException();
-		}
-		r = (r << 4) + JavaLexer.hex2int(c);
-		c = ibuf.nextChar();
-	    }
+            int r = 0;
+            for (int i=0; i<4; ++i) {
+                if (!JavaLexer.isAsciiHexDigit(c)) {
+                    throw new UnicodeEscapeException();
+                }
+                r = (r << 4) + JavaLexer.hex2int(c);
+                c = ibuf.nextChar();
+            }
 
-	    ibuf.backup();
-	    uesc_start = false;
-	    return r;
-	}
+            ibuf.backup();
+            uesc_start = false;
+            return r;
+        }
     }
 
     public int nextChar() throws IOException, LexException {
-	if (backed_up) {
-	    YYLocation.xchg(loc, loc_bkup);
-	    backed_up = false;
-	    return last_char;
-	} else {
-	    loc_bkup.copyFrom(loc);
-	    last_char = readChar();
-	    return last_char;
-	}
+        if (backed_up) {
+            YYLocation.xchg(loc, loc_bkup);
+            backed_up = false;
+            return last_char;
+        } else {
+            loc_bkup.copyFrom(loc);
+            last_char = readChar();
+            return last_char;
+        }
     }
 
     public void backup() throws PreprocessorException {
-	if (backed_up) {
-	    throw new PreprocessorException();
-	}
-	YYLocation.xchg(loc, loc_bkup); // restore shared location
-	backed_up = true;
+        if (backed_up) {
+            throw new PreprocessorException();
+        }
+        YYLocation.xchg(loc, loc_bkup); // restore shared location
+        backed_up = true;
     }
 
     public YYLocation loc() {
-	return loc;
+        return loc;
     }
 
     public String getCurrentLine() {
-	return ibuf.getCurrentLine();
+        return ibuf.getCurrentLine();
     }
 
     public int peek() throws IOException, LexException {
-	int c = nextChar();
-	backup();
-	return c;
+        int c = nextChar();
+        backup();
+        return c;
     }
 
 }

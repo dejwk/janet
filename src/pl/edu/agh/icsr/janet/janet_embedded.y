@@ -516,9 +516,9 @@ ArgumentList
 Arguments
     : '(' ArgumentList ')' { $$ = $2.expand(cxt); }
     | '('              ')' { $$ = new YYExpressionList(cxt); }
-	//    | Name '(' error ')' {}
-	//    | Primary '.' IDENTIFIER '(' error ')'
-	//    | SUPER '.' IDENTIFIER '(' error ')'
+        //    | Name '(' error ')' {}
+        //    | Primary '.' IDENTIFIER '(' error ')'
+        //    | SUPER '.' IDENTIFIER '(' error ')'
     ;
 
 ArrayCreationExpression
@@ -726,15 +726,15 @@ Expression
 
 /* Override yyerror */
     public
-	void
-	yyverror(String msg) throws ParseException { yyerror(msg,true,true); }
+        void
+        yyverror(String msg) throws ParseException { yyerror(msg,true,true); }
 
 public void parseError(String msg) throws ParseException {
     String desc;
     if (yychar == YYEOF) {
-	desc = "unexpected end of file";
+        desc = "unexpected end of file";
     } else {
-	desc = "parse error: '" + yytext() + "'";
+        desc = "parse error: '" + yytext() + "'";
     }
     if (msg != null && msg != "parse error") desc += "; " + msg;
     Parser.reportError(tokencxt, desc);
@@ -752,11 +752,11 @@ public static void compileError(IJavaContext cxt, String msg, boolean errthrow)
     System.err.println("At: " + lbeg);
     System.err.println(line);
     for (int i=0; i<lbeg.charno; i++) {
-	char c = line.charAt(i);
-	if (Character.isWhitespace(c)) // e.g. \t
-	    System.err.print("" + c);
-	else
-	    System.err.print(" ");
+        char c = line.charAt(i);
+        if (Character.isWhitespace(c)) // e.g. \t
+            System.err.print("" + c);
+        else
+            System.err.print(" ");
     }
     System.err.println("^");
     if(errthrow) throw new CompileException(msg);
@@ -774,29 +774,29 @@ public static void notSupported(IJavaContext cxt, String what) throws CompileExc
 /* Parse context */
 
 IMutableContext cxt = new IMutableContext() {
-	public final YYLocation lbeg() { return EmbeddedParser.this.lbeg(); }
-	public final YYLocation lend() { return EmbeddedParser.this.lend(); }
-	public final JanetSourceReader ibuf() { return outer_cxt.ibuf(); }
+        public final YYLocation lbeg() { return EmbeddedParser.this.lbeg(); }
+        public final YYLocation lend() { return EmbeddedParser.this.lend(); }
+        public final JanetSourceReader ibuf() { return outer_cxt.ibuf(); }
 
-	public final void reportError(String msg) throws CompileException { pl.edu.agh.icsr.janet.Parser.reportError(this, msg); }
+        public final void reportError(String msg) throws CompileException { pl.edu.agh.icsr.janet.Parser.reportError(this, msg); }
 
-	public final ClassManager getClassManager() { return outer_cxt.getClassManager(); }
-	public final YYCompilationUnit getCompilationUnit() { return outer_cxt.getCompilationUnit(); }
-	public final IScope getScope() { return outer_cxt.getScope(); }
-	public VariableStack getVariables() { return outer_cxt.getVariables(); }
-	public void pushScope(IScope unit) { outer_cxt.pushScope(unit); }
-	public IScope popScope() { return outer_cxt.popScope(); }
-	public void addVariable(YYVariableDeclarator var) throws CompileException { outer_cxt.addVariable(var); }
-	public void addVariables(YYVariableDeclaratorList vars) throws CompileException { outer_cxt.addVariables(vars); }
+        public final ClassManager getClassManager() { return outer_cxt.getClassManager(); }
+        public final YYCompilationUnit getCompilationUnit() { return outer_cxt.getCompilationUnit(); }
+        public final IScope getScope() { return outer_cxt.getScope(); }
+        public VariableStack getVariables() { return outer_cxt.getVariables(); }
+        public void pushScope(IScope unit) { outer_cxt.pushScope(unit); }
+        public IScope popScope() { return outer_cxt.popScope(); }
+        public void addVariable(YYVariableDeclarator var) throws CompileException { outer_cxt.addVariable(var); }
+        public void addVariables(YYVariableDeclaratorList vars) throws CompileException { outer_cxt.addVariables(vars); }
     };
 
 ILocationContext tokencxt = new ILocationContext() {
-	public final YYLocation lbeg() { return yylex.tokenloc(); }
-	public final YYLocation lend() { return cxt.lend(); }
-	public final JanetSourceReader ibuf() { return cxt.ibuf(); }
-	public final void reportError(String msg) throws CompileException {
-	    throw new UnsupportedOperationException();
-	}
+        public final YYLocation lbeg() { return yylex.tokenloc(); }
+        public final YYLocation lend() { return cxt.lend(); }
+        public final JanetSourceReader ibuf() { return cxt.ibuf(); }
+        public final void reportError(String msg) throws CompileException {
+            throw new UnsupportedOperationException();
+        }
     };
 
 // redirection to cxt

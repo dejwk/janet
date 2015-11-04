@@ -7,11 +7,11 @@ package pl.edu.agh.icsr.janet;
 public class NoAccessibleMethodsFoundException extends CompileException {
 
     public NoAccessibleMethodsFoundException() {
-	super();
+        super();
     }
 
     public NoAccessibleMethodsFoundException(String msg) {
-	super(msg);
+        super(msg);
     }
 }
 

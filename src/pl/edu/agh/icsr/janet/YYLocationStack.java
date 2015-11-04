@@ -21,18 +21,18 @@ class YYLocationStack {
 
     protected final void extendto(int sz)
     {
-	int oldsz = _contents.length;
+        int oldsz = _contents.length;
         if (sz > oldsz) {
-	    int newbuf[];
-	    if(oldsz == 0) oldsz = defaultsize * FACTOR;
-	    int newsz = oldsz;
+            int newbuf[];
+            if(oldsz == 0) oldsz = defaultsize * FACTOR;
+            int newsz = oldsz;
             while(newsz < sz) newsz *= 2;
-	    newbuf = new int[newsz];
-	    if(oldsz > 0) {
+            newbuf = new int[newsz];
+            if(oldsz > 0) {
                 System.arraycopy(_contents, 0, newbuf, 0, _length * FACTOR);
             }
-	    _contents = newbuf;
-	}
+            _contents = newbuf;
+        }
     }
 
     public final int size() {
@@ -40,25 +40,25 @@ class YYLocationStack {
     }
 
     public final void setSize(int newsz) {
-	if(newsz > _length) {
-	    extendto(newsz * FACTOR);
-	}
-	_length = newsz;
+        if(newsz > _length) {
+            extendto(newsz * FACTOR);
+        }
+        _length = newsz;
     }
 
     public final YYLocation elementAt(int index) {
-	if(index < 0 || index >= _length) {
-	    throw new ArrayIndexOutOfBoundsException(""+index);
-	}
+        if(index < 0 || index >= _length) {
+            throw new ArrayIndexOutOfBoundsException(""+index);
+        }
         int pos = index * FACTOR;
         return new YYLocation(_contents[pos++], _contents[pos++],
               _contents[pos++], _contents[pos++]);
     }
 
     public final YYLocation elementAt(int index, YYLocation l) {
-	if(index < 0 || index >= _length) {
-	    throw new ArrayIndexOutOfBoundsException(""+index);
-	}
+        if(index < 0 || index >= _length) {
+            throw new ArrayIndexOutOfBoundsException(""+index);
+        }
         int pos = index * FACTOR;
         l.set(_contents[pos++], _contents[pos++],
               _contents[pos++], _contents[pos++]);
@@ -76,45 +76,45 @@ class YYLocationStack {
     }
 
     public final YYLocation pop() throws EmptyStackException {
-	YYLocation l = peek();
-	setSize(size()-1);
-	return l;
+        YYLocation l = peek();
+        setSize(size()-1);
+        return l;
     }
 
     public final YYLocation peek() throws EmptyStackException {
-	if (size() == 0)
-	    throw new EmptyStackException();
-	return elementAt(size() - 1);
+        if (size() == 0)
+            throw new EmptyStackException();
+        return elementAt(size() - 1);
     }
 
     public final boolean empty() {
-	return size() == 0;
+        return size() == 0;
     }
 
     public void clear() {
-	setSize(0);
+        setSize(0);
     }
 
     public final void popn(int n) throws EmptyStackException
     {
-	int len = size();
-	if(n < 0 || n > len) throw new EmptyStackException();
-	setSize(len - n);
+        int len = size();
+        if(n < 0 || n > len) throw new EmptyStackException();
+        setSize(len - n);
     }
 
     public final void popto(int n) throws EmptyStackException {
-	popn(size() - n);
+        popn(size() - n);
     }
 
     public final YYLocation ith(int i) throws EmptyStackException {
-	if (i < 0 || i >= size()) throw new EmptyStackException();
-	return elementAt(i);
+        if (i < 0 || i >= size()) throw new EmptyStackException();
+        return elementAt(i);
     }
 
     public final YYLocation ith(int i, YYLocation buf)
             throws EmptyStackException {
-	if (i < 0 || i >= size()) throw new EmptyStackException();
-	return elementAt(i, buf);
+        if (i < 0 || i >= size()) throw new EmptyStackException();
+        return elementAt(i, buf);
     }
 
     public final int depth() {
@@ -122,22 +122,22 @@ class YYLocationStack {
     }
 
     public final YYLocation tth(int i) throws EmptyStackException {
-	int len = size();
-	i = - i;
-	if(i < 0 || i >= len) throw new EmptyStackException();
-	return elementAt(len - i - 1);
+        int len = size();
+        i = - i;
+        if(i < 0 || i >= len) throw new EmptyStackException();
+        return elementAt(len - i - 1);
     }
 
     public final YYLocation tth(int i, YYLocation buf)
             throws EmptyStackException {
-	int len = size();
-	i = - i;
-	if(i < 0 || i >= len) throw new EmptyStackException();
-	return elementAt(len - i - 1, buf);
+        int len = size();
+        i = - i;
+        if(i < 0 || i >= len) throw new EmptyStackException();
+        return elementAt(len - i - 1, buf);
     }
 
     public final YYLocation top() throws EmptyStackException {
-	return tth(0);
+        return tth(0);
     }
 
 }

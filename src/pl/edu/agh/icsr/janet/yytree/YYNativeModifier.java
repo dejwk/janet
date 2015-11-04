@@ -15,13 +15,13 @@ public class YYNativeModifier extends YYModifier {
     String language;
 
     public YYNativeModifier(IJavaContext cxt, String lang) {
-	super(cxt, Modifier.NATIVE);
-	this.language = lang;
+        super(cxt, Modifier.NATIVE);
+        this.language = lang;
     }
 
     public String getLanguage() { return language; }
 
     String getNativeString() {
-	return "native \"" + language + "\" ";
+        return "native \"" + language + "\" ";
     }
 }

@@ -9,11 +9,11 @@ import pl.edu.agh.icsr.janet.yytree.YYNode;
 public class CompileException extends ParseException {
 
     public CompileException() {
-	super();
+        super();
     }
 
     public CompileException(String msg) {
-	super(msg);
+        super(msg);
     }
 }
 

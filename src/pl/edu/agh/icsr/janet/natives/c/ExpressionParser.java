@@ -58,7 +58,7 @@ import pl.edu.agh.icsr.janet.yytree.*;
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
@@ -134,7 +134,7 @@ public static final int YYLAST = 24;
                            Token number */
     protected int yynerrs; /* number of parse errors so far */
     protected int yydebug; /* nonzero means print parse trace */
-    protected int yyerrstatus;	/* number of tokens to shift before error
+    protected int yyerrstatus;  /* number of tokens to shift before error
                            messages enabled */
     public int yyshiftcount = 3; // default tokens to shift
 
@@ -247,7 +247,7 @@ static final int YYTRANSLATE(int x)
 
         if (yydebug > 0) yyprint("Starting parse\n");
 
-        /* Push a new state, which is found in	yystate	 .  */
+        /* Push a new state, which is found in  yystate  .  */
         /* In all cases, when you get here, the value and location stacks
            have just been pushed. so pushing a state here evens the stacks.  */
         for(;;) {
@@ -280,7 +280,7 @@ static final int YYTRANSLATE(int x)
             /* Not known => get a lookahead token if don't already have one.  */
 
             /* yychar is either YYEMPTY or YYEOF
-               or a valid token in external form.	 */
+               or a valid token in external form.        */
 
             if (yychar == YYEMPTY) {
                 if (yydebug > 0) yyprint("Reading a token: ");
@@ -298,9 +298,9 @@ static final int YYTRANSLATE(int x)
 
             /* Convert token to internal form (in yychar1) for indexing tables with */
 
-            if (yychar <= 0) {	        /* This means end of input. */
+            if (yychar <= 0) {          /* This means end of input. */
                 yychar1 = 0;
-                yychar = YYEOF;		/* Don't call YYLEX any more */
+                yychar = YYEOF;         /* Don't call YYLEX any more */
                 if (yydebug > 0) yyprint("Now at end of input.\n");
             } else {
                 yychar1 = YYTRANSLATE(yychar);
@@ -339,7 +339,7 @@ static final int YYTRANSLATE(int x)
 
             if (yyn == YYFINAL) return YYACCEPT;
 
-            /* Shift the lookahead token.	 */
+            /* Shift the lookahead token.        */
 
             if (yydebug > 0) {
                 yyprint("Shifting token ");
@@ -349,7 +349,7 @@ static final int YYTRANSLATE(int x)
                 yyprint("), ");
             }
 
-            /* Discard the token being shifted unless it is eof.	*/
+            /* Discard the token being shifted unless it is eof.        */
             if (yychar != YYEOF) yychar = YYEMPTY;
 
             yyvs.push(yylval);
@@ -363,7 +363,7 @@ static final int YYTRANSLATE(int x)
             yystate = yyn;
             Goto = yynewstate; break branch;
 
-            /* Do the default action for the current state.	 */
+            /* Do the default action for the current state.      */
         case yydefault:
 
             yyn = yydefact[yystate];
@@ -371,7 +371,7 @@ static final int YYTRANSLATE(int x)
                 Goto = yyerrlab; break branch;
             }
 
-            /* Do a reduction.  yyn is the number of a rule to reduce with.	 */
+            /* Do a reduction.  yyn is the number of a rule to reduce with.      */
         case yyreduce:
             yylen = yyr2[yyn];
             if (yylen > 0) {
@@ -397,7 +397,7 @@ static final int YYTRANSLATE(int x)
                 yyprint("\n");
             }
 
-            /*$*/	/* the action file gets copied in in place of this dollarsign */
+            /*$*/       /* the action file gets copied in in place of this dollarsign */
 
             /* Provide a way to avoid having return statements in the actions
                and so avoid "statement not reached" errors"
@@ -483,7 +483,7 @@ case 12:
 
             Goto = yynewstate; break branch;
 
-        case yyerrlab:	 /* here on detecting error */
+        case yyerrlab:   /* here on detecting error */
 
             if (yyerrstatus == 0) {
                 /* If not already recovering from an error, report this error.  */
@@ -491,11 +491,11 @@ case 12:
                 parseError("parse error");
             }
 
-        case yyerrlab1:	  /* here on error raised explicitly by an action */
+        case yyerrlab1:   /* here on error raised explicitly by an action */
 
             if (yyerrstatus == yyshiftcount) {
                 /* if just tried and failed to reuse lookahead token
-                   after an error, discard it.	*/
+                   after an error, discard it.  */
                 /* return failure if at end of input */
                 if (yychar == YYEOF) {
                     if(yydebug > 0)
@@ -516,12 +516,12 @@ case 12:
             /* Else will try to reuse lookahead token
                after shifting the error token.  */
 
-            yyerrstatus = yyshiftcount;	/* Each real token shifted decrements this */
+            yyerrstatus = yyshiftcount; /* Each real token shifted decrements this */
 
             Goto = yyerrhandle; break branch;
 
         case yyerrdefault:  /* state does notthing special for the error token. */
-        case yyerrpop:	 /* pop the current state because it cannot handle the error token */
+        case yyerrpop:   /* pop the current state because it cannot handle the error token */
 
             yyvs.popn(1);
             yyss.pop();

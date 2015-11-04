@@ -6,11 +6,11 @@ package pl.edu.agh.icsr.janet;
 
 public class LexException extends ParseException {
     public LexException() {
-	super();
+        super();
     }
 
     public LexException(final String msg) {
-	super(msg);
+        super(msg);
     }
 }
 

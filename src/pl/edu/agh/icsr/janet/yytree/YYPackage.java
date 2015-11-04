@@ -11,7 +11,7 @@ public class YYPackage extends YYNode {
 
     public YYPackage(ILocationContext cxt, String pkgname) {
         super(cxt);
-	this.pkgname = pkgname;
+        this.pkgname = pkgname;
     }
 
     public boolean equals(YYPackage pkg) {

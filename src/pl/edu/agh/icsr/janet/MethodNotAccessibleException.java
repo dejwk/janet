@@ -11,7 +11,7 @@ public class MethodNotAccessibleException extends CompileException {
     IMethodInfo mth;
 
     public MethodNotAccessibleException(IMethodInfo mth) {
-	super(mth.toString() + " is not accessible");
+        super(mth.toString() + " is not accessible");
         this.mth = mth;
     }
 

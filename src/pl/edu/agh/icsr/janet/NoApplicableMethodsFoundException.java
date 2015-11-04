@@ -7,10 +7,10 @@ package pl.edu.agh.icsr.janet;
 public class NoApplicableMethodsFoundException extends CompileException {
 
     public NoApplicableMethodsFoundException() {
-	super();
+        super();
     }
     public NoApplicableMethodsFoundException(String msg) {
-	super(msg);
+        super(msg);
     }
 }
 

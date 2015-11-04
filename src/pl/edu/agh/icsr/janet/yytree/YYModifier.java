@@ -16,7 +16,7 @@ public class YYModifier extends YYNode {
 
     public YYModifier(IJavaContext cxt, int m) {
         super(cxt);
-	modifier = m;
+        modifier = m;
     }
 
     public YYModifier nextModifier() {

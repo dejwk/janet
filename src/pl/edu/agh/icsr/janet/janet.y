@@ -396,7 +396,7 @@ Modifier
     | STATIC       { $$ = new YYModifier(cxt, Modifier.STATIC); }
     | ABSTRACT     { $$ = new YYModifier(cxt, Modifier.ABSTRACT); }
     | FINAL        { $$ = new YYModifier(cxt, Modifier.FINAL); }
-    //	| NATIVE
+    //  | NATIVE
     | SYNCHRONIZED { $$ = new YYModifier(cxt, Modifier.SYNCHRONIZED); }
     | STRICTFP     { $$ = new YYModifier(cxt, Modifier.STRICT); }
     | TRANSIENT    { $$ = new YYModifier(cxt, Modifier.PUBLIC); }
@@ -537,7 +537,7 @@ MethodHeader
 MethodDeclarator
     : IDENTIFIER '('                         { pushScope(new YYMethod(cxt, $1, YYMethod.METHOD)); }
                      FormalParameterList_opt
-		 ')'                         { $$ = ((YYMethod)peekScope()).setParameters($4); addVariables($4); }
+                 ')'                         { $$ = ((YYMethod)peekScope()).setParameters($4); addVariables($4); }
     ;
 
 FormalParameterList_opt
@@ -590,7 +590,7 @@ NativeMethodHeader
 NativeMethodDeclarator
     : IDENTIFIER '('                         { pushScope(new YYNativeMethod(cxt, $1)); }
                      FormalParameterList_opt
-		 ')'                         { $$ = ((YYNativeMethod)peekScope()).setParameters($4); addVariables($4); }
+                 ')'                         { $$ = ((YYNativeMethod)peekScope()).setParameters($4); addVariables($4); }
     ;
 
 NativeMethodBody
@@ -626,7 +626,7 @@ ConstructorHeader
 ConstructorDeclarator
     : IDENTIFIER '('                         { pushScope(new YYMethod(cxt, $1, YYMethod.CONSTRUCTOR)); }
                      FormalParameterList_opt
-		 ')'                         { $$ = ((YYMethod)peekScope()).checkName(cxt).setParameters($4); addVariables($4); }
+                 ')'                         { $$ = ((YYMethod)peekScope()).checkName(cxt).setParameters($4); addVariables($4); }
     ;
 
 ConstructorBody
@@ -875,11 +875,11 @@ ForHeader
 //    | FOR '(' ForInit ';' ForExpression ';'           ')' { pushScope(new YYStatement(cxt).add($3)); }
 //    | FOR '(' ForInit ';'               ';' ForUpdate ')' { pushScope(new YYStatement(cxt).add($3)); }
 //    | FOR '(' ForInit ';'               ';'           ')' { pushScope(new YYStatement(cxt).add($3)); }
-	//    | FOR '('                          ';' ForExpression_opt ';' ForUpdate_opt ')' { pushScope(new YYStatement(cxt)); }
+        //    | FOR '('                          ';' ForExpression_opt ';' ForUpdate_opt ')' { pushScope(new YYStatement(cxt)); }
 //    | FOR '('         ';' ForExpression ';'           ')' { pushScope(new YYStatement(cxt)); }
 //    | FOR '('         ';'               ';' ForUpdate ')' { pushScope(new YYStatement(cxt)); }
 //    | FOR '('         ';'               ';'           ')' { pushScope(new YYStatement(cxt)); }
-	//    | FOR '(' LocalVariableDeclaration ';' ForExpression_opt ';' ForUpdate_opt ')' { pushScope(new YYStatement(cxt)); addVariables($3)); }
+        //    | FOR '(' LocalVariableDeclaration ';' ForExpression_opt ';' ForUpdate_opt ')' { pushScope(new YYStatement(cxt)); addVariables($3)); }
     ;
 
 ForInit_opt
@@ -1037,9 +1037,9 @@ ArgumentList
 Arguments
     : '(' ArgumentList ')' { $$ = null; }
     | '('              ')' { $$ = null; }
-	//    | Name '(' error ')' {}
-	//    | Primary '.' IDENTIFIER '(' error ')'
-	//    | SUPER '.' IDENTIFIER '(' error ')'
+        //    | Name '(' error ')' {}
+        //    | Primary '.' IDENTIFIER '(' error ')'
+        //    | SUPER '.' IDENTIFIER '(' error ')'
     ;
 
 ArrayCreationExpression
@@ -1246,9 +1246,9 @@ YYCompilationUnit compUnit;
 public void parseError(String msg) throws ParseException {
     String desc;
     if (yychar == YYEOF) {
-	desc = "unexpected end of file";
+        desc = "unexpected end of file";
     } else {
-	desc = "parse error: '" + yytext() + "'";
+        desc = "parse error: '" + yytext() + "'";
     }
     if (msg != null && msg != "parse error") desc += "; " + msg;
     reportError(tokencxt, desc);
@@ -1267,22 +1267,22 @@ public static void reportError(ILocationContext cxt, String msg, boolean errthro
     
     System.err.println(orig + ":" + (lbeg.lineno+1) + ": " + msg);
     if (line != null && !line.equals("")) {
-	System.err.println(line);
+        System.err.println(line);
 
-	String marker = "";
-	for (int i=0; i<lbeg.charno; i++) {
-	    char c = line.charAt(i);
-	    marker += (Character.isWhitespace(c) ? c : ' ');
-	}
-	marker += "^";
-	System.err.println(marker);
+        String marker = "";
+        for (int i=0; i<lbeg.charno; i++) {
+            char c = line.charAt(i);
+            marker += (Character.isWhitespace(c) ? c : ' ');
+        }
+        marker += "^";
+        System.err.println(marker);
     }
     if(errthrow) throw new CompileException(msg);
 }
 
 public static void reportWarning(ILocationContext cxt, String msg) {
     try {
-	reportError(cxt, "warning: " + msg, false);
+        reportError(cxt, "warning: " + msg, false);
     } catch (CompileException e) {}
 }
 
@@ -1300,7 +1300,7 @@ public class Context implements IMutableContext {
     public final JanetSourceReader ibuf() { return yylex.ibuf(); }
 
     public final void reportError(String msg) throws CompileException {
-	Parser.this.reportError(this, msg, true);
+        Parser.this.reportError(this, msg, true);
     }
 
     public final ClassManager getClassManager() { return compMgr.getClassManager(); }
@@ -1309,17 +1309,17 @@ public class Context implements IMutableContext {
     public final VariableStack getVariables() { return variables; }
 
     public void pushScope(IScope unit) {
-	//System.out.println("pushing " + unit.getClass().getName());
-	currScope = unit;
+        //System.out.println("pushing " + unit.getClass().getName());
+        currScope = unit;
     }
     
     public void addVariable(YYVariableDeclarator var) throws CompileException {
-	variables.push(var);
+        variables.push(var);
     }
 
     public void addVariables(YYVariableDeclaratorList vars) throws CompileException {
-	if (vars == null) return;
-	YYVariableDeclarator var;
+        if (vars == null) return;
+        YYVariableDeclarator var;
         Iterator i = vars.iterator();
         while (i.hasNext()) {
             variables.push((YYVariableDeclarator)i.next());
@@ -1327,11 +1327,11 @@ public class Context implements IMutableContext {
     }
 
     public IScope popScope() {
-	variables.pop(currScope);	/* popping variables */
-	IScope unit = currScope;
-	currScope = currScope.getEnclosingScope();
-	//System.out.println("popping " + unit.getClass().getName());
-	return unit;
+        variables.pop(currScope);       /* popping variables */
+        IScope unit = currScope;
+        currScope = currScope.getEnclosingScope();
+        //System.out.println("popping " + unit.getClass().getName());
+        return unit;
     }
     
 }
@@ -1339,12 +1339,12 @@ public class Context implements IMutableContext {
 Context cxt = new Context();
 
 ILocationContext tokencxt = new ILocationContext() {
-	public final YYLocation lbeg() { return yylex.tokenloc(); }
-	public final YYLocation lend() { return Parser.this.lend(); }
-	public final JanetSourceReader ibuf() { return yylex.ibuf(); }
-	public final void reportError(String msg) throws CompileException {
-	    Parser.this.reportError(this, msg, true);
-	}
+        public final YYLocation lbeg() { return yylex.tokenloc(); }
+        public final YYLocation lend() { return Parser.this.lend(); }
+        public final JanetSourceReader ibuf() { return yylex.ibuf(); }
+        public final void reportError(String msg) throws CompileException {
+            Parser.this.reportError(this, msg, true);
+        }
     };
 
 // redirection to cxt
@@ -1375,9 +1375,9 @@ public YYClass popClass() {
 
 public YYClass peekClass() {
     if (!class_stack.empty()) {
-	return (YYClass)class_stack.peek();
+        return (YYClass)class_stack.peek();
     } else {
-	return null;
+        return null;
     }
 }
 */

@@ -210,7 +210,7 @@ public class Node {
         }
         synchronized(parent) {
             this.parent = parent;
-            if (brother != null) {	    // not at the beginning
+            if (brother != null) {          // not at the beginning
                 this.next = brother.next;
                 this.prev = brother;
                 brother.next = this;

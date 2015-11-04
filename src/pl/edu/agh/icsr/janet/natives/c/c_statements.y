@@ -136,7 +136,7 @@ CBlock
 
 %%
     public int getInitialLexMode() { //int yymode) {
-	return Lexer.NATIVE_STATEMENTS;
+        return Lexer.NATIVE_STATEMENTS;
     }
 
     Stack chunks = new Stack();
@@ -145,14 +145,14 @@ CBlock
     YYCChunk peekChunk() { return (YYCChunk)chunks.peek(); }
 
     /*    protected YYCBlock setApprType(YYCBlock b) {
-	switch (this.yymode) { // what was the demans
-	case IParser.STATEMENTS:
-	    b.setType(b.STATEMENTS);
-	    return b;
-	case IParser.BLOCK:
-	    b.setType(b.isNativeBlock() ? b.BLOCK : b.STATEMENTS);
-	    return b;
-	default:
-	    throw new IllegalArgumentException();
-	}
-	}*/
+        switch (this.yymode) { // what was the demans
+        case IParser.STATEMENTS:
+            b.setType(b.STATEMENTS);
+            return b;
+        case IParser.BLOCK:
+            b.setType(b.isNativeBlock() ? b.BLOCK : b.STATEMENTS);
+            return b;
+        default:
+            throw new IllegalArgumentException();
+        }
+        }*/

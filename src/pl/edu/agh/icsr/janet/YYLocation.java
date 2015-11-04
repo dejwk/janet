@@ -9,12 +9,12 @@ public final class YYLocation extends jbf.YYlocation {
     public int line_beg;
 
     public YYLocation() {
-	super(0, 0, 0);
-	line_beg = 0;
+        super(0, 0, 0);
+        line_beg = 0;
     }
 
     public YYLocation(int line, int charno, int charno0, int line_beg) {
-	super(charno0, line, charno);
+        super(charno0, line, charno);
         this.line_beg = line_beg;
     }
 
@@ -23,39 +23,39 @@ public final class YYLocation extends jbf.YYlocation {
     }
 
     public final void set(int lineno, int charno, int charno0, int line_beg) {
-	this.lineno = lineno;
-	this.charno = charno;
-	this.charno0 = charno0;
-	this.line_beg = line_beg;
+        this.lineno = lineno;
+        this.charno = charno;
+        this.charno0 = charno0;
+        this.line_beg = line_beg;
     }
 
     public static void xchg(YYLocation l1, YYLocation l2) {
-	int tmp;
-	tmp = l1.lineno;
-	l1.lineno = l2.lineno;
-	l2.lineno = tmp;
+        int tmp;
+        tmp = l1.lineno;
+        l1.lineno = l2.lineno;
+        l2.lineno = tmp;
 
-	tmp = l1.charno;
-	l1.charno = l2.charno;
-	l2.charno = tmp;
+        tmp = l1.charno;
+        l1.charno = l2.charno;
+        l2.charno = tmp;
 
-	tmp = l1.charno0;
-	l1.charno0 = l2.charno0;
-	l2.charno0 = tmp;
+        tmp = l1.charno0;
+        l1.charno0 = l2.charno0;
+        l2.charno0 = tmp;
 
-	tmp = l1.line_beg;
-	l1.line_beg = l2.line_beg;
-	l2.line_beg = tmp;
+        tmp = l1.line_beg;
+        l1.line_beg = l2.line_beg;
+        l2.line_beg = tmp;
     }
 
     public void nextChar() {
-	charno0++; charno++;
+        charno0++; charno++;
     }
 
     public void nextLine() {
-	lineno++;
-	charno = 0;
-	line_beg = charno0;
+        lineno++;
+        charno = 0;
+        line_beg = charno0;
     }
 
     public int getLine() { return lineno+1; }

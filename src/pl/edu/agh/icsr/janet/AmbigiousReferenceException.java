@@ -9,7 +9,7 @@ public class AmbigiousReferenceException extends CompileException {
     Object o1, o2;
 
     public AmbigiousReferenceException(Object o1, Object o2) {
-	super("ambigious reference: both " + o1.toString() + " and " +
+        super("ambigious reference: both " + o1.toString() + " and " +
             o2.toString() + " match");
         this.o1 = o1;
         this.o2 = o2;

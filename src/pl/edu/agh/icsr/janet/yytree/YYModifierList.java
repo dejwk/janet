@@ -13,7 +13,7 @@ import pl.edu.agh.icsr.janet.IJavaContext;
 public class YYModifierList extends YYNode {
 
     public static final int ACCESS_MODIFIERS =
-	Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED;
+        Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED;
 
     int modifiers;
     String language;
@@ -33,16 +33,16 @@ public class YYModifierList extends YYNode {
 
     public YYModifierList add(YYModifier m) throws CompileException {
         super.append(m);
-	if (is(m.modifier)) {
+        if (is(m.modifier)) {
             m.reportError("Modifier " + Modifier.toString(m.modifier) +
                          " specified twice");
-	}
+        }
         if ((modifiers & ACCESS_MODIFIERS) != 0 && is(m, ACCESS_MODIFIERS)) {
             m.reportError("At most one of public, private or protected may " +
                          "be specified");
         }
-	modifiers |= m.modifier;
-	return this;
+        modifiers |= m.modifier;
+        return this;
     }
 
     public YYModifier findFirst(int m) {
@@ -52,11 +52,11 @@ public class YYModifierList extends YYNode {
     }
 
     public final boolean is(int m) {
-	return (modifiers & m) != 0;
+        return (modifiers & m) != 0;
     }
 
     public final static boolean is(YYModifier mf, int m) {
-	return (mf.modifier & m) != 0;
+        return (mf.modifier & m) != 0;
     }
 
     public int getModifiers() { return modifiers; }
@@ -73,23 +73,23 @@ public class YYModifierList extends YYNode {
     public boolean isVolatile() { return is(Modifier.VOLATILE); }
 
     String getNativeModifierString() { // overridden in YYModifiersWithNative
-	return "native ";
+        return "native ";
     }
 
     public static String toString(int m) { return toString(m, null); }
 
     public static String toString(int m, String lang) {
-	return ((Modifier.isPublic(m) ? "public " : "") +
-		(Modifier.isProtected(m) ? "protected " : "") +
-		(Modifier.isPrivate(m) ? "private " : "") +
-		(Modifier.isStatic(m) ? "static " : "") +
-		(Modifier.isAbstract(m) ? "abstract " : "") +
-		(Modifier.isFinal(m) ? "final " : "") +
-		(Modifier.isNative(m) ? "native " +
+        return ((Modifier.isPublic(m) ? "public " : "") +
+                (Modifier.isProtected(m) ? "protected " : "") +
+                (Modifier.isPrivate(m) ? "private " : "") +
+                (Modifier.isStatic(m) ? "static " : "") +
+                (Modifier.isAbstract(m) ? "abstract " : "") +
+                (Modifier.isFinal(m) ? "final " : "") +
+                (Modifier.isNative(m) ? "native " +
                               (lang != null ? lang + " " : "") : "")+
-		(Modifier.isSynchronized(m) ? "synchronized " : "") +
-		(Modifier.isTransient(m) ? "transient " : "") +
-		(Modifier.isVolatile(m) ? "volative " : "")); //.trim();
+                (Modifier.isSynchronized(m) ? "synchronized " : "") +
+                (Modifier.isTransient(m) ? "transient " : "") +
+                (Modifier.isVolatile(m) ? "volative " : "")); //.trim();
     }
 
 }

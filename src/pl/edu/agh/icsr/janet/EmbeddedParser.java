@@ -56,7 +56,7 @@ import java.lang.reflect.Modifier; // for Modifiers productions
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
@@ -111,11 +111,11 @@ static public final int YYLAST = 1412;
     protected int yylen;
     protected int yychar; /* the lookahead symbol */
     protected int yychar1;  /* lookahead token as an internal (translated)
-			   Token number */
+                           Token number */
     protected int yynerrs; /* number of parse errors so far */
     protected int yydebug; /* nonzero means print parse trace */
-    protected int yyerrstatus;	/* number of tokens to shift before error
-			   messages enabled */
+    protected int yyerrstatus;  /* number of tokens to shift before error
+                           messages enabled */
     public int yyshiftcount = 3; // default tokens to shift
 
     protected YYLocation loc;    // shared loc
@@ -128,10 +128,10 @@ static public final int YYLAST = 1412;
 
     public Object yylval; // the semantic value of the lookahead symbol
     protected Object yyval;   // the variable used to return semantic values
-			 	// from the action routines
+                                // from the action routines
     protected boolean yyerrthrow; /* t=>yyerror should throw ParseException;
-				     f=>just return and let normal error
-					recovery operate; default is false;*/
+                                     f=>just return and let normal error
+                                        recovery operate; default is false;*/
     protected LexException yylexexception;
 
     protected Int_Stack yyss;
@@ -150,240 +150,240 @@ static public final int YYLAST = 1412;
 // PROCS
 
 final int YYTRANSLATE(int x)
-	{ return ((x) <= 348 ? yytranslate[x] : 223);}
+        { return ((x) <= 348 ? yytranslate[x] : 223);}
 
 
     // default constructor for newInstance()
     public EmbeddedParser() {
-	yyss = new Int_Stack();
-	yyvs = new Object_Stack();
-	yyls = new YYLocationStack();
-	yylval = null;
-	yylbeg = new YYLocation();
-	yylend = new YYLocation();
-	yydebug = 0;
-	yyerrthrow = false;
-	yylexexception = null;
-	isNowParsing = false;
-	nextParser = null;
+        yyss = new Int_Stack();
+        yyvs = new Object_Stack();
+        yyls = new YYLocationStack();
+        yylval = null;
+        yylbeg = new YYLocation();
+        yylend = new YYLocation();
+        yydebug = 0;
+        yyerrthrow = false;
+        yylexexception = null;
+        isNowParsing = false;
+        nextParser = null;
     }
 
     public EmbeddedParser(Lexer yyl, java.io.PrintWriter ferr) {
-	this();
-	_init(yyl, ferr);
+        this();
+        _init(yyl, ferr);
     }
 
     protected void _init(Lexer yyl, java.io.PrintWriter ferr) {
-	yylex = yyl;
-	yyerr = ferr;
-	loc = yylex.loc();
+        yylex = yyl;
+        yyerr = ferr;
+        loc = yylex.loc();
     }
 
     public int yyparse(IMutableContext cxt, YYResultReceiver resrecv)//, int mode)
             throws ParseException {
-	if (isNowParsing) { // recursive call; need another parser instance
-	    if (nextParser == null) {
-		(nextParser = new EmbeddedParser(yylex, yyerr)).setdebug(yydebug);
-	    }
-	    return nextParser.yyparse(cxt, resrecv);//, mode);
-	} else {
-	    isNowParsing = true;
-	    this.outer_cxt = cxt;
-	    //this.yymode = mode;
-	    this.lexmode = getInitialLexMode();//yymode);
-	    yylbeg.copyFrom(loc);
-	    yylend.copyFrom(loc);
-	    if (yydebug > 0) yyprint("\n****** Running new parser for embedded Java ******\n");
-	    int yyresult = _parse();
-	    if (yydebug > 0) yyprint("****** Parser for embedded Java finished    ******\n\n");
-	    resrecv.setYYlval(this.yyval);
-	    isNowParsing = false;
-	    return yyresult;
-	}
+        if (isNowParsing) { // recursive call; need another parser instance
+            if (nextParser == null) {
+                (nextParser = new EmbeddedParser(yylex, yyerr)).setdebug(yydebug);
+            }
+            return nextParser.yyparse(cxt, resrecv);//, mode);
+        } else {
+            isNowParsing = true;
+            this.outer_cxt = cxt;
+            //this.yymode = mode;
+            this.lexmode = getInitialLexMode();//yymode);
+            yylbeg.copyFrom(loc);
+            yylend.copyFrom(loc);
+            if (yydebug > 0) yyprint("\n****** Running new parser for embedded Java ******\n");
+            int yyresult = _parse();
+            if (yydebug > 0) yyprint("****** Parser for embedded Java finished    ******\n\n");
+            resrecv.setYYlval(this.yyval);
+            isNowParsing = false;
+            return yyresult;
+        }
     }
 
     int _parse() throws ParseException {
-	int ok;
-	yychar1 = 0;  /* lookahead Token as an internal (translated) */
-	yystate = 0;
-	yyerrstatus = 0;
-	yynerrs = 0;
-	yychar = YYEMPTY;  /* Cause a Token to be read.  */
-	yyval = null;
-	Goto = yynewstate;
+        int ok;
+        yychar1 = 0;  /* lookahead Token as an internal (translated) */
+        yystate = 0;
+        yyerrstatus = 0;
+        yynerrs = 0;
+        yychar = YYEMPTY;  /* Cause a Token to be read.  */
+        yyval = null;
+        Goto = yynewstate;
 
-	/* Initialize stack pointers.
-	   Waste one element of value and location stack
-	   so that they stay on the same level as the state stack.
-	   The wasted elements are never initialized.  */
+        /* Initialize stack pointers.
+           Waste one element of value and location stack
+           so that they stay on the same level as the state stack.
+           The wasted elements are never initialized.  */
 
-	yyss.clear();
-	yyvs.clear();
-	yyls.clear();
+        yyss.clear();
+        yyvs.clear();
+        yyls.clear();
 
-	/* need to push a null value to match state 0 */
-	yyvs.push(null);
+        /* need to push a null value to match state 0 */
+        yyvs.push(null);
 
-	if (yydebug > 0) yyprint("Starting parse\n");
+        if (yydebug > 0) yyprint("Starting parse\n");
 
-	/* Push a new state, which is found in	yystate	 .  */
-	/* In all cases, when you get here, the value and location stacks
-	   have just been pushed. so pushing a state here evens the stacks.  */
-	for(;;) {
-	branch: switch (Goto) {
+        /* Push a new state, which is found in  yystate  .  */
+        /* In all cases, when you get here, the value and location stacks
+           have just been pushed. so pushing a state here evens the stacks.  */
+        for(;;) {
+        branch: switch (Goto) {
 
-	case yynewstate:
+        case yynewstate:
 
-	    yyss.push(yystate);
+            yyss.push(yystate);
 
-	    if (yydebug > 0) {
-		yyprint("Entering state ");
-		yyprint(yystate);
-		yyprint("\n");
-	    }
+            if (yydebug > 0) {
+                yyprint("Entering state ");
+                yyprint(yystate);
+                yyprint("\n");
+            }
 
-	case yybackup:
+        case yybackup:
 
-	    /* Do appropriate processing given the current state.  */
-	    /* Read a lookahead token if we need one and don't already have one.  */
-	    /* yyresume: */
+            /* Do appropriate processing given the current state.  */
+            /* Read a lookahead token if we need one and don't already have one.  */
+            /* yyresume: */
 
-	    /* First try to decide what to do without reference to lookahead token.  */
+            /* First try to decide what to do without reference to lookahead token.  */
 
-	    yyn = yypact[yystate];
-	    if (yyn == YYFLAG) {
-		Goto = yydefault;
-		break branch;
-	    }
+            yyn = yypact[yystate];
+            if (yyn == YYFLAG) {
+                Goto = yydefault;
+                break branch;
+            }
 
-	    /* Not known => get a lookahead token if don't already have one.  */
+            /* Not known => get a lookahead token if don't already have one.  */
 
-	    /* yychar is either YYEMPTY or YYEOF
-	       or a valid token in external form.	 */
+            /* yychar is either YYEMPTY or YYEOF
+               or a valid token in external form.        */
 
-	    if (yychar == YYEMPTY) {
-		if (yydebug > 0) yyprint("Reading a token: ");
-		try {
-		    // yylval = yylex.yylex();
-		    yychar = yylex.yylex(cxt, this.lexmode);
-		    yylval = yylex.yylval();
-		} catch (LexException le) {
-		    yyprintln("yyparse: LexException: " + le);
-		    yylexexception = le;
-		    // on lex error, treat like a syntax error
-		    Goto = yyerrlab; break branch;
-		}
-	    }
+            if (yychar == YYEMPTY) {
+                if (yydebug > 0) yyprint("Reading a token: ");
+                try {
+                    // yylval = yylex.yylex();
+                    yychar = yylex.yylex(cxt, this.lexmode);
+                    yylval = yylex.yylval();
+                } catch (LexException le) {
+                    yyprintln("yyparse: LexException: " + le);
+                    yylexexception = le;
+                    // on lex error, treat like a syntax error
+                    Goto = yyerrlab; break branch;
+                }
+            }
 
-	    /* Convert token to internal form (in yychar1) for indexing tables with */
+            /* Convert token to internal form (in yychar1) for indexing tables with */
 
-	    if (yychar <= 0) {	        /* This means end of input. */
-		yychar1 = 0;
-		yychar = YYEOF;		/* Don't call YYLEX any more */
-		if (yydebug > 0) yyprint("Now at end of input.\n");
-	    } else {
-		yychar1 = YYTRANSLATE(yychar);
-		if (yydebug >= 10) {
-		    yyprint("Next token is ");
-		    yyprint(yychar);
-		    yyprint(" (");
-		    yyprint(yytname[yychar1]);
-		    yyprint(")\n");
-		}
-	    }
+            if (yychar <= 0) {          /* This means end of input. */
+                yychar1 = 0;
+                yychar = YYEOF;         /* Don't call YYLEX any more */
+                if (yydebug > 0) yyprint("Now at end of input.\n");
+            } else {
+                yychar1 = YYTRANSLATE(yychar);
+                if (yydebug >= 10) {
+                    yyprint("Next token is ");
+                    yyprint(yychar);
+                    yyprint(" (");
+                    yyprint(yytname[yychar1]);
+                    yyprint(")\n");
+                }
+            }
 
-	    yyn += yychar1;
-	    if (yyn < 0 || yyn > YYLAST || yycheck[yyn] != yychar1) {
-		Goto = yydefault; break branch;
-	    }
+            yyn += yychar1;
+            if (yyn < 0 || yyn > YYLAST || yycheck[yyn] != yychar1) {
+                Goto = yydefault; break branch;
+            }
 
-	    yyn = yytable[yyn];
+            yyn = yytable[yyn];
 
-	    /* yyn is what to do for this token type in this state.
-	       Negative => reduce, -yyn is rule number.
-	       Positive => shift, yyn is new state.
-	       New state is final state => don't bother to shift,
-	       just return success.
-	       0, or most negative number => error.  */
+            /* yyn is what to do for this token type in this state.
+               Negative => reduce, -yyn is rule number.
+               Positive => shift, yyn is new state.
+               New state is final state => don't bother to shift,
+               just return success.
+               0, or most negative number => error.  */
 
-	    if (yyn < 0) {
-		if (yyn == YYFLAG) {
-		    Goto = yyerrlab; break branch;
-		}
-		yyn = -yyn;
-		Goto = yyreduce; break branch;
-	    } else if (yyn == 0) {
-		Goto = yyerrlab; break branch;
-	    }
+            if (yyn < 0) {
+                if (yyn == YYFLAG) {
+                    Goto = yyerrlab; break branch;
+                }
+                yyn = -yyn;
+                Goto = yyreduce; break branch;
+            } else if (yyn == 0) {
+                Goto = yyerrlab; break branch;
+            }
 
-	    if (yyn == YYFINAL) return YYACCEPT;
+            if (yyn == YYFINAL) return YYACCEPT;
 
-	    /* Shift the lookahead token.	 */
+            /* Shift the lookahead token.        */
 
-	    if (yydebug > 0) {
-		yyprint("Shifting token ");
-		yyprint(yychar);
-		yyprint(" (");
-		yyprint(yytname[yychar1]);
-		yyprint("), ");
-	    }
+            if (yydebug > 0) {
+                yyprint("Shifting token ");
+                yyprint(yychar);
+                yyprint(" (");
+                yyprint(yytname[yychar1]);
+                yyprint("), ");
+            }
 
-	    /* Discard the token being shifted unless it is eof.	*/
-	    if (yychar != YYEOF) yychar = YYEMPTY;
+            /* Discard the token being shifted unless it is eof.        */
+            if (yychar != YYEOF) yychar = YYEMPTY;
 
-	    yyvs.push(yylval);
-	    yylend.copyFrom(loc);
-	    yyls.push(yylex.tokenloc());
-	    yylbeg.copyFrom(yylex.loc());
+            yyvs.push(yylval);
+            yylend.copyFrom(loc);
+            yyls.push(yylex.tokenloc());
+            yylbeg.copyFrom(yylex.loc());
 
-	    /* count tokens shifted since error; after three, turn off error status.  */
-	    if (yyerrstatus > 0) yyerrstatus--;
+            /* count tokens shifted since error; after three, turn off error status.  */
+            if (yyerrstatus > 0) yyerrstatus--;
 
-	    yystate = yyn;
-	    Goto = yynewstate; break branch;
+            yystate = yyn;
+            Goto = yynewstate; break branch;
 
-	    /* Do the default action for the current state.	 */
-	case yydefault:
+            /* Do the default action for the current state.      */
+        case yydefault:
 
-	    yyn = yydefact[yystate];
-	    if (yyn == 0) {
-		Goto = yyerrlab; break branch;
-	    }
+            yyn = yydefact[yystate];
+            if (yyn == 0) {
+                Goto = yyerrlab; break branch;
+            }
 
-	    /* Do a reduction.  yyn is the number of a rule to reduce with.	 */
-	case yyreduce:
-	    yylen = yyr2[yyn];
-	    if (yylen > 0) {
-		yyval = yyvs.tth(1-yylen); /* implement default value of the action */
-		yylbeg = yyls.tth(1-yylen, yylbeg); /* DK */
-	    }
-	    if (yydebug > 0) {
-		int i;
-		lstackdump("location stack now"); /* DK */
-		yyprint("Reducing via rule ");
-		yyprint(yyn);
-		yyprint(" (line ");
-		yyprint(yyrline[yyn]);
-		yyprint("), ");
-		/* Print the symbols being reduced, and their result.  */
-		for (i = yyprhs[yyn]; yyrhs[i] > 0; i++) {
-		    yyprint(yytname[yyrhs[i]]);
-		    yyprint(" ");
-		}
-		yyprint(" -> ");
-		yyprint(yytname[yyr1[yyn]]);
-		yyprint(" " + lbeg() + " <--> " + lend()); /* DK */
-		yyprint("\n");
-	    }
+            /* Do a reduction.  yyn is the number of a rule to reduce with.      */
+        case yyreduce:
+            yylen = yyr2[yyn];
+            if (yylen > 0) {
+                yyval = yyvs.tth(1-yylen); /* implement default value of the action */
+                yylbeg = yyls.tth(1-yylen, yylbeg); /* DK */
+            }
+            if (yydebug > 0) {
+                int i;
+                lstackdump("location stack now"); /* DK */
+                yyprint("Reducing via rule ");
+                yyprint(yyn);
+                yyprint(" (line ");
+                yyprint(yyrline[yyn]);
+                yyprint("), ");
+                /* Print the symbols being reduced, and their result.  */
+                for (i = yyprhs[yyn]; yyrhs[i] > 0; i++) {
+                    yyprint(yytname[yyrhs[i]]);
+                    yyprint(" ");
+                }
+                yyprint(" -> ");
+                yyprint(yytname[yyr1[yyn]]);
+                yyprint(" " + lbeg() + " <--> " + lend()); /* DK */
+                yyprint("\n");
+            }
 
-	    /*$*/	/* the action file gets copied in in place of this dollarsign */
+            /*$*/       /* the action file gets copied in in place of this dollarsign */
 
-	    /* Provide a way to avoid having return statements in the actions
-	       and so avoid "statement not reached" errors"
-	    */
-	    yyreturn = YYCONTINUE;
+            /* Provide a way to avoid having return statements in the actions
+               and so avoid "statement not reached" errors"
+            */
+            yyreturn = YYCONTINUE;
 
-	    switch (yyn) {
+            switch (yyn) {
 
 case 1:
 {;
@@ -944,236 +944,236 @@ case 240:
 
 
 
-	    if(yyreturn == YYERROR) {
-		Goto = yyerrlab1; break branch;
-	    } else if(yyreturn != YYCONTINUE) { yylex.skipWhites(); return yyreturn; }
+            if(yyreturn == YYERROR) {
+                Goto = yyerrlab1; break branch;
+            } else if(yyreturn != YYCONTINUE) { yylex.skipWhites(); return yyreturn; }
 
-	    yyvs.popn(yylen);
-	    yyss.popn(yylen);
-	    /* yyls.popn(yylen); */
+            yyvs.popn(yylen);
+            yyss.popn(yylen);
+            /* yyls.popn(yylen); */
 
-	    yyvs.push(yyval);
-	    /*  yylsp++;*/
-	    if (yylen == 0) {
-		yyls.push(yylbeg);
-	    } else {
-		yyls.popn(yylen-1);
-	    }
+            yyvs.push(yyval);
+            /*  yylsp++;*/
+            if (yylen == 0) {
+                yyls.push(yylbeg);
+            } else {
+                yyls.popn(yylen-1);
+            }
 
-	    if (yydebug > 0) {
-		stackdump("state stack now");
-		lstackdump("location stack now");
-	    }
+            if (yydebug > 0) {
+                stackdump("state stack now");
+                lstackdump("location stack now");
+            }
 
-	    /* Now "shift" the result of the reduction.
-	       Determine what state that goes to,
-	       based on the state we popped back to
-	       and the rule number reduced by.  */
+            /* Now "shift" the result of the reduction.
+               Determine what state that goes to,
+               based on the state we popped back to
+               and the rule number reduced by.  */
 
-	    yyn = yyr1[yyn];
+            yyn = yyr1[yyn];
 
-	    yystate = yypgoto[yyn - YYNTBASE] + yyss.peek();
-	    if (yystate >= 0 && yystate <= YYLAST && yycheck[yystate] == yyss.peek()) {
-		yystate = yytable[yystate];
-	    } else {
-		yystate = yydefgoto[yyn - YYNTBASE];
-	    }
+            yystate = yypgoto[yyn - YYNTBASE] + yyss.peek();
+            if (yystate >= 0 && yystate <= YYLAST && yycheck[yystate] == yyss.peek()) {
+                yystate = yytable[yystate];
+            } else {
+                yystate = yydefgoto[yyn - YYNTBASE];
+            }
 
-	    Goto = yynewstate; break branch;
+            Goto = yynewstate; break branch;
 
-	case yyerrlab:	 /* here on detecting error */
+        case yyerrlab:   /* here on detecting error */
 
-	    if (yyerrstatus == 0) {
-		/* If not already recovering from an error, report this error.  */
-		++yynerrs;
-		parseError("parse error");
-	    }
+            if (yyerrstatus == 0) {
+                /* If not already recovering from an error, report this error.  */
+                ++yynerrs;
+                parseError("parse error");
+            }
 
-	case yyerrlab1:	  /* here on error raised explicitly by an action */
+        case yyerrlab1:   /* here on error raised explicitly by an action */
 
-	    if (yyerrstatus == yyshiftcount) {
-		/* if just tried and failed to reuse lookahead token
-		   after an error, discard it.	*/
-		/* return failure if at end of input */
-		if (yychar == YYEOF) {
-		    if(yydebug > 0)
-			yyprint("EOF during error recovery; aborting.");
-		    return YYABORT;
-		}
+            if (yyerrstatus == yyshiftcount) {
+                /* if just tried and failed to reuse lookahead token
+                   after an error, discard it.  */
+                /* return failure if at end of input */
+                if (yychar == YYEOF) {
+                    if(yydebug > 0)
+                        yyprint("EOF during error recovery; aborting.");
+                    return YYABORT;
+                }
 
-		if (yydebug > 0) {
-		    yyprint("Discarding token ");
-		    yyprint(yychar);
-		    yyprint(" (");
-		    yyprint(yytname[yychar1]);
-		    yyprint(").\n");
-		}
-		yychar = YYEMPTY;
-	    }
+                if (yydebug > 0) {
+                    yyprint("Discarding token ");
+                    yyprint(yychar);
+                    yyprint(" (");
+                    yyprint(yytname[yychar1]);
+                    yyprint(").\n");
+                }
+                yychar = YYEMPTY;
+            }
 
-	    /* Else will try to reuse lookahead token
-	       after shifting the error token.  */
+            /* Else will try to reuse lookahead token
+               after shifting the error token.  */
 
-	    yyerrstatus = yyshiftcount;	/* Each real token shifted decrements this */
+            yyerrstatus = yyshiftcount; /* Each real token shifted decrements this */
 
-	    Goto = yyerrhandle; break branch;
+            Goto = yyerrhandle; break branch;
 
-	case yyerrdefault:  /* state does notthing special for the error token. */
-	case yyerrpop:	 /* pop the current state because it cannot handle the error token */
+        case yyerrdefault:  /* state does notthing special for the error token. */
+        case yyerrpop:   /* pop the current state because it cannot handle the error token */
 
-	    yyvs.popn(1);
-	    yyss.pop();
-	    if (yyss.empty()) {
-		if(yydebug > 0)
-		    yyprint("Empty stack during error recovery; aborting.");
-		return YYABORT;
-	    }
-	    yystate = yyss.top();
-	    yyls.popn(1);
+            yyvs.popn(1);
+            yyss.pop();
+            if (yyss.empty()) {
+                if(yydebug > 0)
+                    yyprint("Empty stack during error recovery; aborting.");
+                return YYABORT;
+            }
+            yystate = yyss.top();
+            yyls.popn(1);
 
-	    if (yydebug > 0) {
-		stackdump("Error: state stack now");
-		lstackdump("Error: location stack now");
-	    }
+            if (yydebug > 0) {
+                stackdump("Error: state stack now");
+                lstackdump("Error: location stack now");
+            }
 
-	case yyerrhandle:
+        case yyerrhandle:
 
-	    yyn = yypact[yystate];
-	    if (yyn == YYFLAG) {
-		Goto = yyerrdefault; break branch;
-	    }
+            yyn = yypact[yystate];
+            if (yyn == YYFLAG) {
+                Goto = yyerrdefault; break branch;
+            }
 
-	    yyn += YYTERROR;
-	    if (yyn < 0 || yyn > YYLAST || yycheck[yyn] != YYTERROR) {
-		Goto = yyerrdefault; break branch;
-	    }
+            yyn += YYTERROR;
+            if (yyn < 0 || yyn > YYLAST || yycheck[yyn] != YYTERROR) {
+                Goto = yyerrdefault; break branch;
+            }
 
-	    yyn = yytable[yyn];
-	    if (yyn < 0) {
-		if (yyn == YYFLAG) {
-		    Goto = yyerrpop; break branch;
-		}
-		yyn = -yyn;
-		Goto = yyreduce; break branch;
-	    } else if (yyn == 0) {
-		Goto = yyerrpop; break branch;
-	    }
-	    if (yyn == YYFINAL) return YYACCEPT;
+            yyn = yytable[yyn];
+            if (yyn < 0) {
+                if (yyn == YYFLAG) {
+                    Goto = yyerrpop; break branch;
+                }
+                yyn = -yyn;
+                Goto = yyreduce; break branch;
+            } else if (yyn == 0) {
+                Goto = yyerrpop; break branch;
+            }
+            if (yyn == YYFINAL) return YYACCEPT;
 
-	    if (yydebug > 0) {
-		yyprint("Shifting error token, ");
-	    }
+            if (yydebug > 0) {
+                yyprint("Shifting error token, ");
+            }
 
-	    yyvs.push(yylval);
-	    yylend.copyFrom(loc);
-	    yyls.push(yylex.tokenloc());
-	    yylbeg.copyFrom(yylex.loc());
+            yyvs.push(yylval);
+            yylend.copyFrom(loc);
+            yyls.push(yylex.tokenloc());
+            yylbeg.copyFrom(yylex.loc());
 
-	    yystate = yyn;
-	    Goto = yynewstate; break branch;
+            yystate = yyn;
+            Goto = yynewstate; break branch;
 
-	}//switch
-	}//for(;;)
+        }//switch
+        }//for(;;)
 
     } // parse
 
     public void yyclearin() {
-	if (yychar != YYEMPTY) {
-	    loc.copyFrom(yylend);
-	    yylval = null;
-	    yychar = YYEMPTY;
-	}
+        if (yychar != YYEMPTY) {
+            loc.copyFrom(yylend);
+            yylval = null;
+            yychar = YYEMPTY;
+        }
     }
 
     public String yyerror_verbose(String msg0) throws ParseException {
-	yyn = yypact[yystate];
-	if(yyn > YYFLAG && yyn < YYLAST) {
-	    int size = msg0.length();
-	    StringBuffer msg;
-	    int yychar1; // a TRANSLATEd char value
-	    int count;
-	    count = 0;
+        yyn = yypact[yystate];
+        if(yyn > YYFLAG && yyn < YYLAST) {
+            int size = msg0.length();
+            StringBuffer msg;
+            int yychar1; // a TRANSLATEd char value
+            int count;
+            count = 0;
 
-	    /* Start yychar1 at -yyn if nec to avoid negative indexes in yycheck.*/
-	    for (yychar1 = (yyn < 0 ? -yyn : 0);
-		 (yyn+yychar1) < (yytname.length);
-		 yychar1++) {
-		if((yyn+yychar1) < yycheck.length
-		   && yycheck[yyn+yychar1] == yychar1) {
-		    size += (yytname[yychar1].length()) + 15;
-		    count++;
-		}
-	    }
-	    msg = new StringBuffer(size+15);
-	    msg.append(msg0);
-	    msg.append("(state " + Integer.toString(yystate) + ")");
-	    yychar1 = (yyn < 0)? - yyn :0;
-	    for(count=0,yychar1 = (yyn < 0 ? -yyn : 0);
-		(yyn+yychar1) < (yytname.length) && count < 5;
-		yychar1++) {
-		if((yyn+yychar1) < yycheck.length
-		   && yycheck[yyn+yychar1] == yychar1) {
-		    msg.append(count == 0 ? ", expecting " : " or ");
-		    msg.append(yytname[yychar1]);
-		    count++;
-		}
-	    }
-	    return msg.toString();
-	}
-	return msg0;
+            /* Start yychar1 at -yyn if nec to avoid negative indexes in yycheck.*/
+            for (yychar1 = (yyn < 0 ? -yyn : 0);
+                 (yyn+yychar1) < (yytname.length);
+                 yychar1++) {
+                if((yyn+yychar1) < yycheck.length
+                   && yycheck[yyn+yychar1] == yychar1) {
+                    size += (yytname[yychar1].length()) + 15;
+                    count++;
+                }
+            }
+            msg = new StringBuffer(size+15);
+            msg.append(msg0);
+            msg.append("(state " + Integer.toString(yystate) + ")");
+            yychar1 = (yyn < 0)? - yyn :0;
+            for(count=0,yychar1 = (yyn < 0 ? -yyn : 0);
+                (yyn+yychar1) < (yytname.length) && count < 5;
+                yychar1++) {
+                if((yyn+yychar1) < yycheck.length
+                   && yycheck[yyn+yychar1] == yychar1) {
+                    msg.append(count == 0 ? ", expecting " : " or ");
+                    msg.append(yytname[yychar1]);
+                    count++;
+                }
+            }
+            return msg.toString();
+        }
+        return msg0;
     }
 
     public void yyerror(String msg, boolean verbose, boolean dumpstack)
             throws ParseException {
-	String s;
-	if(verbose) {
-	    s = yyerror_verbose(msg);
-	} else {
-	    s = msg;
-	}
-	yyprint("yyerror: ");
-	if(yychar == YYEOF) {
-	    yyprint("at end of file");
-	    yyprintln(" ; " + s);
-	} else {
-	    YYlocation loc = yylex.tokenloc();
-	    yyprint("line ");
-	    yyprint(loc.lineno()+1);
-	    yyprint(" char ");
-	    int cno = loc.charno();
-	    yyprint(cno+1);
-	    yyprintln(" token=|"+yytext()+"| ; "+ s);
-	    String line = yyline();
-	    if(line != null) {
-		if(cno >= line.length()) cno = line.length();
-		if(line.charAt(line.length()-1) == EOL)
-		    yyprint(line);
-		else
-		    yyprintln(line);
+        String s;
+        if(verbose) {
+            s = yyerror_verbose(msg);
+        } else {
+            s = msg;
+        }
+        yyprint("yyerror: ");
+        if(yychar == YYEOF) {
+            yyprint("at end of file");
+            yyprintln(" ; " + s);
+        } else {
+            YYlocation loc = yylex.tokenloc();
+            yyprint("line ");
+            yyprint(loc.lineno()+1);
+            yyprint(" char ");
+            int cno = loc.charno();
+            yyprint(cno+1);
+            yyprintln(" token=|"+yytext()+"| ; "+ s);
+            String line = yyline();
+            if(line != null) {
+                if(cno >= line.length()) cno = line.length();
+                if(line.charAt(line.length()-1) == EOL)
+                    yyprint(line);
+                else
+                    yyprintln(line);
 
-		// for(int i=0;i<cno;i++) yyprint(" ");
-		/* Modified by Dawid Kurzyniec, February 2000 */
-		for (int i=0; i<cno; i++) {
-		    char c = line.charAt(i);
-		    if (Character.isWhitespace(c)) // e.g. \t
-			yyprint("" + c);
-		    else
-			yyprint(" ");
-		}
+                // for(int i=0;i<cno;i++) yyprint(" ");
+                /* Modified by Dawid Kurzyniec, February 2000 */
+                for (int i=0; i<cno; i++) {
+                    char c = line.charAt(i);
+                    if (Character.isWhitespace(c)) // e.g. \t
+                        yyprint("" + c);
+                    else
+                        yyprint(" ");
+                }
 
-		yyprintln("^");
-	    }
-	}
-	if(dumpstack) { stackdump("yyerror: state stack"); }
-	if(yyerrthrow) throw new ParseException(s);
+                yyprintln("^");
+            }
+        }
+        if(dumpstack) { stackdump("yyerror: state stack"); }
+        if(yyerrthrow) throw new ParseException(s);
     }
 
     public void yyerror(String s, boolean verbose) throws ParseException {
-	yyerror(s, verbose, false);
+        yyerror(s, verbose, false);
     }
 
     public void yyerror(String s) throws ParseException {
-	yyerror(s, false, false);
+        yyerror(s, false, false);
     }
 
     public void yyreturn(int t) { yyreturn = t; }
@@ -1187,37 +1187,37 @@ case 240:
     public void seterrthrow(boolean b) { yyerrthrow = b; }
 
     protected void stackdump(String s) {
-	int i;
-	int x;
-	int ssp1 = yyss.depth();
-	yyprint(s);
-	if(ssp1 == 0) {
-	    yyprint("<empty>");
-	} else {
-	    for(i=0;i<ssp1;i++) {
-		x = yyss.ith(i);
-		yyprint(" ");
-		yyprint(x);
-	    }
-	}
-	yyprint("\n");
+        int i;
+        int x;
+        int ssp1 = yyss.depth();
+        yyprint(s);
+        if(ssp1 == 0) {
+            yyprint("<empty>");
+        } else {
+            for(i=0;i<ssp1;i++) {
+                x = yyss.ith(i);
+                yyprint(" ");
+                yyprint(x);
+            }
+        }
+        yyprint("\n");
     }
 
     protected void lstackdump(String s) {
-	int i;
-	int lsp1 = yyls.size();
-	yyprint(s);
-	if(lsp1 == 0) {
-	    yyprint("<empty>");
-	} else {
-	    for(i=0;i<lsp1;i++) {
-		YYLocation x = yyls.ith(i, tmploc);
-		yyprint("  ");
-		yyprint("" + x);
-	    }
-	    yyprint("  <-->  " + yylend);
-	}
-	yyprint("\n");
+        int i;
+        int lsp1 = yyls.size();
+        yyprint(s);
+        if(lsp1 == 0) {
+            yyprint("<empty>");
+        } else {
+            for(i=0;i<lsp1;i++) {
+                YYLocation x = yyls.ith(i, tmploc);
+                yyprint("  ");
+                yyprint("" + x);
+            }
+            yyprint("  <-->  " + yylend);
+        }
+        yyprint("\n");
     }
 
     public String yyline() { return yylex.yyline(); }
@@ -1908,15 +1908,15 @@ private static int[] create$yycheck() { return new int[] {
 
 /* Override yyerror */
     public
-	void
-	yyverror(String msg) throws ParseException { yyerror(msg,true,true); }
+        void
+        yyverror(String msg) throws ParseException { yyerror(msg,true,true); }
 
 public void parseError(String msg) throws ParseException {
     String desc;
     if (yychar == YYEOF) {
-	desc = "unexpected end of file";
+        desc = "unexpected end of file";
     } else {
-	desc = "parse error: '" + yytext() + "'";
+        desc = "parse error: '" + yytext() + "'";
     }
     if (msg != null && msg != "parse error") desc += "; " + msg;
     Parser.reportError(tokencxt, desc);
@@ -1934,11 +1934,11 @@ public static void compileError(IJavaContext cxt, String msg, boolean errthrow)
     System.err.println("At: " + lbeg);
     System.err.println(line);
     for (int i=0; i<lbeg.charno; i++) {
-	char c = line.charAt(i);
-	if (Character.isWhitespace(c)) // e.g. \t
-	    System.err.print("" + c);
-	else
-	    System.err.print(" ");
+        char c = line.charAt(i);
+        if (Character.isWhitespace(c)) // e.g. \t
+            System.err.print("" + c);
+        else
+            System.err.print(" ");
     }
     System.err.println("^");
     if(errthrow) throw new CompileException(msg);
@@ -1956,29 +1956,29 @@ public static void notSupported(IJavaContext cxt, String what) throws CompileExc
 /* Parse context */
 
 IMutableContext cxt = new IMutableContext() {
-	public final YYLocation lbeg() { return EmbeddedParser.this.lbeg(); }
-	public final YYLocation lend() { return EmbeddedParser.this.lend(); }
-	public final JanetSourceReader ibuf() { return outer_cxt.ibuf(); }
+        public final YYLocation lbeg() { return EmbeddedParser.this.lbeg(); }
+        public final YYLocation lend() { return EmbeddedParser.this.lend(); }
+        public final JanetSourceReader ibuf() { return outer_cxt.ibuf(); }
 
-	public final void reportError(String msg) throws CompileException { pl.edu.agh.icsr.janet.Parser.reportError(this, msg); }
+        public final void reportError(String msg) throws CompileException { pl.edu.agh.icsr.janet.Parser.reportError(this, msg); }
 
-	public final ClassManager getClassManager() { return outer_cxt.getClassManager(); }
-	public final YYCompilationUnit getCompilationUnit() { return outer_cxt.getCompilationUnit(); }
-	public final IScope getScope() { return outer_cxt.getScope(); }
-	public VariableStack getVariables() { return outer_cxt.getVariables(); }
-	public void pushScope(IScope unit) { outer_cxt.pushScope(unit); }
-	public IScope popScope() { return outer_cxt.popScope(); }
-	public void addVariable(YYVariableDeclarator var) throws CompileException { outer_cxt.addVariable(var); }
-	public void addVariables(YYVariableDeclaratorList vars) throws CompileException { outer_cxt.addVariables(vars); }
+        public final ClassManager getClassManager() { return outer_cxt.getClassManager(); }
+        public final YYCompilationUnit getCompilationUnit() { return outer_cxt.getCompilationUnit(); }
+        public final IScope getScope() { return outer_cxt.getScope(); }
+        public VariableStack getVariables() { return outer_cxt.getVariables(); }
+        public void pushScope(IScope unit) { outer_cxt.pushScope(unit); }
+        public IScope popScope() { return outer_cxt.popScope(); }
+        public void addVariable(YYVariableDeclarator var) throws CompileException { outer_cxt.addVariable(var); }
+        public void addVariables(YYVariableDeclaratorList vars) throws CompileException { outer_cxt.addVariables(vars); }
     };
 
 ILocationContext tokencxt = new ILocationContext() {
-	public final YYLocation lbeg() { return yylex.tokenloc(); }
-	public final YYLocation lend() { return cxt.lend(); }
-	public final JanetSourceReader ibuf() { return cxt.ibuf(); }
-	public final void reportError(String msg) throws CompileException {
-	    throw new UnsupportedOperationException();
-	}
+        public final YYLocation lbeg() { return yylex.tokenloc(); }
+        public final YYLocation lend() { return cxt.lend(); }
+        public final JanetSourceReader ibuf() { return cxt.ibuf(); }
+        public final void reportError(String msg) throws CompileException {
+            throw new UnsupportedOperationException();
+        }
     };
 
 // redirection to cxt

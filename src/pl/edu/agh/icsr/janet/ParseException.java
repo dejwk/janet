@@ -6,11 +6,11 @@ package pl.edu.agh.icsr.janet;
 
 public class ParseException extends Exception {
     public ParseException() {
-	super();
+        super();
     }
 
     public ParseException(String msg) {
-	super(msg);
+        super(msg);
     }
 }
 

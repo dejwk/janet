@@ -55,7 +55,7 @@ public class YYImportDeclarationList extends YYNode {
             throw new IllegalArgumentException();
         }
 
-	return (YYImportDeclarationList)append(n);
+        return (YYImportDeclarationList)append(n);
     }
 */
 

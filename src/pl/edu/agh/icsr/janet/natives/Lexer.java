@@ -41,19 +41,19 @@ public abstract class Lexer {
     }
 
     protected int nextChar() throws IOException, LexException {
-	int c = ibuf.nextChar();
-	lexbuf.append((char)c); // EOF becomes 0xFFFF, but it doesn't matter
-	return c;
+        int c = ibuf.nextChar();
+        lexbuf.append((char)c); // EOF becomes 0xFFFF, but it doesn't matter
+        return c;
     }
 
     protected void backupChar() throws LexException {
-	ibuf.backup();
-	lexbuf.setLength(lexbuf.length() - 1);
+        ibuf.backup();
+        lexbuf.setLength(lexbuf.length() - 1);
     }
 
     protected void newTokenHere() {
-	lexbuf.setLength(0);
-	pbeg.copyFrom(loc);
+        lexbuf.setLength(0);
+        pbeg.copyFrom(loc);
     }
 
     public abstract int yylex(IMutableContext cxt, int mode)
