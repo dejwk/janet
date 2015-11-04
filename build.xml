@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="Java Native Extension (JANET)" default="info">
+<project name="Java Native Extension (JANET)" default="build">
    
   <target name="info">
      <echo>See http://dejwk.github.io/janet/</echo>
@@ -43,9 +43,8 @@
       <fileset dir=".">
         <include name="janet.jar"/>
         <include name="util/janet-util.jar"/>
-        <include name="README"/>
-        <include name="license.html"/>
-        <include name="release-notes.html"/>
+        <include name="README.md"/>
+        <include name="LICENSE"/>
       </fileset>
     </copy>
     <chmod file="${release.dir}/janet.jar" perm="ugo+x"/>
