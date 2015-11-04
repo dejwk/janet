@@ -24,7 +24,7 @@ JANET_HOME = ../
 JANET=${JANET_HOME}/janet.jar -comments
 
 #try to guess JAVA_HOME
-JAVA_HOME ?= ${shell which java | sed 's/\/bin\/java//'}
+JAVA_HOME ?= ${shell realpath `which javac` | sed 's/\/bin\/javac//'}
 
 #try to guess PLATFORM
 PLATFORM ?= ${shell basename `find ${JAVA_HOME}/include/* -type d`}

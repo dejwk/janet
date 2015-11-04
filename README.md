@@ -63,7 +63,7 @@ Now run:
 This should have generated the JNI bindings. Now to the hard part, which is
 to build the bindings into a dynamically linked library:
 
-    $ JAVA_HOME=`which java | sed 's/\/bin\/java//'`; \
+    $ JAVA_HOME=`realpath \`which javac\` | sed 's/\/bin\/javac//'`; \
       PLATFORM=`basename \`find ${JAVA_HOME}/include/* -type d\``; \
       gcc -shared -fPIC -ansi \
           -I${JAVA_HOME}/include -I${JAVA_HOME}/include/${PLATFORM} \
