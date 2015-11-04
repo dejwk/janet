@@ -8,7 +8,7 @@
  * Janet grammar file for pure C (without embedded Java).
  */
 
-%{                                                                                    
+%{
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -69,7 +69,7 @@ CStatements_opt
     ;
 
 CStatements
-    : CStatement              { $$ = peekChunk().add($1.compact()); } 
+    : CStatement              { $$ = peekChunk().add($1.compact()); }
     | CStatements CStatement  { $$ = $1.add($2.compact()); }
     ;
 
@@ -84,8 +84,8 @@ CStatement
     ;
 
 CBlock
-    : '{'                      { YYCBlock b = new YYCBlock(cxt); pushChunk(b); cxt.pushScope(b); } 
-          CStatements_opt 
+    : '{'                      { YYCBlock b = new YYCBlock(cxt); pushChunk(b); cxt.pushScope(b); }
+          CStatements_opt
       '}'                      { cxt.popScope(); $$ = popChunk().compact().expand(cxt); }
     ;
 

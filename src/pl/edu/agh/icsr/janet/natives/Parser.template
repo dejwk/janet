@@ -22,8 +22,8 @@ import pl.edu.agh.icsr.janet.reflect.ClassManager;
 @PREFIX@
 
 /* The template file is based on parser templates defined in JB and
- * (indirectly) bison, and is therefore subject to GPL license as shown 
- * below. The JANET MPL 1.1 license do not apply in this case. Note that 
+ * (indirectly) bison, and is therefore subject to GPL license as shown
+ * below. The JANET MPL 1.1 license do not apply in this case. Note that
  * the template file is not an integral part of JANET and does not affect
  * JANET licensing.
  */
@@ -201,7 +201,7 @@ public class @YYparse@ {
             return yyresult;
         }
     }
-        
+
     int _parse() throws ParseException {
         int ok;
         yychar1 = 0;  /* lookahead Token as an internal (translated) */
@@ -211,19 +211,19 @@ public class @YYparse@ {
         yychar = YYEMPTY;  /* Cause a Token to be read.  */
         yyval = null;
         Goto = yynewstate;
-        
+
         /* Initialize stack pointers.
            Waste one element of value and location stack
            so that they stay on the same level as the state stack.
            The wasted elements are never initialized.  */
-  
+
         yyss.clear();
         yyvs.clear();
         yyls.clear();
-    
+
         /* need to push a null value to match state 0 */
         yyvs.push(null);
-  
+
         if (yydebug > 0) yyprint("Starting parse\n");
 
         /* Push a new state, which is found in  yystate  .  */
@@ -241,7 +241,7 @@ public class @YYparse@ {
                 yyprint(yystate);
                 yyprint("\n");
             }
-            
+
         case yybackup:
 
             /* Do appropriate processing given the current state.  */
@@ -252,7 +252,7 @@ public class @YYparse@ {
 
             yyn = yypact[yystate];
             if (yyn == YYFLAG) {
-                Goto = yydefault; 
+                Goto = yydefault;
                 break branch;
             }
 
@@ -298,7 +298,7 @@ public class @YYparse@ {
             }
 
             yyn = yytable[yyn];
-            
+
             /* yyn is what to do for this token type in this state.
                Negative => reduce, -yyn is rule number.
                Positive => shift, yyn is new state.
@@ -319,7 +319,7 @@ public class @YYparse@ {
             if (yyn == YYFINAL) return YYACCEPT;
 
             /* Shift the lookahead token.        */
-            
+
             if (yydebug > 0) {
                 yyprint("Shifting token ");
                 yyprint(yychar);
@@ -330,7 +330,7 @@ public class @YYparse@ {
 
             /* Discard the token being shifted unless it is eof.        */
             if (yychar != YYEOF) yychar = YYEMPTY;
-            
+
             yyvs.push(yylval);
             yylend.copyFrom(loc);
             yyls.push(yylex.tokenloc());
@@ -377,7 +377,7 @@ public class @YYparse@ {
             }
 
             /*$*/       /* the action file gets copied in in place of this dollarsign */
-            
+
             /* Provide a way to avoid having return statements in the actions
                and so avoid "statement not reached" errors"
             */
@@ -385,16 +385,16 @@ public class @YYparse@ {
 
             switch (yyn) {
                 @ACTIONS@
-            
+
 
             if(yyreturn == YYERROR) {
                 Goto = yyerrlab1; break branch;
             } else if(yyreturn != YYCONTINUE) { yylex.skipWhites(); return yyreturn; }
-            
+
             yyvs.popn(yylen);
             yyss.popn(yylen);
             /* yyls.popn(yylen); */
-            
+
             yyvs.push(yyval);
             /*  yylsp++;*/
             if (yylen == 0) {
@@ -402,30 +402,30 @@ public class @YYparse@ {
             } else {
                 yyls.popn(yylen-1);
             }
-            
+
             if (yydebug > 0) {
-                stackdump("state stack now"); 
+                stackdump("state stack now");
                 lstackdump("location stack now");
             }
-            
+
             /* Now "shift" the result of the reduction.
                Determine what state that goes to,
                based on the state we popped back to
                and the rule number reduced by.  */
-            
+
             yyn = yyr1[yyn];
-            
+
             yystate = yypgoto[yyn - YYNTBASE] + yyss.peek();
             if (yystate >= 0 && yystate <= YYLAST && yycheck[yystate] == yyss.peek()) {
                 yystate = yytable[yystate];
             } else {
                 yystate = yydefgoto[yyn - YYNTBASE];
             }
-            
+
             Goto = yynewstate; break branch;
-            
+
         case yyerrlab:   /* here on detecting error */
-            
+
             if (yyerrstatus == 0) {
                 /* If not already recovering from an error, report this error.  */
                 ++yynerrs;
@@ -433,9 +433,9 @@ public class @YYparse@ {
             }
 
         case yyerrlab1:   /* here on error raised explicitly by an action */
-            
+
             if (yyerrstatus == yyshiftcount) {
-                /* if just tried and failed to reuse lookahead token 
+                /* if just tried and failed to reuse lookahead token
                    after an error, discard it.  */
                 /* return failure if at end of input */
                 if (yychar == YYEOF) {
@@ -456,9 +456,9 @@ public class @YYparse@ {
 
             /* Else will try to reuse lookahead token
                after shifting the error token.  */
-            
+
             yyerrstatus = yyshiftcount; /* Each real token shifted decrements this */
-            
+
             Goto = yyerrhandle; break branch;
 
         case yyerrdefault:  /* state does notthing special for the error token. */
@@ -474,18 +474,18 @@ public class @YYparse@ {
             yystate = yyss.top();
             yyls.popn(1);
 
-            if (yydebug > 0) { 
-                stackdump("Error: state stack now"); 
+            if (yydebug > 0) {
+                stackdump("Error: state stack now");
                 lstackdump("Error: location stack now");
             }
-            
+
         case yyerrhandle:
 
             yyn = yypact[yystate];
             if (yyn == YYFLAG) {
                 Goto = yyerrdefault; break branch;
             }
-            
+
             yyn += YYTERROR;
             if (yyn < 0 || yyn > YYLAST || yycheck[yyn] != YYTERROR) {
                 Goto = yyerrdefault; break branch;
@@ -536,7 +536,7 @@ public class @YYparse@ {
             int yychar1; // a TRANSLATEd char value
             int count;
             count = 0;
-            
+
             /* Start yychar1 at -yyn if nec to avoid negative indexes in yycheck.*/
             for (yychar1 = (yyn < 0 ? -yyn : 0);
                  (yyn+yychar1) < (yytname.length);
@@ -589,11 +589,11 @@ public class @YYparse@ {
             String line = yyline();
             if(line != null) {
                 if(cno >= line.length()) cno = line.length();
-                if(line.charAt(line.length()-1) == EOL) 
+                if(line.charAt(line.length()-1) == EOL)
                     yyprint(line);
                 else
                     yyprintln(line);
-                
+
                 // for(int i=0;i<cno;i++) yyprint(" ");
                 /* Modified by Dawid Kurzyniec, February 2000 */
                 for (int i=0; i<cno; i++) {
@@ -603,7 +603,7 @@ public class @YYparse@ {
                     else
                         yyprint(" ");
                 }
-                
+
                 yyprintln("^");
             }
         }
@@ -645,7 +645,7 @@ public class @YYparse@ {
         }
         yyprint("\n");
     }
-    
+
     protected void lstackdump(String s) {
         int i;
         int lsp1 = yyls.size();
@@ -658,7 +658,7 @@ public class @YYparse@ {
                 yyprint("  ");
                 yyprint("" + x);
             }
-            yyprint("  <-->  " + yylend); 
+            yyprint("  <-->  " + yylend);
         }
         yyprint("\n");
     }
@@ -674,7 +674,7 @@ public class @YYparse@ {
     public final pl.edu.agh.icsr.janet.YYLocation lbeg() { return yylbeg; }
     public final pl.edu.agh.icsr.janet.YYLocation lend() { return yylend; }
     public final pl.edu.agh.icsr.janet.YYLocation loc(int pos) { return yyls.tth(pos-yylen); }
-    
+
     protected void yyprint(Object x) { yyerr.print(x); yyerr.flush(); }
     protected void yyprintln(Object x) { yyerr.println(x); yyerr.flush(); }
     protected void yyprint(int x) { yyerr.print(x); yyerr.flush(); }
@@ -686,7 +686,7 @@ public class @YYparse@ {
             public final InputBuffer ibuf() { return outer_cxt.ibuf(); }
 
             public final void reportError(String msg) throws CompileException { pl.edu.agh.icsr.janet.Parser.reportError(this, msg); }
-            
+
             public final ClassManager getClassManager() { return outer_cxt.getClassManager(); }
             public final YYCompilationUnit getCompilationUnit() { return outer_cxt.getCompilationUnit(); }
             public final IScope getScope() { return outer_cxt.getScope(); }
@@ -715,7 +715,7 @@ public class @YYparse@ {
         if (msg != null && msg != "parse error") desc += "; " + msg;
         pl.edu.agh.icsr.janet.Parser.reportError(tokencxt, desc);
     }
-    
+
 // TABLES
 
 @TABLES@

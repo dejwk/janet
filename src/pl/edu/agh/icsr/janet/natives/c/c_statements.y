@@ -51,7 +51,7 @@ import pl.edu.agh.icsr.janet.yytree.*;
 
 %%
 
-/** 
+/**
  * '`' is always considered to begin new embedded Java statements, never to
  * enclose this native statements.
  * When '}' , 'catch', or 'finally' is encountered when parsing such an
@@ -93,7 +93,7 @@ CStatements_opt
     ;
 
 CStatements
-    : CStatement              { $$ = peekChunk().add($1.compact()); } 
+    : CStatement              { $$ = peekChunk().add($1.compact()); }
     | CStatements CStatement  { $$ = $1.add($2.compact()); }
     ;
 
@@ -129,8 +129,8 @@ JavaEnd
     ;
 
 CBlock
-    : '{'                      { YYCBlock b = new YYCBlock(cxt); b.markBeg(cxt.lend()); 
-                                 pushChunk(b); cxt.pushScope(b); } 
+    : '{'                      { YYCBlock b = new YYCBlock(cxt); b.markBeg(cxt.lend());
+                                 pushChunk(b); cxt.pushScope(b); }
           CStatements_opt      { ((YYCBlock)peekChunk()).markEnd(cxt.lend()); }
       '}'                      { cxt.popScope(); $$ = popChunk().compact().expand(cxt); }
 

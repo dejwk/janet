@@ -25,8 +25,8 @@ import pl.edu.agh.icsr.janet.natives.*;
 import java.lang.reflect.Modifier; // for Modifiers productions
 %}
 
-%union { 
-  YYCompilationUnit; 
+%union {
+  YYCompilationUnit;
   YYPackage;
   YYImportDeclarations;
   YYName;
@@ -52,11 +52,11 @@ import java.lang.reflect.Modifier; // for Modifiers productions
   String;
   Character;
   BinaryOperator;
-  
+
   default Integer
 }
 
-%token LEX_ERROR 
+%token LEX_ERROR
 %token EPSILON
 
 %token INTEGER_LITERAL
@@ -101,7 +101,7 @@ import java.lang.reflect.Modifier; // for Modifiers productions
 %type<YYModifierList> Modifiers
 %type<YYModifier> Modifier
 
-%type<YYType> Type 
+%type<YYType> Type
               ReferenceType ClassType ClassOrInterfaceType
               ArrayType
               PrimitiveType
@@ -120,7 +120,7 @@ import java.lang.reflect.Modifier; // for Modifiers productions
                     VariableInitializer
                     NativeString NativeExpression
                     Literal
-%type<YYExpression> LeftHandSide FieldAccess ArrayAccess 
+%type<YYExpression> LeftHandSide FieldAccess ArrayAccess
 
 %type<YYThis> Super
 
@@ -131,7 +131,7 @@ import java.lang.reflect.Modifier; // for Modifiers productions
 %type<YYVariableDeclarator> VariableDeclarator VariableDeclaratorId FormalParameter
 %type<YYVariableDeclaratorList> VariableDeclarators LocalVariableDeclaration LocalVariableDeclarationStatement
 
-%type<YYStatement> Statement TryStatement EnclosedTryStatement ThrowStatement SynchronizedStatement 
+%type<YYStatement> Statement TryStatement EnclosedTryStatement ThrowStatement SynchronizedStatement
                    EnclosedStatements EnclosedSynchronizedStatement
                    Block JavaBlock BlockStatements BlockStatements_opt BlockStatement NonBlockStatements NonBlockStatement
                    EmptyStatement
@@ -143,7 +143,7 @@ import java.lang.reflect.Modifier; // for Modifiers productions
 %type<YYStatement> Catches EnclosedCatches
 %type<YYFinally> Finally EnclosedFinally
 
-%type<YYAssignmentExpression> Assignment 
+%type<YYAssignmentExpression> Assignment
 %type<BinaryOperator> AssignmentOperator
 
 %type<YYExpressionList> Arguments ArgumentList DimExprs
@@ -310,7 +310,7 @@ VariableInitializers
 
 JavaBlock
     : '{'                      { pushScope(new YYStatement(cxt, false, true)); }
-          BlockStatements_opt 
+          BlockStatements_opt
       '}'                      { $$ = ((YYStatement)popScope()).expand(cxt); }
     ;
 
@@ -327,12 +327,12 @@ EmbeddedNativeBlock
     : EnclosingNativeBlock '`' { $$ = $1.expand(cxt); }
     ;
 
-/** 
- * If the native block is not followed by '`', it is Enclosing Native Block and it terminates 
+/**
+ * If the native block is not followed by '`', it is Enclosing Native Block and it terminates
  * parsing of this embedded Java (see Enclosed***Statement productions)
  */
 EnclosingNativeBlock
-    : '`'              { lexmode = Lexer.NATIVE_BLOCK; } 
+    : '`'              { lexmode = Lexer.NATIVE_BLOCK; }
           NATIVE_BLOCK { lexmode = Lexer.JAVA_TOKEN; $$ = new YYEnclosedNativeStatements(cxt, $3); }
     ;
 
@@ -352,7 +352,7 @@ BlockStatement
     ;
 
 /**
- * Native statements formally must appear within ` `, but sometimes parser incorporates the second 
+ * Native statements formally must appear within ` `, but sometimes parser incorporates the second
  * back-quote sign (and perhaps some Java statements following it) into
  * NATIVE_STATEMENTS_WITH_JAVA_TAIL token where they denote embedded Java.
  */
@@ -379,7 +379,7 @@ Statement
     : JavaBlock
     | EmptyStatement
     | ExpressionStatement   { $$ = $1; }
-    | SynchronizedStatement 
+    | SynchronizedStatement
     | ThrowStatement
     | TryStatement
     | ReturnStatement
@@ -435,7 +435,7 @@ EnclosedCatchClause
     ;
 
 CatchClauseHead
-    : CATCH '('                 { pushScope(new YYCatchClause(cxt)); } 
+    : CATCH '('                 { pushScope(new YYCatchClause(cxt)); }
                 FormalParameter { $4.setDeclarationType(YYVariableDeclarator.CATCH_PARAMETER);
                                   addVariable($4); ((YYCatchClause)peekScope()).setFormalParameter($4); }
             ')'
@@ -747,7 +747,7 @@ public static void compileError(IJavaContext cxt, String msg, boolean errthrow)
     YYLocation lbeg = cxt.lbeg();
     InputBuffer ibuf = cxt.ibuf();
     String line = ibuf.getLine(lbeg);
-    
+
     System.err.println("Compile error: " + msg);
     System.err.println("At: " + lbeg);
     System.err.println(line);

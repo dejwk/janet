@@ -61,7 +61,7 @@ import pl.edu.agh.icsr.janet.natives.YYNativeCode;
   default Object;
 }
 
-%token LEX_ERROR 
+%token LEX_ERROR
 %token EPSILON
 
 %token INTEGER_LITERAL
@@ -109,7 +109,7 @@ import pl.edu.agh.icsr.janet.natives.YYNativeCode;
 %type<YYNameNode> SimpleName
 %type<YYName> Name SingleTypeImportDeclaration TypeImportOnDemandDeclaration
 
-%type<YYType> Type 
+%type<YYType> Type
               ReferenceType ClassType InterfaceType ClassOrInterfaceType
               ArrayType PrimitiveType Super Void
 
@@ -130,7 +130,7 @@ import pl.edu.agh.icsr.janet.natives.YYNativeCode;
 %type<YYModifier> Modifier
 %type<YYNativeModifier> NativeModifier
 %type<YYModifierList> Modifiers ModifiersWithNative
-%type<YYExpression> VariableInitializers VariableInitializer ArrayInitializer 
+%type<YYExpression> VariableInitializers VariableInitializer ArrayInitializer
                        ExplicitConstructorInvocation MethodInvocation
                        Expression ForExpression_opt ConstantExpression ArgumentList Arguments
                        LeftHandSide Assignment PrimaryNoNewArray ClassLiteral
@@ -185,7 +185,7 @@ import pl.edu.agh.icsr.janet.natives.YYNativeCode;
 %type<YYExpression> NativeExpression NativeString
 
 
-%type<YYStatement> Statement 
+%type<YYStatement> Statement
                    StatementWithoutTrailingSubstatement
                    LabeledStatement
                    IfThenStatement
@@ -233,18 +233,18 @@ import pl.edu.agh.icsr.janet.natives.YYNativeCode;
 
 // 19.2: The Syntactic Grammar
 
-Goal 
-    : { setNativeLanguage("c"); 
-        compUnit = new YYCompilationUnit(cxt, compMgr, doProcessThisFile); 
+Goal
+    : { setNativeLanguage("c");
+        compUnit = new YYCompilationUnit(cxt, compMgr, doProcessThisFile);
         pushScope(compUnit); }
-          CompilationUnit 
+          CompilationUnit
       { popScope(); $$ = compUnit.expand(cxt); }
     ;
 
 // 19.3: Lexical Structure
 
 Literal               /* used only in expressions */
-    : INTEGER_LITERAL 
+    : INTEGER_LITERAL
     | LONG_LITERAL
     | FLOAT_LITERAL
     | DOUBLE_LITERAL
@@ -334,8 +334,8 @@ CompilationUnit
     | PackageDeclaration                    { compUnit.setPackageDeclaration($1).setImportDeclarations(new YYImportDeclarationList(cxt)); }
     |                    ImportDeclarations { compUnit                          .setImportDeclarations($1); }
 
-    |                 { compUnit.setImportDeclarations(new YYImportDeclarationList(cxt)); } 
-      TypeDeclaration 
+    |                 { compUnit.setImportDeclarations(new YYImportDeclarationList(cxt)); }
+      TypeDeclaration
                       { compUnit.addTypeDeclaration($2); }
 
     | CompilationUnit TypeDeclaration { compUnit.addTypeDeclaration($2); }
@@ -543,7 +543,7 @@ MethodDeclarator
 FormalParameterList_opt
     : /* empty */         { $$ = null; }
     | FormalParameterList { $$ = $1.setDeclarationType(YYVariableDeclarator.PARAMETER); }
-                                               
+
     ;
 
 FormalParameterList
@@ -630,7 +630,7 @@ ConstructorDeclarator
     ;
 
 ConstructorBody
-    : '{'                           { pushScope(new YYStatement(cxt, true, true)); } 
+    : '{'                           { pushScope(new YYStatement(cxt, true, true)); }
           ConstructorBodyStatements
       '}'                           { $$ = ((YYStatement)popScope()).compact(); }
     ;
@@ -714,8 +714,8 @@ VariableInitializers
 // 19.11: Blocks and Statements
 
 Block
-    : '{'                      { pushScope(new YYStatement(cxt, true, true)); } 
-          BlockStatements_opt 
+    : '{'                      { pushScope(new YYStatement(cxt, true, true)); }
+          BlockStatements_opt
       '}'                      { $$ = ((YYStatement)popScope()).compact().expand(cxt); }
     ;
 
@@ -871,7 +871,7 @@ ForStatementNoShortIf
 
 
 ForHeader
-    : FOR '(' { pushScope(new YYStatement(cxt)); } ForInit_opt ';' ForExpression_opt ';' ForUpdate_opt ')' 
+    : FOR '(' { pushScope(new YYStatement(cxt)); } ForInit_opt ';' ForExpression_opt ';' ForUpdate_opt ')'
 //    | FOR '(' ForInit ';' ForExpression ';'           ')' { pushScope(new YYStatement(cxt).add($3)); }
 //    | FOR '(' ForInit ';'               ';' ForUpdate ')' { pushScope(new YYStatement(cxt).add($3)); }
 //    | FOR '(' ForInit ';'               ';'           ')' { pushScope(new YYStatement(cxt).add($3)); }
@@ -945,7 +945,7 @@ CatchClause
 
 CatchClauseHead
     : CATCH '('                 { pushScope(new YYStatement(cxt)); }
-                FormalParameter 
+                FormalParameter
             ')'                 { addVariable($4.setDeclarationType(YYVariableDeclarator.CATCH_PARAMETER)); }
     ;
 
@@ -1264,7 +1264,7 @@ public static void reportError(ILocationContext cxt, String msg, boolean errthro
     JanetSourceReader ibuf = cxt.ibuf();
     String orig = ibuf.getOriginAsString();
     String line = ibuf.getLine(lbeg);
-    
+
     System.err.println(orig + ":" + (lbeg.lineno+1) + ": " + msg);
     if (line != null && !line.equals("")) {
         System.err.println(line);
@@ -1312,7 +1312,7 @@ public class Context implements IMutableContext {
         //System.out.println("pushing " + unit.getClass().getName());
         currScope = unit;
     }
-    
+
     public void addVariable(YYVariableDeclarator var) throws CompileException {
         variables.push(var);
     }
@@ -1333,7 +1333,7 @@ public class Context implements IMutableContext {
         //System.out.println("popping " + unit.getClass().getName());
         return unit;
     }
-    
+
 }
 
 Context cxt = new Context();

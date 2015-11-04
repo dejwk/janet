@@ -1,7 +1,7 @@
 include ../../../../../../../makefile-common
 
 #all: main
-all: StatementsParser.java BlockParser.java ExpressionParser.java PureCParser.java TokenTypes.java 
+all: StatementsParser.java BlockParser.java ExpressionParser.java PureCParser.java TokenTypes.java
 
 c_statements.tab.c: c_statements.y
 	bison c_statements.y
