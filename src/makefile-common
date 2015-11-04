@@ -14,7 +14,7 @@ SHELL       	= /bin/sh
 
 JAVAC = javac
 JAVAH = javah
-JAVA = java -classpath $(CLASSPATH):.:/home/dawidk/classes/jb.jar
+JAVA = java -classpath $(CLASSPATH):.:/home/dawidk/workspace/jbf/bin
 
 # End Of User Configurable Options
 
