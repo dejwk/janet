@@ -422,7 +422,7 @@ public class @YYparse@ implements IParser {
 
             Goto = yyerrhandle; break branch;
 
-        case yyerrdefault:  /* state does notthing special for the error token. */
+        case yyerrdefault:  /* state does nothing special for the error token. */
         case yyerrpop:   /* pop the current state because it cannot handle the error token */
 
             yyvs.popn(1);
@@ -648,5 +648,7 @@ public class @YYparse@ implements IParser {
 // SUFFIX
 
 @SUFFIX@
+
+static final String[] yytname = TokenTypes.yytname;
 
 }; /*class*/

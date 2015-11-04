@@ -384,7 +384,7 @@ public class @YYparse@ {
             yyreturn = YYCONTINUE;
 
             switch (yyn) {
-                @ACTIONS@
+@ACTIONS@
 
 
             if(yyreturn == YYERROR) {
@@ -723,5 +723,7 @@ public class @YYparse@ {
 // SUFFIX
 
 @SUFFIX@
+
+    static final String[] yytname = TokenTypes.yytname;
 
 }; /*class*/

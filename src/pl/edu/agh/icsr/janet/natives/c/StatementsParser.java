@@ -170,7 +170,7 @@ public static final int YYLAST = 37;
 // PROCS
 
 static final int YYTRANSLATE(int x)
-        { return ((x) <= 263 ? yytranslate[x] : 33);}
+	{ return ((x) <= 263 ? yytranslate[x] : 33);}
 
 
     // default constructor for newInstance()
@@ -903,26 +903,12 @@ public static final int yyrline[] = yyrlineTableCreator();
 private static final int[] yyrlineTableCreator() {
   final int yyrline[] = {
  0,
-   133,   134,   137,   138,   142,   143,   144,   148,   149,   153,
-   154,   158,   159,   163,   164,   165,   166,   167,   169,   169,
-   170,   170,   172,   181,   182,   186,   190,   194,   196,   197
+    71,    72,    75,    76,    80,    81,    82,    86,    87,    91,
+    92,    96,    97,   101,   102,   103,   104,   105,   107,   107,
+   108,   108,   110,   119,   120,   124,   128,   132,   134,   135
 
   };
   return yyrline;
-}
-
-public static final String yytname[] = yytnameTableCreator();
-
-private static final String[] yytnameTableCreator() {
-  final String yytname[] = {
-   "$","error","$undefined.","LEX_ERROR",
-"EPSILON","CTEXT","CSTATEMENT_CHAR","JAVA_EXPRESSION","JAVA_STATEMENTS","JAVA_ENCLOSED_STATEMENTS",
-"'`'","'('","')'","'['","']'","'{'","'}'","Start","@1","Outer","Goal","CStatementsWithJavaTail",
-"CStatements_opt","CStatements","CStatement","@2","@3","BrokenJavaStatement",
-"JavaBegin","JavaEnd","CBlock","@4","@5", null
-
-  };
-  return yytname;
 }
 
 public static final int yyr1[] = yyr1TableCreator();
@@ -1060,5 +1046,7 @@ private static final int[] yycheckTableCreator() {
         }
         }*/
 
+
+    static final String[] yytname = TokenTypes.yytname;
 
 }; /*class*/

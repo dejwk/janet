@@ -170,7 +170,7 @@ public static final int YYLAST = 24;
 // PROCS
 
 static final int YYTRANSLATE(int x)
-        { return ((x) <= 263 ? yytranslate[x] : 29);}
+	{ return ((x) <= 263 ? yytranslate[x] : 29);}
 
 
     // default constructor for newInstance()
@@ -883,25 +883,12 @@ public static final int yyrline[] = yyrlineTableCreator();
 private static final int[] yyrlineTableCreator() {
   final int yyrline[] = {
  0,
-   115,   116,   120,   121,   125,   127,   128,   131,   132,   136,
-   137,   141,   142,   143,   144,   145,   147,   147,   148,   148,
-   150,   154,   158
+    53,    54,    58,    59,    63,    65,    66,    69,    70,    74,
+    75,    79,    80,    81,    82,    83,    85,    85,    86,    86,
+    88,    92,    96
 
   };
   return yyrline;
-}
-
-public static final String yytname[] = yytnameTableCreator();
-
-private static final String[] yytnameTableCreator() {
-  final String yytname[] = {
-   "$","error","$undefined.","LEX_ERROR",
-"EPSILON","CTEXT","CSTATEMENT_CHAR","JAVA_EXPRESSION","JAVA_STATEMENTS","JAVA_ENCLOSED_STATEMENTS",
-"'{'","'}'","'`'","'('","')'","'['","']'","Outer","Goal","CBlock","@1","@2",
-"CStatements_opt","CStatements","CStatement","@3","@4","JavaBegin","JavaEnd", null
-
-  };
-  return yytname;
 }
 
 public static final int yyr1[] = yyr1TableCreator();
@@ -1022,5 +1009,7 @@ private static final int[] yycheckTableCreator() {
     YYCChunk popChunk() { return (YYCChunk)chunks.pop(); }
     YYCChunk peekChunk() { return (YYCChunk)chunks.peek(); }
 
+
+    static final String[] yytname = TokenTypes.yytname;
 
 }; /*class*/

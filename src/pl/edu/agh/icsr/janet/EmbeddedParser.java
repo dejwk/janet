@@ -99,10 +99,10 @@ public class EmbeddedParser {
 
 // CONSTANTS
 
-static public final int YYFINAL = 367;
-static public final int YYFLAG = -32768;
-static public final int YYNTBASE = 119;
-static public final int YYLAST = 1412;
+public static final int YYFINAL = 367;
+public static final int YYFLAG = -32768;
+public static final int YYNTBASE = 119;
+public static final int YYLAST = 1412;
 
 
     protected int yyreturn; // see ACTIONS switch
@@ -149,8 +149,8 @@ static public final int YYLAST = 1412;
 
 // PROCS
 
-final int YYTRANSLATE(int x)
-        { return ((x) <= 348 ? yytranslate[x] : 223);}
+static final int YYTRANSLATE(int x)
+	{ return ((x) <= 347 ? yytranslate[x] : 223);}
 
 
     // default constructor for newInstance()
@@ -1239,8 +1239,10 @@ case 240:
 
 // TABLES
 
-static public final int yytranslate[] = create$yytranslate();
-private static int[] create$yytranslate() { return new int[] {
+public static final int yytranslate[] = yytranslateTableCreator();
+
+private static final int[] yytranslateTableCreator() {
+  final int yytranslate[] = {
      0,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -1267,21 +1269,25 @@ private static int[] create$yytranslate() { return new int[] {
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,     2,     2,     2,     1,     2,     3,     4,     5,
-     6,     7,     8,     9,    10,    11,    12,    13,    14,    15,
-    16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
-    26,    27,    28,    29,    30,    31,    32,    33,    34,    35,
-    36,    37,    38,    39,    40,    41,    42,    43,    44,    45,
-    46,    47,    48,    49,    50,    51,    52,    53,    54,    55,
-    56,    57,    58,    59,    60,    61,    62,    63,    64,    65,
-    66,    67,    68,    69,    70,    71,    72,    73,    74,    75,
-    76,    77,    78,    79,    80,    81,    82,    83,    84,    85,
-    86,    87,    88,    89,    90,    91,    92,    93
+     2,     2,     2,     2,     2,     1,     3,     4,     5,     6,
+     7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
+    17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
+    27,    28,    29,    30,    31,    32,    33,    34,    35,    36,
+    37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
+    47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
+    57,    58,    59,    60,    61,    62,    63,    64,    65,    66,
+    67,    68,    69,    70,    71,    72,    73,    74,    75,    76,
+    77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
+    87,    88,    89,    90,    91,    92,    93
 
-}; }
+  };
+  return yytranslate;
+}
 
-static public final int yyprhs[] = create$yyprhs();
-private static int[] create$yyprhs() { return new int[] {
+public static final int yyprhs[] = yyprhsTableCreator();
+
+private static final int[] yyprhsTableCreator() {
+  final int yyprhs[] = {
      0,
      0,     2,     5,     7,     9,    11,    12,    14,    17,    19,
     21,    23,    26,    28,    30,    32,    34,    36,    38,    40,
@@ -1309,10 +1315,14 @@ private static int[] create$yyprhs() { return new int[] {
    668,   670,   672,   674,   676,   678,   680,   682,   684,   686,
    688
 
-}; }
+  };
+  return yyprhs;
+}
 
-static public final int yyrhs[] = create$yyrhs();
-private static int[] create$yyrhs() { return new int[] {
+public static final int yyrhs[] = yyrhsTableCreator();
+
+private static final int[] yyrhsTableCreator() {
+  final int yyrhs[] = {
    120,
      0,   120,     1,     0,   121,     0,   123,     0,   222,     0,
      0,   122,     0,   121,   122,     0,   155,     0,   157,     0,
@@ -1384,41 +1394,49 @@ private static int[] create$yyrhs() { return new int[] {
      0,    29,     0,    39,     0,    34,     0,    38,     0,    33,
      0,    30,     0,    40,     0,    37,     0,   218,     0
 
-}; }
+  };
+  return yyrhs;
+}
 
-static public final int yyrline[] = create$yyrline();
-private static int[] create$yyrline() { return new int[] {
+public static final int yyrline[] = yyrlineTableCreator();
+
+private static final int[] yyrlineTableCreator() {
+  final int yyrline[] = {
  0,
-   220,   221,   225,   226,   227,   228,   233,   234,   239,   240,
-   244,   245,   249,   250,   256,   257,   258,   259,   260,   261,
-   262,   263,   269,   270,   275,   276,   277,   278,   279,   280,
-   281,   282,   286,   287,   291,   295,   301,   302,   308,   309,
-   313,   319,   320,   324,   325,   326,   332,   333,   337,   338,
-   342,   343,   347,   348,   352,   353,   359,   360,   361,   362,
-   363,   367,   368,   374,   376,   380,   381,   389,   397,   398,
-   402,   403,   407,   408,   412,   413,   422,   423,   426,   427,
-   430,   434,   436,   441,   442,   443,   444,   445,   446,   447,
-   451,   455,   458,   462,   466,   470,   471,   472,   476,   477,
-   478,   482,   483,   487,   491,   492,   496,   500,   501,   504,
-   507,   511,   515,   516,   522,   523,   527,   532,   533,   534,
-   535,   536,   537,   538,   539,   540,   541,   542,   546,   547,
-   548,   552,   553,   554,   556,   557,   558,   562,   563,   564,
-   565,   569,   570,   574,   575,   579,   580,   587,   588,   589,
-   590,   591,   592,   596,   597,   601,   606,   607,   611,   615,
-   616,   620,   624,   625,   626,   630,   631,   635,   636,   637,
-   638,   642,   646,   650,   651,   652,   653,   654,   655,   656,
-   660,   664,   668,   669,   670,   671,   675,   676,   677,   678,
-   684,   685,   686,   687,   691,   692,   693,   697,   698,   699,
-   700,   704,   705,   706,   707,   708,   709,   713,   714,   715,
-   719,   720,   724,   725,   729,   730,   734,   735,   739,   740,
-   744,   745,   749,   750,   754,   758,   759,   760,   764,   765,
-   766,   767,   768,   769,   770,   771,   772,   773,   774,   775,
-   779
+   158,   159,   163,   164,   165,   166,   171,   172,   177,   178,
+   182,   183,   187,   188,   194,   195,   196,   197,   198,   199,
+   200,   201,   207,   208,   213,   214,   215,   216,   217,   218,
+   219,   220,   224,   225,   229,   233,   239,   240,   246,   247,
+   251,   257,   258,   262,   263,   264,   270,   271,   275,   276,
+   280,   281,   285,   286,   290,   291,   297,   298,   299,   300,
+   301,   305,   306,   312,   314,   318,   319,   327,   335,   336,
+   340,   341,   345,   346,   350,   351,   360,   361,   364,   365,
+   368,   372,   374,   379,   380,   381,   382,   383,   384,   385,
+   389,   393,   396,   400,   404,   408,   409,   410,   414,   415,
+   416,   420,   421,   425,   429,   430,   434,   438,   439,   442,
+   445,   449,   453,   454,   460,   461,   465,   470,   471,   472,
+   473,   474,   475,   476,   477,   478,   479,   480,   484,   485,
+   486,   490,   491,   492,   494,   495,   496,   500,   501,   502,
+   503,   507,   508,   512,   513,   517,   518,   525,   526,   527,
+   528,   529,   530,   534,   535,   539,   544,   545,   549,   553,
+   554,   558,   562,   563,   564,   568,   569,   573,   574,   575,
+   576,   580,   584,   588,   589,   590,   591,   592,   593,   594,
+   598,   602,   606,   607,   608,   609,   613,   614,   615,   616,
+   622,   623,   624,   625,   629,   630,   631,   635,   636,   637,
+   638,   642,   643,   644,   645,   646,   647,   651,   652,   653,
+   657,   658,   662,   663,   667,   668,   672,   673,   677,   678,
+   682,   683,   687,   688,   692,   696,   697,   698,   702,   703,
+   704,   705,   706,   707,   708,   709,   710,   711,   712,   713,
+   717
 
-}; }
+  };
+  return yyrline;
+}
 
-static public final int yyr1[] = create$yyr1();
-private static int[] create$yyr1() { return new int[] {
+public static final int yyr1[] = yyr1TableCreator();
+
+private static final int[] yyr1TableCreator() {
+  final int yyr1[] = {
      0,
    119,   119,   120,   120,   120,   120,   121,   121,   122,   122,
    123,   123,   124,   124,   125,   125,   125,   125,   125,   125,
@@ -1446,10 +1464,14 @@ private static int[] create$yyr1() { return new int[] {
    221,   221,   221,   221,   221,   221,   221,   221,   221,   221,
    222
 
-}; }
+  };
+  return yyr1;
+}
 
-static public final int yyr2[] = create$yyr2();
-private static int[] create$yyr2() { return new int[] {
+public static final int yyr2[] = yyr2TableCreator();
+
+private static final int[] yyr2TableCreator() {
+  final int yyr2[] = {
      0,
      1,     2,     1,     1,     1,     0,     1,     2,     1,     1,
      1,     2,     1,     1,     1,     1,     1,     1,     1,     1,
@@ -1477,10 +1499,14 @@ private static int[] create$yyr2() { return new int[] {
      1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
      1
 
-}; }
+  };
+  return yyr2;
+}
 
-static public final int yydefact[] = create$yydefact();
-private static int[] create$yydefact() { return new int[] {
+public static final int yydefact[] = yydefactTableCreator();
+
+private static final int[] yydefactTableCreator() {
+  final int yydefact[] = {
      6,
     15,    16,    17,    18,    19,    20,    21,    22,    41,    32,
     25,    29,    31,    44,    30,    27,    28,     0,     0,     0,
@@ -1520,10 +1546,14 @@ private static int[] create$yydefact() { return new int[] {
    109,   131,   134,   137,     0,    78,    57,    63,    56,     0,
      0,    77,    55,   110,     0,     0,     0
 
-}; }
+  };
+  return yydefact;
+}
 
-static public final int yydefgoto[] = create$yydefgoto();
-private static int[] create$yydefgoto() { return new int[] {
+public static final int yydefgoto[] = yydefgotoTableCreator();
+
+private static final int[] yydefgotoTableCreator() {
+  final int yydefgoto[] = {
    365,
     43,    44,   237,    46,    47,    48,    49,   106,    51,    52,
    114,   107,   108,    55,    56,    57,   147,   148,   149,   317,
@@ -1537,10 +1567,14 @@ private static int[] create$yydefgoto() { return new int[] {
     94,    95,    96,    97,    98,    99,   100,   101,   102,   103,
    104,   205,   145
 
-}; }
+  };
+  return yydefgoto;
+}
 
-static public final int yypact[] = create$yypact();
-private static int[] create$yypact() { return new int[] {
+public static final int yypact[] = yypactTableCreator();
+
+private static final int[] yypactTableCreator() {
+  final int yypact[] = {
    568,
 -32768,-32768,-32768,-32768,-32768,-32768,-32768,-32768,-32768,-32768,
 -32768,-32768,-32768,-32768,-32768,-32768,-32768,  1198,   371,  1198,
@@ -1580,10 +1614,14 @@ private static int[] create$yypact() { return new int[] {
 -32768,-32768,-32768,-32768,   154,-32768,-32768,-32768,-32768,    79,
    167,-32768,-32768,-32768,   270,   271,-32768
 
-}; }
+  };
+  return yypact;
+}
 
-static public final int yypgoto[] = create$yypgoto();
-private static int[] create$yypgoto() { return new int[] {
+public static final int yypgoto[] = yypgotoTableCreator();
+
+private static final int[] yypgotoTableCreator() {
+  final int yypgoto[] = {
 -32768,
 -32768,-32768,    28,-32768,   229,-32768,   -52,     1,    91,   255,
 -32768,     2,     0,  -140,   -56,   -51,   118,    34,  -325,  -266,
@@ -1597,10 +1635,14 @@ private static int[] create$yypgoto() { return new int[] {
     23,   103,    98,   105,   106,   100,-32768,   -37,    87,-32768,
 -32768,-32768,    59
 
-}; }
+  };
+  return yypgoto;
+}
 
-static public final int yytable[] = create$yytable();
-private static int[] create$yytable() { return new int[] {
+public static final int yytable[] = yytableTableCreator();
+
+private static final int[] yytableTableCreator() {
+  final int yytable[] = {
     54,
     50,    53,   127,   158,   162,    79,   121,   212,   298,   157,
    300,   216,   315,   255,   120,     9,    58,   258,   115,   112,
@@ -1745,10 +1787,14 @@ private static int[] create$yytable() { return new int[] {
      0,     0,     0,    37,     0,     0,     0,     0,     0,     0,
     41,    42
 
-}; }
+  };
+  return yytable;
+}
 
-static public final int yycheck[] = create$yycheck();
-private static int[] create$yycheck() { return new int[] {
+public static final int yycheck[] = yycheckTableCreator();
+
+private static final int[] yycheckTableCreator() {
+  final int yycheck[] = {
      0,
      0,     0,    28,    56,    56,     0,    24,   114,   223,    54,
    223,   121,   245,   154,   101,    13,     0,    13,    19,    19,
@@ -1893,7 +1939,9 @@ private static int[] create$yycheck() { return new int[] {
     -1,    -1,    -1,   101,    -1,    -1,    -1,    -1,    -1,    -1,
    108,   109
 
-}; }
+  };
+  return yycheck;
+}
 
 
 

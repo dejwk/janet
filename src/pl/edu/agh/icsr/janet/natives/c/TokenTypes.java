@@ -32,84 +32,20 @@ public static final int JAVA_STATEMENTS = 262;
 public static final int JAVA_ENCLOSED_STATEMENTS = 263;
 
 
-public static final String tokennames[] = {
-"LEX_ERROR",
-"EPSILON",
-"CTEXT",
-"CSTATEMENT_CHAR",
-"JAVA_EXPRESSION",
-"JAVA_STATEMENTS",
-"JAVA_ENCLOSED_STATEMENTS",
-null
-};
+public static final String yytname[] = yytnameTableCreator();
 
-public static String tokenname(Integer t)
-{return tokenname(t==null?EOF:t.intValue());}
+private static final String[] yytnameTableCreator() {
+  final String yytname[] = {
+   "$","error","$undefined.","LEX_ERROR",
+"EPSILON","CTEXT","CSTATEMENT_CHAR","JAVA_EXPRESSION","JAVA_STATEMENTS","JAVA_ENCLOSED_STATEMENTS",
+"'`'","'('","')'","'['","']'","'{'","'}'","Start","@1","Outer","Goal","CStatementsWithJavaTail",
+"CStatements_opt","CStatements","CStatement","@2","@3","BrokenJavaStatement",
+"JavaBegin","JavaEnd","CBlock","@4","@5", null
 
-public static String tokenname(int t)
-{
-    if(t >= tokenmin && t <= tokenmax) {
-        return tokennames[t - tokenmin];
-    } else if(t > 0 && t <= 255) {
-        return "'" + String.valueOf((char)t) + "'";
-    } else if(t == EOF) {
-        return "EOF";
-    } else {
-        return "$undefined$";
-    }
+  };
+  return yytname;
 }
 
-//////////////////////////////////////////////////
-
-public static final int nontermmin = 264;
-public static final int nontermmax = 279;
-
-public static final int nt_Start = 264;
-public static final int nt_at_1 = 265;
-public static final int nt_Outer = 266;
-public static final int nt_Goal = 267;
-public static final int nt_CStatementsWithJavaTail = 268;
-public static final int nt_CStatements_opt = 269;
-public static final int nt_CStatements = 270;
-public static final int nt_CStatement = 271;
-public static final int nt_at_2 = 272;
-public static final int nt_at_3 = 273;
-public static final int nt_BrokenJavaStatement = 274;
-public static final int nt_JavaBegin = 275;
-public static final int nt_JavaEnd = 276;
-public static final int nt_CBlock = 277;
-public static final int nt_at_4 = 278;
-public static final int nt_at_5 = 279;
 
 
-public static final String nontermnames[] = {
-"Start",
-"@1",
-"Outer",
-"Goal",
-"CStatementsWithJavaTail",
-"CStatements_opt",
-"CStatements",
-"CStatement",
-"@2",
-"@3",
-"BrokenJavaStatement",
-"JavaBegin",
-"JavaEnd",
-"CBlock",
-"@4",
-"@5",
-null
-};
-
-public static String nontermname(int t)
-{
-    if(t >= nontermmin && t <= nontermmax) {
-        return nontermnames[t - nontermmin];
-    } else {
-        return "$undefined$";
-    }
-}
-
-//////////////////////////////////////////////////
 };

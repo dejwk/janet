@@ -362,7 +362,7 @@ public class @YYparse@ {
             yyreturn = YYCONTINUE;
 
             switch (yyn) {
-                @ACTIONS@
+@ACTIONS@
 
 
             if(yyreturn == YYERROR) {

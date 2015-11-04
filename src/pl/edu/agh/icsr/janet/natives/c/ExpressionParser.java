@@ -170,7 +170,7 @@ public static final int YYLAST = 24;
 // PROCS
 
 static final int YYTRANSLATE(int x)
-        { return ((x) <= 263 ? yytranslate[x] : 21);}
+	{ return ((x) <= 263 ? yytranslate[x] : 21);}
 
 
     // default constructor for newInstance()
@@ -844,24 +844,11 @@ public static final int yyrline[] = yyrlineTableCreator();
 private static final int[] yyrlineTableCreator() {
   final int yyrline[] = {
  0,
-   114,   115,   119,   121,   125,   126,   130,   131,   132,   133,
-   137,   141
+    52,    53,    57,    59,    63,    64,    68,    69,    70,    71,
+    75,    79
 
   };
   return yyrline;
-}
-
-public static final String yytname[] = yytnameTableCreator();
-
-private static final String[] yytnameTableCreator() {
-  final String yytname[] = {
-   "$","error","$undefined.","LEX_ERROR",
-"EPSILON","CTEXT","CSTATEMENT_CHAR","JAVA_EXPRESSION","JAVA_STATEMENTS","JAVA_ENCLOSED_STATEMENTS",
-"'`'","'('","')'","'['","']'","Outer","Goal","CExpression","CExpressionElem",
-"JavaBegin","JavaEnd", null
-
-  };
-  return yytname;
 }
 
 public static final int yyr1[] = yyr1TableCreator();
@@ -970,5 +957,7 @@ private static final int[] yycheckTableCreator() {
         return Lexer.NATIVE_EXPRESSION;
     }
 
+
+    static final String[] yytname = TokenTypes.yytname;
 
 }; /*class*/

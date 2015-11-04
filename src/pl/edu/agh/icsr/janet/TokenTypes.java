@@ -17,107 +17,109 @@ class TokenTypes {
 
 public static final int EOF = 0;
 
-public static final int tokenmin = 258;
-public static final int tokenmax = 348;
+public static final int tokenmin = 257;
+public static final int tokenmax = 347;
 
 public static final int YYNONE = -1;
 public static final int YYEOF = EOF;
 
-static public final int LEX_ERROR = 258;
-static public final int EPSILON = 259;
-static public final int INTEGER_LITERAL = 260;
-static public final int LONG_LITERAL = 261;
-static public final int FLOAT_LITERAL = 262;
-static public final int DOUBLE_LITERAL = 263;
-static public final int BOOLEAN_LITERAL = 264;
-static public final int STRING_LITERAL = 265;
-static public final int CHARACTER_LITERAL = 266;
-static public final int NULL_LITERAL = 267;
-static public final int IDENTIFIER = 268;
-static public final int ABSTRACT = 269;
-static public final int ANDAND = 270;
-static public final int BOOLEAN = 271;
-static public final int BREAK = 272;
-static public final int BYTE = 273;
-static public final int CASE = 274;
-static public final int CATCH = 275;
-static public final int CHAR = 276;
-static public final int CLASS = 277;
-static public final int CONST = 278;
-static public final int CONTINUE = 279;
-static public final int DEFAULT = 280;
-static public final int DO = 281;
-static public final int DOUBLE = 282;
-static public final int ELSE = 283;
-static public final int EQADD = 284;
-static public final int EQAND = 285;
-static public final int EQDIV = 286;
-static public final int EQEQ = 287;
-static public final int EQLOGRSHIFT = 288;
-static public final int EQLSHIFT = 289;
-static public final int EQMOD = 290;
-static public final int EQMUL = 291;
-static public final int EQOR = 292;
-static public final int EQRSHIFT = 293;
-static public final int EQSUB = 294;
-static public final int EQXOR = 295;
-static public final int EXTENDS = 296;
-static public final int FINAL = 297;
-static public final int FINALLY = 298;
-static public final int FLOAT = 299;
-static public final int FOR = 300;
-static public final int GE = 301;
-static public final int GOTO = 302;
-static public final int IF = 303;
-static public final int IMPLEMENTS = 304;
-static public final int IMPORT = 305;
-static public final int INSTANCEOF = 306;
-static public final int INT = 307;
-static public final int INTERFACE = 308;
-static public final int LE = 309;
-static public final int LOGRSHIFT = 310;
-static public final int LONG = 311;
-static public final int LSHIFT = 312;
-static public final int MINUSMINUS = 313;
-static public final int NATIVE = 314;
-static public final int NE = 315;
-static public final int NEW = 316;
-static public final int OROR = 317;
-static public final int PACKAGE = 318;
-static public final int PLUSPLUS = 319;
-static public final int PRIVATE = 320;
-static public final int PROTECTED = 321;
-static public final int PUBLIC = 322;
-static public final int RETURN = 323;
-static public final int RSHIFT = 324;
-static public final int SHORT = 325;
-static public final int STATIC = 326;
-static public final int SUPER = 327;
-static public final int SWITCH = 328;
-static public final int SYNCHRONIZED = 329;
-static public final int STRICTFP = 330;
-static public final int THIS = 331;
-static public final int THROW = 332;
-static public final int THROWS = 333;
-static public final int TRANSIENT = 334;
-static public final int TRY = 335;
-static public final int VOID = 336;
-static public final int VOLATILE = 337;
-static public final int WHILE = 338;
-static public final int NH_EXPRESSION = 339;
-static public final int NH_STRING = 340;
-static public final int NH_UNICODE_STRING = 341;
-static public final int NH_ARRAY_PTR = 342;
-static public final int NATIVE_STATEMENTS = 343;
-static public final int NATIVE_STATEMENTS_WITH_JAVA_TAIL = 344;
-static public final int NATIVE_BLOCK = 345;
-static public final int NATIVE_EXPRESSION = 346;
-static public final int NATIVE_STRING = 347;
-static public final int NATIVE_UNICODE_STRING = 348;
+public static final int LEX_ERROR = 257;
+public static final int EPSILON = 258;
+public static final int INTEGER_LITERAL = 259;
+public static final int LONG_LITERAL = 260;
+public static final int FLOAT_LITERAL = 261;
+public static final int DOUBLE_LITERAL = 262;
+public static final int BOOLEAN_LITERAL = 263;
+public static final int STRING_LITERAL = 264;
+public static final int CHARACTER_LITERAL = 265;
+public static final int NULL_LITERAL = 266;
+public static final int IDENTIFIER = 267;
+public static final int ABSTRACT = 268;
+public static final int ANDAND = 269;
+public static final int BOOLEAN = 270;
+public static final int BREAK = 271;
+public static final int BYTE = 272;
+public static final int CASE = 273;
+public static final int CATCH = 274;
+public static final int CHAR = 275;
+public static final int CLASS = 276;
+public static final int CONST = 277;
+public static final int CONTINUE = 278;
+public static final int DEFAULT = 279;
+public static final int DO = 280;
+public static final int DOUBLE = 281;
+public static final int ELSE = 282;
+public static final int EQADD = 283;
+public static final int EQAND = 284;
+public static final int EQDIV = 285;
+public static final int EQEQ = 286;
+public static final int EQLOGRSHIFT = 287;
+public static final int EQLSHIFT = 288;
+public static final int EQMOD = 289;
+public static final int EQMUL = 290;
+public static final int EQOR = 291;
+public static final int EQRSHIFT = 292;
+public static final int EQSUB = 293;
+public static final int EQXOR = 294;
+public static final int EXTENDS = 295;
+public static final int FINAL = 296;
+public static final int FINALLY = 297;
+public static final int FLOAT = 298;
+public static final int FOR = 299;
+public static final int GE = 300;
+public static final int GOTO = 301;
+public static final int IF = 302;
+public static final int IMPLEMENTS = 303;
+public static final int IMPORT = 304;
+public static final int INSTANCEOF = 305;
+public static final int INT = 306;
+public static final int INTERFACE = 307;
+public static final int LE = 308;
+public static final int LOGRSHIFT = 309;
+public static final int LONG = 310;
+public static final int LSHIFT = 311;
+public static final int MINUSMINUS = 312;
+public static final int NATIVE = 313;
+public static final int NE = 314;
+public static final int NEW = 315;
+public static final int OROR = 316;
+public static final int PACKAGE = 317;
+public static final int PLUSPLUS = 318;
+public static final int PRIVATE = 319;
+public static final int PROTECTED = 320;
+public static final int PUBLIC = 321;
+public static final int RETURN = 322;
+public static final int RSHIFT = 323;
+public static final int SHORT = 324;
+public static final int STATIC = 325;
+public static final int SUPER = 326;
+public static final int SWITCH = 327;
+public static final int SYNCHRONIZED = 328;
+public static final int STRICTFP = 329;
+public static final int THIS = 330;
+public static final int THROW = 331;
+public static final int THROWS = 332;
+public static final int TRANSIENT = 333;
+public static final int TRY = 334;
+public static final int VOID = 335;
+public static final int VOLATILE = 336;
+public static final int WHILE = 337;
+public static final int NH_EXPRESSION = 338;
+public static final int NH_STRING = 339;
+public static final int NH_UNICODE_STRING = 340;
+public static final int NH_ARRAY_PTR = 341;
+public static final int NATIVE_STATEMENTS = 342;
+public static final int NATIVE_STATEMENTS_WITH_JAVA_TAIL = 343;
+public static final int NATIVE_BLOCK = 344;
+public static final int NATIVE_EXPRESSION = 345;
+public static final int NATIVE_STRING = 346;
+public static final int NATIVE_UNICODE_STRING = 347;
 
 
-static public final String yytname[] = create$yytname();
-private static String[] create$yytname() { return new String[] {
+public static final String yytname[] = yytnameTableCreator();
+
+private static final String[] yytnameTableCreator() {
+  final String yytname[] = {
    "$","error","$undefined.","LEX_ERROR",
 "EPSILON","INTEGER_LITERAL","LONG_LITERAL","FLOAT_LITERAL","DOUBLE_LITERAL",
 "BOOLEAN_LITERAL","STRING_LITERAL","CHARACTER_LITERAL","NULL_LITERAL","IDENTIFIER",
@@ -170,7 +172,9 @@ private static String[] create$yytname() { return new String[] {
 "ConditionalOrExpression","ConditionalExpression","AssignmentExpression","Assignment",
 "LeftHandSide","AssignmentOperator","Expression","ConstantExpression", null
 
-}; }
+  };
+  return yytname;
+}
 
 
 
