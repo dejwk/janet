@@ -683,7 +683,7 @@ public class @YYparse@ {
     IMutableContext cxt = new IMutableContext() {
             public final YYLocation lbeg() { return @YYparse@.this.lbeg(); }
             public final YYLocation lend() { return @YYparse@.this.lend(); }
-            public final InputBuffer ibuf() { return outer_cxt.ibuf(); }
+            public final JanetSourceReader ibuf() { return outer_cxt.ibuf(); }
 
             public final void reportError(String msg) throws CompileException { pl.edu.agh.icsr.janet.Parser.reportError(this, msg); }
 
@@ -701,7 +701,7 @@ public class @YYparse@ {
     ILocationContext tokencxt = new ILocationContext() {
             public final YYLocation lbeg() { return yylex.tokenloc(); }
             public final YYLocation lend() { return cxt.lend(); }
-            public final InputBuffer ibuf() { return cxt.ibuf(); }
+            public final JanetSourceReader ibuf() { return cxt.ibuf(); }
             public final void reportError(String msg) throws CompileException { throw new UnsupportedOperationException(); }
         };
 
