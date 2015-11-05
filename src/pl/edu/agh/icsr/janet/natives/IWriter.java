@@ -14,7 +14,7 @@ public interface IWriter {
     //public final static int PHASE_WRITE = 2;
 
     void init(Janet.Settings settings, Writer.Substituter subst,
-              ClassManager classMgr);
+            ClassManager classMgr, String nlangName);
     //void setCurrentClass(YYClass cls);
     void write(String s) throws IOException;
     void write(INativeMethodInfo mth) throws IOException;

@@ -61,23 +61,23 @@ class Lexer {
     }
 
     private int lexmode2yyreq[] = {
-        -1,
-        IParser.REQ_PURE,
-        IParser.REQ_STATEMENTS,
-        IParser.REQ_BLOCK,
-        IParser.REQ_EXPRESSION,
-        IParser.REQ_STRING,
-        IParser.REQ_UNICODE_STRING
+            -1,
+            IParser.REQ_PURE,
+            IParser.REQ_STATEMENTS,
+            IParser.REQ_BLOCK,
+            IParser.REQ_EXPRESSION,
+            IParser.REQ_STRING,
+            IParser.REQ_UNICODE_STRING
     };
 
     private int yyret2tokentype[] = {
-        TokenTypes.EPSILON,
-        TokenTypes.NATIVE_STATEMENTS,
-        TokenTypes.NATIVE_STATEMENTS_WITH_JAVA_TAIL,
-        TokenTypes.NATIVE_BLOCK,
-        TokenTypes.NATIVE_EXPRESSION,
-        TokenTypes.NATIVE_STRING,
-        TokenTypes.NATIVE_UNICODE_STRING
+            TokenTypes.EPSILON,
+            TokenTypes.NATIVE_STATEMENTS,
+            TokenTypes.NATIVE_STATEMENTS_WITH_JAVA_TAIL,
+            TokenTypes.NATIVE_BLOCK,
+            TokenTypes.NATIVE_EXPRESSION,
+            TokenTypes.NATIVE_STRING,
+            TokenTypes.NATIVE_UNICODE_STRING
     };
 
     public void skipWhites() throws LexException { jlex.skipWhites(); }
@@ -85,15 +85,15 @@ class Lexer {
     public int yylex(IMutableContext cxt, int lexmode)
             throws LexException, ParseException {
         switch (lexmode) {
-        case JAVA_TOKEN:
-            return jlex.yylex();
+            case JAVA_TOKEN:
+                return jlex.yylex();
 
-        case NATIVE_PURE:
-        case NATIVE_STATEMENTS:
-        case NATIVE_BLOCK:
-        case NATIVE_EXPRESSION:
-        case NATIVE_STRING:
-        case NATIVE_UNICODE_STRING:
+            case NATIVE_PURE:
+            case NATIVE_STATEMENTS:
+            case NATIVE_BLOCK:
+            case NATIVE_EXPRESSION:
+            case NATIVE_STRING:
+            case NATIVE_UNICODE_STRING:
             {
                 int yyreq = lexmode2yyreq[lexmode - JAVA_TOKEN];
                 int yyret = npload(cxt).parse(cxt, token, yyreq);
@@ -102,8 +102,8 @@ class Lexer {
             }
             break;
 
-        default:
-            throw new IllegalArgumentException();
+            default:
+                throw new IllegalArgumentException();
         }
         return token.getTokenType();
     }
@@ -115,8 +115,8 @@ class Lexer {
     public void setNativeLanguage(String nlang_name) {
         nlang_name = CompilationManager.getCanonicLanguageName(nlang_name);
         if (!nlang_name.equals(this.nlang_name)) {
-           this.nlang_name = nlang_name;
-           this.nlang_parser = null;
+            this.nlang_name = nlang_name;
+            this.nlang_parser = null;
         }
     }
 
@@ -130,27 +130,29 @@ class Lexer {
         } else {
             nlang_parser = (IParser)parsers.get(nlang_name);
             if (nlang_parser == null) { // not yet loaded
-                String clname = "pl.edu.agh.icsr.janet.natives." + nlang_name +
-                                ".Parser";
+                if (nlang_name.equals("cplusplus")) {
+                    nlang_name = "c";
+                }
+                String clname = "pl.edu.agh.icsr.janet.natives." + nlang_name + ".Parser";
                 String errstr = "Unable to load parser for native language \"" +
-                    nlang_name + "\": class " + clname + " ";
+                        nlang_name + "\": class " + clname + " ";
                 try {
                     Class cls = Class.forName(clname);
                     nlang_parser = (IParser)cls.newInstance();
-                    nlang_parser.init(this.ibuf, this.yyerr, this.loc,
-                                      this.jeparser, this.dbg_level);
+                    nlang_parser.init(this.ibuf, this.yyerr, this.loc, this.jeparser,
+                            this.dbg_level);
+                    parsers.put(nlang_name, nlang_parser);
                 } catch (ClassNotFoundException e) {
                     cxt.reportError(errstr + "not found");
                 } catch (IllegalAccessException e) {
                     cxt.reportError(errstr + "is not public");
                 } catch (InstantiationException e) {
                     cxt.reportError(errstr + "can't be instantiated " +
-                        "(it is abstract class or interface)");
+                            "(it is abstract class or interface)");
                 }
-                parsers.put(nlang_name, nlang_parser);
             }
-            return nlang_parser;
         }
+        return nlang_parser;
     }
 
     public YYLocation tokenloc() {
@@ -172,5 +174,4 @@ class Lexer {
     public JanetSourceReader ibuf() {
         return ibuf;
     }
-
 }

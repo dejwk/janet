@@ -96,6 +96,7 @@ public class Writer implements IWriter {
     final static int tabSize = 4;
     java.io.Writer fileWriter;
     pl.edu.agh.icsr.janet.Writer.Substituter subst;
+    String nlangName;
 
     FunctionDeclarationTag functionDclTag;
     DeclarationTag currentDclTag;
@@ -104,10 +105,12 @@ public class Writer implements IWriter {
 
     public void init(Janet.Settings settings,
                      pl.edu.agh.icsr.janet.Writer.Substituter subst,
-                     ClassManager classMgr) {
+                     ClassManager classMgr,
+                     String nlangName) {
         this.settings = settings;
         this.classMgr = classMgr;
         this.subst = subst;
+        this.nlangName = nlangName;
     }
 
     public void write(String s) throws IOException {
@@ -124,7 +127,8 @@ public class Writer implements IWriter {
             this.currCls = cls;
             String filename = ClassManager.mangle(
                 //settings.getQnames() ? cls.getFullName() : cls.getSimpleName())
-                cls.getSimpleName()) + "Impl.c";
+                cls.getSimpleName()) +
+                (nlangName.equals("cplusplus") ? "Impl.cc" : "Impl.c");
             File dir = pl.edu.agh.icsr.janet.Writer.getOutDirForInput(cls.ibuf(), settings);
 
             currOut = new File(dir, filename);
@@ -144,6 +148,9 @@ public class Writer implements IWriter {
         nimpl.write(this, PHASE_PREPARE);
 
         YYVariableDeclarator[] parameters;
+        if (nlangName.equals("cplusplus")) {
+            write("\nextern \"C\"");
+        }
         try {
             parameters = mth.getParameters();
             write("\n" + mth.getReturnType().getJNIType() +

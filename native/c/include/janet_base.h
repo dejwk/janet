@@ -6,6 +6,10 @@
 #include <jni.h>
 #include <janet_jni.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * Class loading
  */
@@ -43,21 +47,21 @@ extern _janet_fld _jf_janet_fields[];
 
 #define _JANET_CLS_OBJECT                    (_jc_janet_classes[0].id)
 #define _JANET_CLS_THROWABLE                 (_jc_janet_classes[1].id)
-#define _JANET_ERR_UNKNOWN                   (_jc_janet_classes[2].id)
-#define _JANET_ERR_INTERNAL                  (_jc_janet_classes[3].id)
-#define _JANET_ERR_OUT_OF_MEMORY             (_jc_janet_classes[4].id)
-#define _JANET_ERR_NO_CLASS_DEF_FOUND        (_jc_janet_classes[5].id)
-#define _JANET_ERR_CLASS_FORMAT              (_jc_janet_classes[6].id)
-#define _JANET_ERR_CLASS_CIRCULARITY         (_jc_janet_classes[7].id)
-#define _JANET_ERR_EXCEPTION_IN_INITIALIZER  (_jc_janet_classes[8].id)
-#define _JANET_ERR_NO_SUCH_FIELD             (_jc_janet_classes[9].id)
-#define _JANET_ERR_NO_SUCH_METHOD            (_jc_janet_classes[10].id)
-#define _JANET_EXC_NULL_POINTER              (_jc_janet_classes[11].id)
-#define _JANET_EXC_ARRAY_INDEX_OUT_OF_BOUNDS (_jc_janet_classes[12].id)
-#define _JANET_EXC_NEGATIVE_ARRAY_SIZE       (_jc_janet_classes[13].id)
-#define _JANET_EXC_ARITHMETIC                (_jc_janet_classes[14].id)
-#define _JANET_EXC_CLASS_CAST                (_jc_janet_classes[15].id)
-#define _JANET_CLS_STRING                    (_jc_janet_classes[16].id)
+#define _JANET_ERR_UNKNOWN                   ((jthrowable)(_jc_janet_classes[2].id))
+#define _JANET_ERR_INTERNAL                  ((jthrowable)(_jc_janet_classes[3].id))
+#define _JANET_ERR_OUT_OF_MEMORY             ((jthrowable)(_jc_janet_classes[4].id))
+#define _JANET_ERR_NO_CLASS_DEF_FOUND        ((jthrowable)(_jc_janet_classes[5].id))
+#define _JANET_ERR_CLASS_FORMAT              ((jthrowable)(_jc_janet_classes[6].id))
+#define _JANET_ERR_CLASS_CIRCULARITY         ((jthrowable)(_jc_janet_classes[7].id))
+#define _JANET_ERR_EXCEPTION_IN_INITIALIZER  ((jthrowable)(_jc_janet_classes[8].id))
+#define _JANET_ERR_NO_SUCH_FIELD             ((jthrowable)(_jc_janet_classes[9].id))
+#define _JANET_ERR_NO_SUCH_METHOD            ((jthrowable)(_jc_janet_classes[10].id))
+#define _JANET_EXC_NULL_POINTER              ((jthrowable)(_jc_janet_classes[11].id))
+#define _JANET_EXC_ARRAY_INDEX_OUT_OF_BOUNDS ((jthrowable)(_jc_janet_classes[12].id))
+#define _JANET_EXC_NEGATIVE_ARRAY_SIZE       ((jthrowable)(_jc_janet_classes[13].id))
+#define _JANET_EXC_ARITHMETIC                ((jthrowable)(_jc_janet_classes[14].id))
+#define _JANET_EXC_CLASS_CAST                ((jthrowable)(_jc_janet_classes[15].id))
+#define _JANET_CLS_STRING                    ((jthrowable)(_jc_janet_classes[16].id))
 
 #define _JANET_MTH_OBJECT_HASH_CODE          (_jm_janet_methods[0].id)
 #define _JANET_MTH_THROWABLE_GET_MESSAGE     (_jm_janet_methods[1].id)
@@ -287,10 +291,6 @@ typedef struct _janet_arrHashTable_struct {
     _janet_arrcnv_##JTYPE##_to_##TYPE
 */
 
-#ifdef __CPLUSPLUS
-extern "C" {
-#endif
-
 int _j1_janet_init(JNIEnv*);
 void _j2_janet_finalize(JNIEnv*);
 
@@ -350,6 +350,6 @@ void _jh3_releaseHashTable(JNIEnv*, _janet_arrHashTable*);
 void _jm1_releaseMonitors(JNIEnv*, jobject*, int);
 
 
-#ifdef __CPLUSPLUS
-}
+#ifdef __cplusplus
+} // extern "C"
 #endif

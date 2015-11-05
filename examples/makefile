@@ -8,16 +8,8 @@
 
 JAVAC=javac
 CC=gcc
-
-## LINUX ##
-#
-#CFLAGS=-shared -fPIC
-#PLATFORM=linux
-
-## SOLARIS ##
-#
-#CFLAGS=-G
-#PLATFORM=solaris
+CPPC=g++
+LD=g++
 
 JANET_HOME = ../
 
@@ -30,7 +22,10 @@ JAVA_HOME ?= ${shell realpath `which javac` | sed 's/\/bin\/javac//'}
 PLATFORM ?= ${shell basename `find ${JAVA_HOME}/include/* -type d`}
 
 #try to guess CFLAGS
-CFLAGS ?= ${shell if test ${PLATFORM} = linux; then echo "-shared -fPIC"; elif test ${PLATFORM} = solaris; then echo "-G"; else echo "-shared"; fi }
+CFLAGS ?= ${shell if test ${PLATFORM} = linux; then echo "-fPIC"; else echo ""; fi }
+
+#try to guess LDFLAGS
+LDFLAGS ?= ${shell if test ${PLATFORM} = linux; then echo "-shared"; elif test ${PLATFORM} = solaris; then echo "-G"; else echo "-shared"; fi }
 
 LIBRARY = libexamples.so
 
@@ -40,32 +35,57 @@ LIBRARY = libexamples.so
 .SUFFIXES: .class .java .janet $(SUFFIXES)
 
 
-JANET_DIR=..
+JANET_HOME=${shell realpath ..}
 
 CFLAGS += -ansi \
           -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/$(PLATFORM) \
           -I$(JANET_HOME)/native/c/include
 
-FILES=$(JANET_HOME)/native/c/janet.c \
-      genfiles/Arrays.c genfiles/ArraysImpl.c genfiles/Basic.c genfiles/BasicImpl.c \
-      genfiles/Cast.c genfiles/CastImpl.c genfiles/ControlFlow.c genfiles/ControlFlowImpl.c \
-      genfiles/Exceptions.c genfiles/ExceptionsImpl.c genfiles/HelloWorld.c genfiles/HelloWorldImpl.c \
-      genfiles/Literals.c genfiles/LiteralsImpl.c genfiles/Operators.c genfiles/OperatorsImpl.c \
-      genfiles/Strings.c genfiles/StringsImpl.c genfiles/Synchronized.c genfiles/SynchronizedImpl.c
+GENFILES= \
+        genfiles/Arrays.java genfiles/Arrays.c genfiles/ArraysImpl.c \
+        genfiles/Basic.java genfiles/Basic.c genfiles/BasicImpl.c \
+        genfiles/Cast.java genfiles/Cast.c genfiles/CastImpl.c \
+        genfiles/ControlFlow.java genfiles/ControlFlow.c genfiles/ControlFlowImpl.c \
+        genfiles/Exceptions.java genfiles/Exceptions.c genfiles/ExceptionsImpl.c \
+        genfiles/HelloWorld.java genfiles/HelloWorld.c genfiles/HelloWorldImpl.c \
+        genfiles/Literals.java genfiles/Literals.c genfiles/LiteralsImpl.c \
+        genfiles/Operators.java genfiles/Operators.c genfiles/OperatorsImpl.c \
+        genfiles/Strings.java genfiles/Strings.c genfiles/StringsImpl.c \
+        genfiles/Synchronized.java genfiles/Synchronized.c genfiles/SynchronizedImpl.c \
+        genfiles/HelloWorldCpp.java genfiles/HelloWorldCpp.c genfiles/HelloWorldCppImpl.cc
+
+OBJFILES= \
+        obj/Arrays.o obj/ArraysImpl.o obj/Basic.o obj/BasicImpl.o \
+        obj/Cast.o obj/CastImpl.o obj/ControlFlow.o obj/ControlFlowImpl.o \
+        obj/Exceptions.o obj/ExceptionsImpl.o obj/HelloWorld.o obj/HelloWorldImpl.o \
+        obj/Literals.o obj/LiteralsImpl.o obj/Operators.o obj/OperatorsImpl.o \
+        obj/Strings.o obj/StringsImpl.o obj/Synchronized.o obj/SynchronizedImpl.o \
+        obj/HelloWorldCpp.o obj/HelloWorldCppImpl.o
 
 all: $(LIBRARY) classes/examples/Main.class
 
 clean:
-	rm -rf $(LIBRARY) *.class *~ genfiles classes
+	rm -rf $(LIBRARY) *.class *~ genfiles obj classes
 
-classes/examples/Main.class: *.java genfiles/*.java
+classes/examples/Main.class: Main.java
 	mkdir -p classes
-	$(JAVAC) -d classes *.java genfiles/*.java
+	$(JAVAC) -d classes Main.java genfiles/*.java
 
-genfiles/%.java genfiles/%.c genfiles/%Impl.c: %.janet
+$(GENFILES): *.janet
 	mkdir -p genfiles
 	$(JANET) -d genfiles *.janet
 
-$(LIBRARY): $(FILES)
-	$(CC) $(CFLAGS) $^ -o $@
+$(LIBRARY): $(OBJFILES) obj/janet.o
+	$(LD) $(LDFLAGS) -lstdc++ $^ -o $@
 
+obj/janet.o: $(JANET_HOME)/native/c/janet.c
+	mkdir -p obj
+	$(CC) -c $(CFLAGS) $(JANET_HOME)/native/c/janet.c -o obj/janet.o
+
+obj/%.o: genfiles/%.c
+	mkdir -p obj
+	$(CC) -c $(CFLAGS) $? -o $@
+
+obj/%.o: genfiles/%.cc
+	mkdir -p obj
+	$(CPPC) -c $(CFLAGS) $? -o $@

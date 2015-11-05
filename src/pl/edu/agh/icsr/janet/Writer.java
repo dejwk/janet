@@ -14,7 +14,6 @@ public class Writer {
     BufferedWriter javaFileWriter, cFileWriter;
     CompilationManager compMgr;
     Janet.Settings settings;
-    Hashtable writers;
     String jFilename;
     NativeWriter nativeWriter;
     Substituter subst;
@@ -24,8 +23,7 @@ public class Writer {
         this.settings = settings;
         this.subst = new Substituter();
         this.nativeWriter = new NativeWriter(this.subst, settings,
-            this.compMgr.getClassManager());
-        //this.writers = new Hashtable();
+                this.compMgr.getClassManager());
     }
 
     public NativeWriter getNativeWriter() {
@@ -70,7 +68,7 @@ public class Writer {
     }
 
     public static File getOutDirForInput(JanetSourceReader rdr, Janet.Settings settings)
-        throws IOException
+            throws IOException
     {
         File srcFile = rdr.getOriginFile();
         File dir = settings.getTargetDirectory();
@@ -112,7 +110,7 @@ public class Writer {
             javaFileWriter.write(s);
         } catch (IOException e) {
             throw new IOException("unable to write to file " + jFilename +
-                ": " + e.getMessage());
+                    ": " + e.getMessage());
         }
     }
 
@@ -134,31 +132,6 @@ public class Writer {
 
     public static void reportError(String msg) {
         System.err.println(msg);
-    }
-
-
-    IWriter nwload(String nlang_name) throws Janet.JanetException {
-        IWriter nlang_writer = (IWriter)writers.get(nlang_name);
-        if (nlang_writer == null) { // not yet loaded
-            String clname = "pl.edu.agh.icsr.janet.natives." + nlang_name +
-                            ".Writer";
-            String errstr = "Unable to load writer for native language \"" +
-                nlang_name + "\": class " + clname + " ";
-            try {
-                Class cls = Class.forName(clname);
-                nlang_writer = (IWriter)cls.newInstance();
-                nlang_writer.init(settings, subst, compMgr.getClassManager());
-            } catch (ClassNotFoundException e) {
-                throw new Janet.JanetException(errstr + "not found");
-            } catch (IllegalAccessException e) {
-                throw new Janet.JanetException(errstr + "is not public");
-            } catch (InstantiationException e) {
-                throw new Janet.JanetException(errstr + "can't be instantiated " +
-                    "(it is abstract class or interface)");
-            }
-            writers.put(nlang_name, nlang_writer);
-        }
-        return nlang_writer;
     }
 
     public class Substituter {

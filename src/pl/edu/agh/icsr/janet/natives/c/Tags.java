@@ -405,7 +405,7 @@ class Tags {
                        cls.getJNIType() + " " +
                        getName() + " = 0;";
             } else {
-                return "_janet_multiref *" + vl + getName() + " = (void*)0;";
+                return "_janet_multiref *" + vl + getName() + " = 0;";
             }
         }
 

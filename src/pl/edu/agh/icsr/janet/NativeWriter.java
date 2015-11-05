@@ -192,21 +192,24 @@ public class NativeWriter {
     IWriter nwload(String nlang_name) throws Janet.JanetException {
         IWriter nlang_writer = (IWriter)nwriters.get(nlang_name);
         if (nlang_writer == null) { // not yet loaded
-            String clname = "pl.edu.agh.icsr.janet.natives." + nlang_name +
-                            ".Writer";
+            String pkgName = nlang_name;
+            if (pkgName.equals("cplusplus")) {
+                pkgName = "c";
+            }
+            String clname = "pl.edu.agh.icsr.janet.natives." + pkgName + ".Writer";
             String errstr = "Unable to load writer for native language \"" +
-                nlang_name + "\": class " + clname + " ";
+                    nlang_name + "\": class " + clname + " ";
             try {
                 Class cls = Class.forName(clname);
                 nlang_writer = (IWriter)cls.newInstance();
-                nlang_writer.init(settings, subst, classMgr);
+                nlang_writer.init(settings, subst, classMgr, nlang_name);
             } catch (ClassNotFoundException e) {
                 throw new Janet.JanetException(errstr + "not found");
             } catch (IllegalAccessException e) {
                 throw new Janet.JanetException(errstr + "is not public");
             } catch (InstantiationException e) {
                 throw new Janet.JanetException(errstr + "can't be instantiated " +
-                    "(it is abstract class or interface)");
+                        "(it is abstract class or interface)");
             }
             nwriters.put(nlang_name, nlang_writer);
         }

@@ -7,6 +7,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("JANET examples");
         new HelloWorld().test();
+        new HelloWorldCpp().test();
         new Basic().test();
         new Operators().test();
         new Literals().test();

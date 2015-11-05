@@ -7,3 +7,4 @@ examples/genfiles
 *~
 util/doc
 *.tab.c
+*.o

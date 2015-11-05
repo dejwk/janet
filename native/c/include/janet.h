@@ -7,6 +7,10 @@
 #include "janet_base.h"
 #include <setjmp.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* for long-life (multi) refs */
 
 /* internal */
@@ -86,11 +90,11 @@ static void _janet_dec_multiref(JNIEnv* _janet_jnienv, _janet_multiref* pref)
         }
 	/* next, string contents (if any) */
 	if (pref->struni) {
-	    JNI_RELEASE_STRING_CHARS(pref->ref, pref->struni);
+	    JNI_RELEASE_STRING_CHARS((jstring)pref->ref, pref->struni);
 	    pref->struni = 0;
 	}
 	if (pref->strutf) {
-	  JNI_RELEASE_STRING_UTF_CHARS(pref->ref, pref->strutf);
+	  JNI_RELEASE_STRING_UTF_CHARS((jstring)pref->ref, pref->strutf);
 	  pref->strutf = 0;
 	}
 
@@ -105,7 +109,7 @@ static void _janet_array_install(JNIEnv* _janet_jnienv,
 {
     _JANET_ASSERT(pref);
     if (pref->arr) return;
-    pref->arr = _jh1_janet_putArray(_janet_jnienv, _janet_arrhtable, pref->ref);
+    pref->arr = _jh1_janet_putArray(_janet_jnienv, _janet_arrhtable, (jarray)pref->ref);
     _JANET_ASSERT(pref->arr->length < 0 || pref->arrlength < 0 ||
            pref->arr->length == pref->arrlength);
     if (pref->arrlength >= 0) pref->arr->length = pref->arrlength;
@@ -141,7 +145,7 @@ static jint _janet_multiarray_get_length(JNIEnv* _janet_jnienv, _janet_multiref*
             }
             pref->arrlength = pref->arr->length;
         } else {
-            pref->arrlength = JNI_GET_ARRAY_LENGTH(pref->ref);
+            pref->arrlength = JNI_GET_ARRAY_LENGTH((jarray)pref->ref);
         }
     }
     _JANET_ASSERT(!pref->arr || pref->arrlength == pref->arr->length);
@@ -415,14 +419,14 @@ static const jchar* _janet_string_get_unicode(JNIEnv* _janet_jnienv,
 					      _janet_multiref* pstr)
 {
     return pstr->struni ? pstr->struni 
-                        : (pstr->struni = JNI_GET_STRING_CHARS(pstr->ref, 0));
+                        : (pstr->struni = JNI_GET_STRING_CHARS((jstring)pstr->ref, 0));
 }
 
 static const char* _janet_string_get_utf(JNIEnv* _janet_jnienv,
-				    _janet_multiref* pstr)
+				         _janet_multiref* pstr)
 {
     return pstr->strutf ? pstr->strutf 
-                        : (pstr->strutf = JNI_GET_STRING_UTF_CHARS(pstr->ref, 0));
+                        : (pstr->strutf = JNI_GET_STRING_UTF_CHARS((jstring)pstr->ref, 0));
 }
 
 
@@ -798,3 +802,7 @@ static jboolean _janet_is_instance_of(JNIEnv* _janet_jnienv,
 {
     return obj && JNI_IS_INSTANCE_OF(obj, cls);
 }
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
