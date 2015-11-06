@@ -647,11 +647,10 @@ jobject _ja_janet_new_array(JNIEnv* ENV, int depth,
 			    const char *filename, int lineno,
 			    ...) {
     va_list va;
-    jobject obj;
     int i;
     jint lengths[MAX_ARRAY_DEPTH];
     jclass types[MAX_ARRAY_DEPTH];
-    jniNewPrimArrF basef;
+    jniNewPrimArrF basef = 0;
     
     /* copy parameters from vararg to regular arrays to enable recursion */
     va_start(va, lineno);
