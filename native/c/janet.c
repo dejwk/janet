@@ -640,14 +640,17 @@ typedef jarray (JNICALL *jniNewPrimArrF)(JNIEnv*, jsize);
 static jobject new_array(JNIEnv*, int, int, jint[], jclass[], jniNewPrimArrF,
 			 const char *, int);
 
+/* By JVM spec 4.4.1 */
+#define MAX_ARRAY_DEPTH 255
+
 jobject _ja_janet_new_array(JNIEnv* ENV, int depth, 
 			    const char *filename, int lineno,
 			    ...) {
     va_list va;
     jobject obj;
     int i;
-    jint lengths[depth];
-    jclass types[depth];
+    jint lengths[MAX_ARRAY_DEPTH];
+    jclass types[MAX_ARRAY_DEPTH];
     jniNewPrimArrF basef;
     
     /* copy parameters from vararg to regular arrays to enable recursion */
