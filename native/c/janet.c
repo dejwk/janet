@@ -99,7 +99,6 @@ static void releaseErrorObj(JNIEnv *);
 static int refcount = 0;
 
 int _j1_janet_init(JNIEnv* ENV) {
-    jthrowable aux = 0; /* init to avoid compiler warning */
     do {
 	if (refcount++) return 1;
 	if (!(_j6_janet_loadClasses(ENV, CLASSES, CLSSIZE,
@@ -110,7 +109,7 @@ int _j1_janet_init(JNIEnv* ENV) {
 	return 1;
     } while(0);
     
-    _JANET_ASSERT(JNI_EXCEPTION_CHECK(aux));
+    _JANET_ASSERT(JNI_EXCEPTION_CHECK());
     return 1;
 }
 
@@ -670,7 +669,6 @@ static jobject new_array(JNIEnv* ENV, int level, int depth,
 			 const char *filename, int lineno)
 {
   jarray arr;
-  jthrowable aux;
   jboolean failure = JNI_FALSE;
 
   _JANET_ASSERT(level >= 0 && level < depth);
@@ -690,7 +688,7 @@ static jobject new_array(JNIEnv* ENV, int level, int depth,
 			     filename, lineno);
 	if (subarray) {
 	  JNI_SET_OBJECT_ARRAY_ELEMENT(arr, i, subarray);
-	  _JANET_ASSERT(!JNI_EXCEPTION_CHECK(aux));
+	  _JANET_ASSERT(!JNI_EXCEPTION_CHECK());
 	  JNI_DELETE_LOCAL_REF(subarray);
 	  subarray = 0;
 	} else {
@@ -709,7 +707,7 @@ static jobject new_array(JNIEnv* ENV, int level, int depth,
       arr = 0;
     }
     /* throw an exception, if not already thrown */
-    if (!JNI_EXCEPTION_CHECK(aux)) {
+    if (!JNI_EXCEPTION_CHECK()) {
       _je_janet_throw(ENV, _JANET_ERR_OUT_OF_MEMORY, filename, lineno,
 		      "cannot create an array");
     }

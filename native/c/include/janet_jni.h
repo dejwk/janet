@@ -1,14 +1,12 @@
 /*******************************************************************************
  * janet_jni.h - wrappers for JNI functions
- * (C) 2000 Dawid Kurzyniec
+ * (C) 2000 - 2015 Dawid Kurzyniec
  */
 
 #include <jni.h>
 
 #ifndef JANET_JNI_VERSION
-#ifdef JNI_VERSION_1_2
 #define JANET_JNIEXT_1_2
-#endif
 #endif
 
 #ifdef __cplusplus
@@ -279,13 +277,10 @@
 
 #define JNI_GET_JAVA_VM(vm)   JNI_CALL1(GetJavaVM, vm)
 
-
-
 /* JNI 1.2 enhancements */
 
-#ifdef JANET_JNIEXT_1_2
-#define JNI_EXCEPTION_CHECK(aux) \
-   (*_janet_jnienv)->ExceptionCheck(_janet_jnienv)
+#define JNI_EXCEPTION_CHECK() \
+   JNI_CALL0(ExceptionCheck)
 
 #define JNI_NEW_WEAK_GLOBAL_REF(obj) \
    JNI_CALL1(NewWeakGlobalRef, obj)
@@ -304,23 +299,5 @@
 
 #define JNI_RELEASE_STRING_CRITICAL(str, cstr) \
    JNI_CALL2(ReleaseStringCritical, str, cstr)
-
-#else
-
-#define JNI_EXCEPTION_CHECK(aux) \
-   ((aux = JNI_EXCEPTION_OCCURRED) ? (JNI_DELETE_LOCAL_REF(aux), JNI_TRUE) \
-                                   : JNI_FALSE)
-
-/* warning: this version do NOT throw an OutOfMemoryError */
-#define JNI_NEW_WEAK_GLOBAL_REF(obj) \
-   JNI_NEW_GLOBAL_REF(obj)
-
-/* warning: this version do NOT throw an OutOfMemoryError */
-#define JNI_DELETE_WEAK_GLOBAL_REF(obj) \
-   JNI_DELETE_GLOBAL_REF(obj)
-
-#endif
-
-
 
 /* Janet enhancements */

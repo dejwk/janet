@@ -485,7 +485,6 @@ static const char* _janet_string_get_utf(JNIEnv* _janet_jnienv,
 struct _janet_exstruct {
   /*  int isglobal; */
   volatile jthrowable catched;
-  jthrowable aux;
   volatile int jmpmark;
   jmp_buf jmpbuf;
 };
@@ -541,7 +540,7 @@ static void _janet_eat_exception(JNIEnv* _janet_jnienv, volatile jthrowable* t) 
 }
 
 #define _JANET_EXCEPTION_EAT_AND_CHECK \
-   (JNI_EXCEPTION_CHECK(_janet_ex.aux) \
+   (JNI_EXCEPTION_CHECK() \
       ? (_janet_eat_exception(_janet_jnienv, &_janet_exception), 1) \
       : (_janet_exception ? 1 : 0))
 
