@@ -112,6 +112,7 @@ public class Janet {
         System.out.println("  -sourcepath <path>       Specify where to find input source files");
         System.out.println("  -d <directory>           Specify where to place generated files");
         System.out.println("  -encoding <encoding>     Specify character encoding used by source files");
+        System.out.println("  -headerdir               Overrides location of Janet header files");
         System.out.println("  -noloadlibrary           Don't generate code to load native libraries");
         System.out.println("  -library <libname>       Specify the name of the library for native code");
         System.out.println("  -dumpclasses             Dumps parsed classes to the screen (debug option)");
@@ -203,6 +204,12 @@ public class Janet {
                 throw new JanetException("-library: missing library name");
             }
             cm.setCurrentLibName(args[idx++]);
+        } else if ("-headerdir".equals(args[idx])) {
+            idx++;
+            if (idx >= args.length) {
+                throw new JanetException("-headerdir: missing directory name");
+            }
+            s.setHeaderDir(args[idx++]);
         }
         return idx;
     }
@@ -245,6 +252,7 @@ public class Janet {
         private boolean dump_tree;
         private boolean source_comments;
         private boolean strict_access;
+        private String headerDir;
         private ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         private ClassLoader srcLoader = new URLClassLoader(path2URLs(
             System.getProperty("user.dir")));
@@ -255,6 +263,9 @@ public class Janet {
         //public boolean getQnames() { return qnames; }
         public boolean sourceComments() { return source_comments; }
         public boolean strictAccess() { return strict_access; }
+        public void setHeaderDir(String dir) { this.headerDir = dir; }
+        public String getHeaderDir() { return headerDir; }
+
         public ClassLoader getClassLoader() { return classLoader; }
         public ClassLoader getSourceLoader() { return srcLoader; }
         public String getSrcEncoding() { return encoding; }

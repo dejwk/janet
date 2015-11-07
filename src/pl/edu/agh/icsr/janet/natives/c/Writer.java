@@ -84,7 +84,7 @@ public class Writer implements IWriter {
         " * generated: %__DATE__%\n" +
         " */\n" +
         "\n" +
-        "#include <janet.h>\n" +
+        "#include %JANET_H%\n" +
         "\n";
 
     Janet.Settings settings;
@@ -133,6 +133,11 @@ public class Writer implements IWriter {
 
             currOut = new File(dir, filename);
             fileWriter = new BufferedWriter(new FileWriter(currOut));
+            if (settings.getHeaderDir() == null) {
+                subst.setSubst("JANET_H", "<janet.h>");
+            } else {
+                subst.setSubst("JANET_H", "\"" + settings.getHeaderDir() + "/janet.h\"");
+            }
             subst.setSubst("CIMPLFILENAME", filename);
             fileWriter.write(Janet.getGeneratedCodeLicense());
             fileWriter.write(subst.substitute(janetHeader));

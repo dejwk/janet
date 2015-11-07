@@ -20,7 +20,7 @@ public class NativeWriter {
         " * generated: %__DATE__%\n" +
         " */\n" +
         "\n" +
-        "#include <janet_base.h>\n" +
+        "#include %JANET_BASE_H%\n" +
         "\n";
 
     BufferedWriter fileWriter;
@@ -48,7 +48,11 @@ public class NativeWriter {
         File cOutput = new File(dir, filename);
         fileWriter = new BufferedWriter(new FileWriter(cOutput));
         subst.setSubst("__CFILENAME__", filename);
-
+        if (settings.getHeaderDir() == null) {
+            subst.setSubst("JANET_BASE_H", "<janet_base.h>");
+        } else {
+            subst.setSubst("JANET_BASE_H", "\"" + settings.getHeaderDir() + "/janet_base.h\"");
+        }
         fileWriter.write(Janet.getGeneratedCodeLicense());
         fileWriter.write(subst.substitute(janetHeader));
         writeRefClasses(cls);
