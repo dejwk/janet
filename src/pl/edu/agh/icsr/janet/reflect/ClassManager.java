@@ -131,6 +131,7 @@ public class ClassManager {
             return false;
         } else {
             compClasses.put(clname, cls);
+            cls.setLoadLibrary(compMgr.getLoadLibrary());
             cls.setLibName(compMgr.getCurrentLibName());
             return true;
         }

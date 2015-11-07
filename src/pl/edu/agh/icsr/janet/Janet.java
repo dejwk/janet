@@ -112,6 +112,7 @@ public class Janet {
         System.out.println("  -sourcepath <path>       Specify where to find input source files");
         System.out.println("  -d <directory>           Specify where to place generated files");
         System.out.println("  -encoding <encoding>     Specify character encoding used by source files");
+        System.out.println("  -noloadlibrary           Don't generate code to load native libraries");
         System.out.println("  -library <libname>       Specify the name of the library for native code");
         System.out.println("  -dumpclasses             Dumps parsed classes to the screen (debug option)");
         System.out.println("  -dumptree                Dumps parsing trees to the screen (debug option)");
@@ -177,6 +178,9 @@ public class Janet {
             }
             else if ("-strict".equals(param)) {
                 settings.strict_access = true;
+            }
+            else if ("-noloadlibrary".equals(param)) {
+                cm.setLoadLibrary(false);
             }
             else {
                 int newidx = parseThroughoutParam(args, idx-1, settings, cm);
