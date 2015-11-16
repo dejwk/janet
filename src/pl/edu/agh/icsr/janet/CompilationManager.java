@@ -16,6 +16,9 @@ public class CompilationManager {
     ClassManager classMgr;
     Janet.Settings settings;
 
+    // Whether to generate the code to load native libraries.
+    boolean loadLibrary = true;
+
     // Current (during parsing) library name as specified by the -library flag
     String currentLibName;
 
@@ -47,6 +50,14 @@ public class CompilationManager {
         parser.setdebug(settings.getDbgLevel());
         parser.yyerrthrow = true;
         parser.yyparse(this, markForTranslation);
+    }
+
+    public void setLoadLibrary(boolean loadLibrary) {
+        this.loadLibrary = loadLibrary;
+    }
+
+    public boolean getLoadLibrary() {
+        return loadLibrary;
     }
 
     public void setCurrentLibName(String libName) {

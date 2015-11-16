@@ -28,6 +28,20 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
     public static final int INNER_INTERFACE_MODIFIERS =
         Modifier.ABSTRACT | YYModifierList.ACCESS_MODIFIERS;
 
+    public void setLoadLibrary(boolean loadLibrary) {
+        this.loadLibrary = loadLibrary;
+    }
+
+    String getLoadLibraryHeader() {
+        if (loadLibrary) {
+            return "System.loadLibrary(\""
+                + getLibName()
+                + "\");";
+        } else {
+            return "/* --noloadlibrary */";
+        }
+    }
+
     String janetHeader =
         "\n" +
         "////// BEGIN OF GENERATED CODE //////\n" +
@@ -36,11 +50,13 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
         "%INDENT%private static native void janetClassFinalize$();\n" +
         "\n" +
         "%INDENT%private static class janet$ {\n" +
-        "%INDENT%    janet$() { System.loadLibrary(\"%LIBNAME%\");\n" +
-        "%INDENT%               %CLASSNAME%.janetClassInit$(); }\n" +
+        "%INDENT%    janet$() {\n" +
+        "%INDENT%        %LOADLIBRARY%\n" +
+        "%INDENT%        %CLASSNAME%.janetClassInit$();\n" +
+        "%INDENT%    }\n" +
         "%INDENT%    public void finalize() { " +
-            "%CLASSNAME%.janetClassFinalize$(); }}\n" +
-        "\n" +
+            "%CLASSNAME%.janetClassFinalize$(); }\n" +
+        "%INDENT%}\n" +
         "%INDENT%static janet$ janet$ = new janet$();\n" +
         "\n" +
         "////// END OF GENERATED CODE //////\n" +
@@ -86,6 +102,7 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
 
     private boolean hasNativeMethodImpls = false;
     private String libName;
+    private boolean loadLibrary;
 
     public YYClass(IJavaContext cxt, String name, int type, YYModifierList m)
            throws CompileException {
@@ -666,7 +683,7 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
         Writer.Substituter s = w.getSubstituter();
         String oldCls = s.setSubst("CLASSNAME", getSimpleName());
         String oldInd = s.setSubst("INDENT", w.makeIndent(this.beg_charno + 4));
-        String oldLib = s.setSubst("LIBNAME", getLibName());
+        String oldLib = s.setSubst("LOADLIBRARY", getLoadLibraryHeader());
 
         int beg = beg_charno0;
         Iterator i = iterator();
@@ -700,7 +717,7 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
 
         w.write(buf.substring(pos, this.end_charno0));
 
-        s.setSubst("LIBNAME", oldLib);
+        s.setSubst("LOADLIBRARY", oldLib);
         s.setSubst("INDENT", oldInd);
         s.setSubst("CLASSNAME", oldCls);
 
