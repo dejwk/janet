@@ -220,7 +220,7 @@ static jint _janet_multiarray_get_length(JNIEnv* _janet_jnienv, _janet_multiref*
  */
 
 #define _JANET_ASSIGN_SIMPLE2SIMPLE(pl, pr) \
-   _janet_assign_simple2simple(_janet_jnienv, &pl, pr)
+   _janet_assign_simple2simple(_janet_jnienv, (jobject*)(&pl), pr)
 
 #define _JANET_ASSIGN_SIMPLE2MULTI(pl, pr) \
    (pl = _JANET_INSTALL_MULTIREF(pr))
