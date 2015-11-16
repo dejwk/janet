@@ -744,7 +744,7 @@ static void _janet_eat_exception(JNIEnv* _janet_jnienv, volatile jthrowable* t) 
 
 #define _JANET_GUARDED_LOCAL_CALL(fun) \
    (_JANET_ASSERT(!_janet_exception), \
-    (_janet_exception = (fun)) ? _JANET_LOCAL_PROPAGATE_EXCEPTION() : 0)
+    (_janet_exception = (fun)) ? (_JANET_LOCAL_PROPAGATE_EXCEPTION(), 0) : 0)
     
 
 

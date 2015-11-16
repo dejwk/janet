@@ -98,6 +98,8 @@ public class Writer implements IWriter {
     pl.edu.agh.icsr.janet.Writer.Substituter subst;
     String nlangName;
 
+    boolean cplusplus() { return nlangName.equals("cplusplus"); }
+
     FunctionDeclarationTag functionDclTag;
     DeclarationTag currentDclTag;
     //VariableTag javaThisVariableTag;
@@ -127,8 +129,7 @@ public class Writer implements IWriter {
             this.currCls = cls;
             String filename = ClassManager.mangle(
                 //settings.getQnames() ? cls.getFullName() : cls.getSimpleName())
-                cls.getSimpleName()) +
-                (nlangName.equals("cplusplus") ? "Impl.cc" : "Impl.c");
+                cls.getSimpleName()) + (cplusplus() ? "Impl.cc" : "Impl.c");
             File dir = pl.edu.agh.icsr.janet.Writer.getOutDirForInput(cls.ibuf(), settings);
 
             currOut = new File(dir, filename);
@@ -148,7 +149,7 @@ public class Writer implements IWriter {
         nimpl.write(this, PHASE_PREPARE);
 
         YYVariableDeclarator[] parameters;
-        if (nlangName.equals("cplusplus")) {
+        if (cplusplus()) {
             write("\nextern \"C\"");
         }
         try {
@@ -502,7 +503,11 @@ public class Writer implements IWriter {
         IClassInfo returntype, boolean useJNIThis, YYExpressionList arguments,
         int clsidx, int mthidx) throws IOException
     {
-        write("(*_janet_jnienv)->Call");
+	if (cplusplus()) {
+            write("_janet_jnienv->Call");
+	} else {
+            write("(*_janet_jnienv)->Call");
+	}
         switch (invocation_mode) {
             case YYMethodInvocationExpression.IMODE_STATIC:
                 write("Static");
@@ -514,7 +519,9 @@ public class Writer implements IWriter {
         }
         write(getJNITypeInfixName(returntype));
         openWriteContextInline("Method(");
-        cr(); write("_janet_jnienv,");
+        if (!cplusplus()) {
+            cr(); write("_janet_jnienv,");
+        }
         cr();
         if (invocation_mode != YYMethodInvocationExpression.IMODE_STATIC) {
             if (useJNIThis) {
@@ -719,8 +726,14 @@ public class Writer implements IWriter {
 
             // write JNI invocation
             cr();
-            openWriteContextInline("(*_janet_jnienv)->CallNonvirtualVoidMethod(");
-            cr(); write("_janet_jnienv,");
+            if (cplusplus()) {
+                openWriteContextInline("_janet_jnienv->CallNonvirtualVoidMethod(");
+            } else {
+                openWriteContextInline("(*_janet_jnienv)->CallNonvirtualVoidMethod(");
+            }
+            if (!cplusplus()) {
+                cr(); write("_janet_jnienv,");
+            }
             cr(); write(getTag(e).getUse() + ",");
             cr(); write("_janet_classes[" + e.getClassIdx() + "].id,");
             cr(); write("_janet_methods[" + e.getMethodIdx() + "].id");
@@ -786,12 +799,14 @@ public class Writer implements IWriter {
 
             // write JNI invocation
 
-            openWriteContextInline("(*_janet_jnienv)->" +
+            openWriteContextInline((cplusplus() ? "_janet_jnienv->" : "(*_janet_jnienv)->") +
                 (set ? "Set" : "Get") +
                 (e.isInstanceField() ? "" : "Static") +
                 getJNITypeInfixName(e.getExpressionType()) +
                 "Field(");
-            cr(); write("_janet_jnienv,");
+            if (!cplusplus()) {
+                cr(); write("_janet_jnienv,");
+            }
             cr();
             if (e.isInstanceField()) {
                 if (useJNIThis) {
@@ -1556,9 +1571,8 @@ public class Writer implements IWriter {
                 } else {
                     // primitive base type
                     write("0, ");
-                    write("(*_janet_jnienv)->New" +
-                          getJNITypeInfixName(e.getBaseType()) +
-                          "Array");
+                    write((cplusplus() ? "_janet_jnienv" : "(*_janet_jnienv)") +
+                          "->New" + getJNITypeInfixName(e.getBaseType()) + "Array");
                 }
                 if (itr.hasNext()) write(",");
             }
