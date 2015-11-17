@@ -90,43 +90,37 @@ public class Arrays {
      * method invocations, array accesses, string operations.
      */
     private static native "C" void displayArray(Object o, int level) {
-
         int i, j, len;
-
-        if (`o instanceof int[]`)
-        {
+        if (`o instanceof int[]`) {
             for (j=0; j<`level`; j++) {
-		        `System.out.print("    ")`;
-	        }
-	        `System.out.print("{ ")`;
-	        `int[] iarr = (int[])o;`
+                `System.out.print("    ")`;
+            }
+            `System.out.print("{ ")`;
+            `int[] iarr = (int[])o;`
             for (i=0; i<`iarr.length`; i++) {
                 `System.out.print("".concat(Integer.toString(iarr[#(i)])).concat(" "))`;
-	        }
-            `System.out.println(" }")`;
-	    }
-        else if (`o instanceof Object[]`)
-        {
-	        `Object[] oarr = (Object[])o;`
-	        for (j=0; j<`level`; j++) {
-		        `System.out.print("    ")`;
             }
-	        `System.out.println("{")`;
+            `System.out.println(" }")`;
+        } else if (`o instanceof Object[]`) {
+            `Object[] oarr = (Object[])o;`
+            for (j=0; j<`level`; j++) {
+                `System.out.print("    ")`;
+            }
+            `System.out.println("{")`;
             for (i=0; i<`oarr.length`; i++) {
-	            `displayArray(oarr[#(i)], #(`level`+1))`;
-	        }
-	        for (j=0; j<`level`; j++) {
-		        `System.out.print("    ")`;
-	        }
-	        `System.out.println("}")`;
+                `displayArray(oarr[#(i)], #(`level`+1))`;
+            }
+            for (j=0; j<`level`; j++) {
+               `System.out.print("    ")`;
+            }
+            `System.out.println("}")`;
         }
-        else
-        {
-	        for (j=0; j<`level`; j++) {
-		        `System.out.print("    ")`;
-	        }
-	        `System.out.println(o)`;
-	    }
+        else {
+            for (j=0; j<`level`; j++) {
+                `System.out.print("    ")`;
+            }
+            `System.out.println(o)`;
+        }
     }
 
 }
