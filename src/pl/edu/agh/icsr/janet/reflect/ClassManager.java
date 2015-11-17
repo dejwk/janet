@@ -846,12 +846,15 @@ methods:
                 maximallySpecifics.add(mth);
             }
         }
-
         methods = maximallySpecifics.iterator();
         if (!methods.hasNext()) {
-            if (noOfApplicables == 0 && allowWeak) {
-                // Not even weakly applicable methods found.
-                throw new NoApplicableMethodsFoundException();
+            if (noOfApplicables == 0) {
+                if (allowWeak) {
+                    // Not even weakly applicable methods found.
+                    throw new NoApplicableMethodsFoundException();
+                } else {
+                    return null;
+                }
             } else if (noOfApplicables == 1) {
                 throw new MethodNotAccessibleException(applicable);
             } else {
