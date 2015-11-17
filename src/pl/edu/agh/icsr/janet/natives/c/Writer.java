@@ -508,11 +508,11 @@ public class Writer implements IWriter {
         IClassInfo returntype, boolean useJNIThis, YYExpressionList arguments,
         int clsidx, int mthidx) throws IOException
     {
-	if (cplusplus()) {
+        if (cplusplus()) {
             write("_janet_jnienv->Call");
-	} else {
+        } else {
             write("(*_janet_jnienv)->Call");
-	}
+        }
         switch (invocation_mode) {
             case YYMethodInvocationExpression.IMODE_STATIC:
                 write("Static");

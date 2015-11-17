@@ -132,13 +132,12 @@ class NativeType implements IClassInfo {
         return workingFlag;
     }
 
-    // null may be casted to any _primitive_ type
     public boolean isAssignableFrom(IClassInfo cls) {
-        return cls.isPrimitive();
+        return false;
     }
 
     public int isCastableTo(IClassInfo clsTo) {
-        if (isAssignableFrom(clsTo)) {
+        if (clsTo.isPrimitive()) {
             return CAST_CORRECT;
         }
         return CAST_INCORRECT;

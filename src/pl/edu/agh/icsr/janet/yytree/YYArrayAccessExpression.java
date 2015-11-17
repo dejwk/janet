@@ -30,7 +30,7 @@ public class YYArrayAccessExpression extends YYExpression {
         if (!reftype.isArray()) {
             reportError(reftype.toString() + " is not an array type");
         }
-        if (!dimtype.isAssignableFrom(classMgr.INT)) {
+        if (dimtype != classMgr.NATIVETYPE && !dimtype.isAssignableFrom(classMgr.INT)) {
             reportError(dimtype.toString() + " cannot be converted to int");
         }
 

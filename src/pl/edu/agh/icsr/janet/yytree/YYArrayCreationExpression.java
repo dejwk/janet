@@ -62,7 +62,8 @@ public class YYArrayCreationExpression extends YYExpression {
         Iterator itr = dimexprs.iterator();
         while (itr.hasNext()) {
             YYExpression dimexpr = (YYExpression)itr.next();
-            if (!dimexpr.getExpressionType().isAssignableFrom(classMgr.INT)) {
+            if (dimexpr.getExpressionType() != classMgr.NATIVETYPE &&
+                    !dimexpr.getExpressionType().isAssignableFrom(classMgr.INT)) {
                 dimexpr.reportError(dimexpr.getExpressionType() +
                     "cannot be converted to int");
             }
@@ -92,7 +93,7 @@ public class YYArrayCreationExpression extends YYExpression {
 
     public int getDims() { return dims; }
     public int getDepth() { return depth; }
-    public int[] getClassIdxs() { return (int[])classidxs.clone(); }
+    public int[] getClassIdxs() { return classidxs.clone(); }
     public IClassInfo getBaseType() { return baseType; }
 
     public Iterator getDumpIterator() { return dimexprs.getDumpIterator(); }

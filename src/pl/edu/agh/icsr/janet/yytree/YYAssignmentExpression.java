@@ -91,7 +91,8 @@ public class YYAssignmentExpression extends YYExpression {
         }
 
         if (op == null) { // simple assignment
-            if (rightType.isAssignableFrom(leftType)) return true;
+            if (rightType.isAssignableFrom(leftType) ||
+                    rightType == classMgr.NATIVETYPE && leftType.isPrimitive()) return true;
             if (assignment instanceof YYIntegerLiteral) {
                 YYIntegerLiteral lit = (YYIntegerLiteral)assignment;
                 if (leftType == classMgr.SHORT || leftType == classMgr.CHAR ||

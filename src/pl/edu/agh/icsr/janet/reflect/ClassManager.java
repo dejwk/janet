@@ -794,10 +794,9 @@ enumnew:
         return true;
     }
 
-    public IMethodInfo findTheMostSpecific(Collection whereToSearch,
-        boolean isConstructor, IClassInfo[] argtypes, IClassInfo enclClass,
-        boolean selfcxt) throws ParseException
-    {
+    private IMethodInfo findTheMostSpecificInternal(Collection whereToSearch,
+            IClassInfo[] argtypes, IClassInfo enclClass, boolean selfcxt,
+            boolean allowWeak) throws ParseException {
         Iterator methods = whereToSearch.iterator();
         IMethodInfo applicable = null;
         int noOfApplicables = 0;
@@ -805,14 +804,21 @@ enumnew:
 methods:
         while (methods.hasNext()) {
             IMethodInfo mth = (IMethodInfo)methods.next();
-
             // JLS 15.11.2.1
 
             // is the method or constructor applicable?
             IClassInfo[] params = mth.getParameterTypes();
             if (params.length != argtypes.length) continue methods;
+            boolean hasNativeTypes = false;
             for (int i=0; i<argtypes.length; i++) {
-                if (!argtypes[i].isAssignableFrom(params[i])) continue methods;
+                if (argtypes[i] == NATIVETYPE) {
+                    hasNativeTypes = true;
+                }
+                if (allowWeak && argtypes[i] == NATIVETYPE) {
+                    if (!params[i].isPrimitive()) continue methods;
+                } else {
+                  if (!argtypes[i].isAssignableFrom(params[i])) continue methods;
+                }
             }
             // the method or constructor is applicable indeed
             applicable = mth;
@@ -825,24 +831,26 @@ methods:
 
             // update list of maximally specifics
             boolean shouldBeAdded = true;
-            for (Iterator j = maximallySpecifics.iterator(); j.hasNext();) {
-                IMethodInfo oldmth = (IMethodInfo)j.next();
-                if (isMoreSpecific(oldmth, mth)) {
-                    shouldBeAdded = false;
-                    break;
-                } else if (isMoreSpecific(mth, oldmth)) {
-                    j.remove();
+            if (!hasNativeTypes) {
+                for (Iterator j = maximallySpecifics.iterator(); j.hasNext();) {
+                    IMethodInfo oldmth = (IMethodInfo)j.next();
+                    if (isMoreSpecific(oldmth, mth)) {
+                        shouldBeAdded = false;
+                        break;
+                    } else if (isMoreSpecific(mth, oldmth)) {
+                        j.remove();
+                    }
                 }
             }
             if (shouldBeAdded) {
                 maximallySpecifics.add(mth);
             }
-
         }
 
         methods = maximallySpecifics.iterator();
         if (!methods.hasNext()) {
-            if (noOfApplicables == 0) {
+            if (noOfApplicables == 0 && allowWeak) {
+                // Not even weakly applicable methods found.
                 throw new NoApplicableMethodsFoundException();
             } else if (noOfApplicables == 1) {
                 throw new MethodNotAccessibleException(applicable);
@@ -858,6 +866,22 @@ methods:
         }
 
         return mth;
+    }
+
+    public IMethodInfo findTheMostSpecific(Collection whereToSearch,
+        boolean isConstructor, IClassInfo[] argtypes, IClassInfo enclClass,
+        boolean selfcxt) throws ParseException
+    {
+        // First try to find a non-weak match.
+        IMethodInfo match = findTheMostSpecificInternal(whereToSearch, argtypes,
+            enclClass, selfcxt, false);
+        if (match == null) {
+            // Fall back to considering weak matches (allowing implicit casts of native
+            // expressions to Java primitive types)
+            match = findTheMostSpecificInternal(whereToSearch, argtypes,
+                                                enclClass, selfcxt, true);
+        }
+        return match;
     }
 
     public final static String getQualifiedName(String pkg, String simple) {
