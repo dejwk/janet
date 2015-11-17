@@ -175,7 +175,7 @@
    JNI_CALL2(NewString, unicodeChars, len)
 
 #define JNI_GET_STRING_LENGTH(string) \
-   JNI_CALL1(GetStringLength, string)
+   JNI_CALL1(GetStringLength, (jstring)(string))
 
 #define JNI_GET_STRING_CHARS(string, isCopy) \
    JNI_CALL2(GetStringChars, string, isCopy)
