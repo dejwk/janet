@@ -69,6 +69,8 @@ CExpressionElem
     | '`' JavaBegin JAVA_EXPRESSION JavaEnd '`' { $$ = $3.expand(cxt); }
     | '(' CExpression ')'                       { $$ = $2.expand(cxt); }
     | '[' CExpression ']'                       { $$ = $2.expand(cxt); }
+    | '(' ')'                                   { $$ = new YYCChunk(cxt); }
+    | '[' ']'                                   { $$ = new YYCChunk(cxt); }
     ;
 
 JavaBegin

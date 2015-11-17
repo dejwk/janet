@@ -119,10 +119,10 @@ public class ExpressionParser {
 
 // CONSTANTS
 
-public static final int YYFINAL = 20;
+public static final int YYFINAL = 22;
 public static final int YYFLAG = -32768;
 public static final int YYNTBASE = 15;
-public static final int YYLAST = 24;
+public static final int YYLAST = 36;
 
 
     protected int yyreturn; // see ACTIONS switch
@@ -437,9 +437,15 @@ case 10:
 { yyval = ((YYCChunk)(yyvs.tth(-1))).expand(cxt); ;
     break;}
 case 11:
-{ lexmode = Lexer.JAVA_EXPRESSION; ;
+{ yyval = new YYCChunk(cxt); ;
     break;}
 case 12:
+{ yyval = new YYCChunk(cxt); ;
+    break;}
+case 13:
+{ lexmode = Lexer.JAVA_EXPRESSION; ;
+    break;}
+case 14:
 { lexmode = Lexer.NATIVE_EXPRESSION; ;
     break;}
 }
@@ -820,7 +826,7 @@ private static final int[] yyprhsTableCreator() {
   final int yyprhs[] = {
      0,
      0,     2,     5,     7,     8,    10,    13,    15,    21,    25,
-    29,    30
+    29,    32,    35,    36
 
   };
   return yyprhs;
@@ -833,7 +839,8 @@ private static final int[] yyrhsTableCreator() {
     16,
      0,    16,     1,     0,    17,     0,     0,    18,     0,    17,
     18,     0,     5,     0,    10,    19,     7,    20,    10,     0,
-    11,    17,    12,     0,    13,    17,    14,     0,     0,     0
+    11,    17,    12,     0,    13,    17,    14,     0,    11,    12,
+     0,    13,    14,     0,     0,     0
 
   };
   return yyrhs;
@@ -845,7 +852,7 @@ private static final int[] yyrlineTableCreator() {
   final int yyrline[] = {
  0,
     52,    53,    57,    59,    63,    64,    68,    69,    70,    71,
-    75,    79
+    72,    73,    77,    81
 
   };
   return yyrline;
@@ -857,7 +864,7 @@ private static final int[] yyr1TableCreator() {
   final int yyr1[] = {
      0,
     15,    15,    16,    16,    17,    17,    18,    18,    18,    18,
-    19,    20
+    18,    18,    19,    20
 
   };
   return yyr1;
@@ -869,7 +876,7 @@ private static final int[] yyr2TableCreator() {
   final int yyr2[] = {
      0,
      1,     2,     1,     0,     1,     2,     1,     5,     3,     3,
-     0,     0
+     2,     2,     0,     0
 
   };
   return yyr2;
@@ -880,8 +887,9 @@ public static final int yydefact[] = yydefactTableCreator();
 private static final int[] yydefactTableCreator() {
   final int yydefact[] = {
      4,
-     7,    11,     0,     0,     0,     3,     5,     0,     0,     0,
-     2,     6,    12,     9,    10,     0,     8,     0,     0,     0
+     7,    13,     0,     0,     0,     3,     5,     0,    11,     0,
+    12,     0,     2,     6,    14,     9,    10,     0,     8,     0,
+     0,     0
 
   };
   return yydefact;
@@ -891,8 +899,8 @@ public static final int yydefgoto[] = yydefgotoTableCreator();
 
 private static final int[] yydefgotoTableCreator() {
   final int yydefgoto[] = {
-    18,
-     5,     6,     7,     8,    16
+    20,
+     5,     6,     7,     8,    18
 
   };
   return yydefgoto;
@@ -902,9 +910,10 @@ public static final int yypact[] = yypactTableCreator();
 
 private static final int[] yypactTableCreator() {
   final int yypact[] = {
-     6,
--32768,-32768,     6,     6,     1,     6,-32768,     3,     2,    -5,
--32768,-32768,-32768,-32768,-32768,    10,-32768,    23,    24,-32768
+    22,
+-32768,-32768,     9,    -5,     1,    22,-32768,     3,-32768,    13,
+-32768,     2,-32768,-32768,-32768,-32768,-32768,     7,-32768,    11,
+    28,-32768
 
   };
   return yypact;
@@ -915,7 +924,7 @@ public static final int yypgoto[] = yypgotoTableCreator();
 private static final int[] yypgotoTableCreator() {
   final int yypgoto[] = {
 -32768,
--32768,     0,    12,-32768,-32768
+-32768,     0,    24,-32768,-32768
 
   };
   return yypgoto;
@@ -926,9 +935,10 @@ public static final int yytable[] = yytableTableCreator();
 private static final int[] yytableTableCreator() {
   final int yytable[] = {
      1,
-    -1,    11,     9,    10,     2,     3,     1,     4,    15,    13,
-     1,     2,     3,    14,     4,     2,     3,    12,     4,    17,
-    12,    12,    19,    20
+    -1,    13,    10,    12,     2,     3,     1,     4,    11,    15,
+    21,     2,     3,     1,     4,    17,    19,     1,     2,     3,
+     9,     4,     2,     3,    16,     4,     1,    22,     0,    14,
+     0,     2,     3,    14,     4,    14
 
   };
   return yytable;
@@ -940,8 +950,9 @@ private static final int[] yycheckTableCreator() {
   final int yycheck[] = {
      5,
      0,     1,     3,     4,    10,    11,     5,    13,    14,     7,
-     5,    10,    11,    12,    13,    10,    11,     6,    13,    10,
-     9,    10,     0,     0
+     0,    10,    11,     5,    13,    14,    10,     5,    10,    11,
+    12,    13,    10,    11,    12,    13,     5,     0,    -1,     6,
+    -1,    10,    11,    10,    13,    12
 
   };
   return yycheck;
