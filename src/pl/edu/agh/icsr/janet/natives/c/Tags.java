@@ -386,7 +386,7 @@ class Tags {
             return (type == LOCAL_VARIABLE);
         }
 
-        String getUse(boolean wantMultiRef) {
+        String getUseInternal(boolean wantMultiRef) {
             if (!wantMultiRef) {
                 return type == SIMPLE ? getName() : "_JANET_DEREF(" + getName() + ")";
             } else {
@@ -396,6 +396,17 @@ class Tags {
                 }
                 return getName();
             }
+        }
+
+        String getUse(boolean wantMultiRef) {
+            String cast = "";
+            if (!wantMultiRef && type != SIMPLE) {
+                String jnitype = getType().getJNIType();
+                if (!jnitype.equals("jobject")) {
+                    cast = "(" + jnitype + ")";
+                }
+            }
+            return cast + getUseInternal(wantMultiRef);
         }
 
         String getDeclaration() {
