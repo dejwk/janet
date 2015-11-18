@@ -103,43 +103,38 @@ native "C++" {
         std::cout.flush();
     }
 
-    native "C++" String sortJavaStringInUTF(String s) {
-        std::vector<char> sorted;
+    native "C++" String echoInUTF(String s) {
+        std::vector<char> result;
         {
             const char* content = `#&s`;
             int len = strlen(content);
-            sorted.resize(len + 1);
-            strcpy(&*sorted.begin(), content);
-            std::sort(sorted.begin(), sorted.end() - 1);  // Don't sort the terminal '\0'
-            const char* sorted_content = &*sorted.begin();
-            `return #$(sorted_content);`
+            result.resize(2 * len + 1);  // Leave space for terminal '\0'
+            strncpy(&result[0], content, len);
+            strncpy(&result[len], content, len);
+            `return #$(&result[0]);`
         }
     }
 
-    native "C++" String echoInUTF(String s) {
-        const char* content = `#&s`;
-        int len = strlen(content);
-        std::vector<char> result(2 * len + 1);  // Leave space for terminal '\0'
-        strncpy(&result[0], content, len);
-        strncpy(&result[len], content, len);
-        `return #$(&result[0]);`
-    }
-
     native "C++" String echoInUnicode(String s) {
-        const jchar* content = `&s`;
-        int len = `s.length()`;
-        std::vector<jchar> result(2 * len);
-        std::copy(content, content + len, result.begin());
-        std::copy(content, content + len, result.begin() + len);
-        `return #$$(len > 0 ? &result[0] : 0, 2 * len);`
+        std::vector<jchar> result;
+        {
+            const jchar* content = `&s`;
+            int len = `s.length()`;
+            result.resize(2 * len);
+            std::copy(content, content + len, result.begin());
+            std::copy(content, content + len, result.begin() + len);
+            `return #$$(len > 0 ? &result[0] : 0, 2 * len);`
+        }
     }
 
     native "C++" String echoInJava(String s) {
-        int len = `s.length()`;
         std::vector<jchar> result;
-        for (int i = 0; i < len; ++i) result.push_back(`s.charAt(#(i))`);
-        for (int i = 0; i < len; ++i) result.push_back(`s.charAt(#(i))`);
-        `return #$$(len > 0 ? &result[0] : 0, 2 * len);`
+        {
+            int len = `s.length()`;
+            for (int i = 0; i < len; ++i) result.push_back(`s.charAt(#(i))`);
+            for (int i = 0; i < len; ++i) result.push_back(`s.charAt(#(i))`);
+            `return #$$(len > 0 ? &result[0] : 0, 2 * len);`
+        }
     }
 
     native "C++" String[] helloFromJanet() {

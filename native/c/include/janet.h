@@ -70,38 +70,73 @@ static _janet_multiref* _janet_inc_multiref(JNIEnv* _janet_jnienv,
 #define _JANET_DEC_MULTIREF(pref) \
     _janet_dec_multiref(_janet_jnienv, pref)
 
+static void _janet_destroy_multiref(JNIEnv* _janet_jnienv, _janet_multiref* pref)
+{
+    if (!pref) return;
+    _JANET_ASSERT(pref->ref);
+    /* first, array contents (if any) */
+    if (pref->arr) {
+        _JANET_ASSERT(pref->arr->ref && pref->arr->refcount > 0);
+        if (!--pref->arr->refcount) {
+            /* no other multiref pointing to this array */
+            _jh2_janet_rmArray(_janet_jnienv, pref->arr);
+        } else {
+            /* there are others; set ref to 0 in order to
+                   avoid DELETE_LOCAL_REF later on this array */
+                if (pref->ref == pref->arr->ref) pref->ref = 0;
+            }
+        pref->arr = 0;
+    }
+    /* next, string contents (if any) */
+    if (pref->struni) {
+        JNI_RELEASE_STRING_CHARS((jstring)pref->ref, pref->struni);
+        pref->struni = 0;
+    }
+    if (pref->strutf) {
+      JNI_RELEASE_STRING_UTF_CHARS((jstring)pref->ref, pref->strutf);
+      pref->strutf = 0;
+    }
+
+    pref->arrlength = -1;
+}
+
 static void _janet_dec_multiref(JNIEnv* _janet_jnienv, _janet_multiref* pref)
 {
     if (!pref) return;
     _JANET_ASSERT(pref->ref && pref->refcount > 0);
     if (!--pref->refcount) { /* refcount reached 0 -> release resources */
-        /* first, array contents (if any) */
-        if (pref->arr) {
-            _JANET_ASSERT(pref->arr->ref && pref->arr->refcount > 0);
-            if (!--pref->arr->refcount) {
-                /* no other multiref pointing to this array */
-                _jh2_janet_rmArray(_janet_jnienv, pref->arr);
-            } else {
-                /* there are others; set ref to 0 in order to
-                   avoid DELETE_LOCAL_REF later on this array */
-                if (pref->ref == pref->arr->ref) pref->ref = 0;
-            }
-            pref->arr = 0;
-        }
-	/* next, string contents (if any) */
-	if (pref->struni) {
-	    JNI_RELEASE_STRING_CHARS((jstring)pref->ref, pref->struni);
-	    pref->struni = 0;
-	}
-	if (pref->strutf) {
-	  JNI_RELEASE_STRING_UTF_CHARS((jstring)pref->ref, pref->strutf);
-	  pref->strutf = 0;
-	}
-
-        pref->arrlength = -1;
+        _janet_destroy_multiref(_janet_jnienv, pref);
     }
 }
 
+#ifdef __cplusplus
+// Top-level guard to release any resources acquired in the function that
+// have not yet been cleared. It allows us to omit _JANET_DESTRUCT at the
+// top-level scope.
+class _JanetMultirefDeleter {
+    public:
+        _JanetMultirefDeleter(JNIEnv* env, _janet_multiref* refs, size_t size)
+            : env_(env), refs_(refs), size_(size) {}
+
+        ~_JanetMultirefDeleter() {
+            for (int i = 0; i < size_; ++i) {
+                if (refs_[i].ref && refs_[i].refcount > 0) {
+                    _janet_destroy_multiref(env_, &refs_[i]);
+                }
+            }
+        }
+
+    private:
+        JNIEnv* env_;
+        _janet_multiref* refs_;
+        size_t size_;
+};
+
+#define _JANET_DECLARE_MULTIREF_DELETER \
+    _JanetMultirefDeleter _janet_multiref_deleter( \
+        _janet_jnienv, _janet_multirefs, _janet_multirefs_size)
+
+#endif
 
 static void _janet_array_install(JNIEnv* _janet_jnienv, 
                                  _janet_arrHashTable* _janet_arrhtable,
@@ -389,11 +424,9 @@ static void* _janet_array_get_jptr(JNIEnv* _janet_jnienv,
     _janet_array_install(_janet_jnienv, _janet_arrhtable, ref);
     _JANET_ASSERT(ref->arr);
     if (ref->arr->jptr) return ref->arr->jptr;
-#ifdef JANET_JNIEXT_1_2
     if (fastarrays) {
       return _jjp_critical_janet(_janet_jnienv, ref->arr, filename, lineno);
     }
-#endif
     return (*jptrfun)(_janet_jnienv, ref->arr, filename, lineno);
 }
 
@@ -530,8 +563,8 @@ struct _janet_exstruct {
 #define _JANET_RETURN_GLOBAL_V()                   \
    return
 
-#define _JANET_RETURN_GLOBAL_0()                   \
-   return _janet_ret
+#define _JANET_RETURN_GLOBAL_0(ret)                   \
+   return ret
 
 /* eating exceptions */
 
