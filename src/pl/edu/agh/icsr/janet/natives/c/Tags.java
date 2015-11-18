@@ -73,7 +73,7 @@ class Tags {
                     abruptsUsed || // explicit returns or throws
                     abruptingChildren > 0) {
                 /* if some variables need releasing, the try/destruct required */
-                if (abruptingChildren > 0 || usesLocalExceptions) {
+                if ((abruptingChildren > 0 || usesLocalExceptions) && parent != null) {
                     for (int i=0, len = myVariables.size(); i<len; i++) {
                         if (((VariableTag)myVariables.get(i)).mustBeReleased()) {
     //                for (Iterator i = variablesIterator(); i.hasNext();) {
@@ -84,6 +84,9 @@ class Tags {
                         }
                     }
                     if (requiresDestructClause) requiresTryClause = true;
+                }
+                if (usesLocalExceptions) {
+                    requiresTryClause = true;
                 }
                 if (!requiresTryClause) { // delegate exceptions to the parent
                     if (parent != null) {
@@ -102,6 +105,12 @@ class Tags {
             return (requiresTryClause ||
                 (parent != null && parent.isInLocalExceptionScope()));
         }
+
+        boolean isInLocalReturnScope() {
+            return (requiresDestructClause() ||
+                (parent != null && parent.isInLocalReturnScope()));
+        }
+
     /*
         boolean isOutermostPropagator() {
             if (parent != null && parent.isOutermostPropagator()) return false;
@@ -386,7 +395,7 @@ class Tags {
             return (type == LOCAL_VARIABLE);
         }
 
-        String getUse(boolean wantMultiRef) {
+        String getUseInternal(boolean wantMultiRef) {
             if (!wantMultiRef) {
                 return type == SIMPLE ? getName() : "_JANET_DEREF(" + getName() + ")";
             } else {
@@ -396,6 +405,17 @@ class Tags {
                 }
                 return getName();
             }
+        }
+
+        String getUse(boolean wantMultiRef) {
+            String cast = "";
+            if (!wantMultiRef && type != SIMPLE) {
+                String jnitype = getType().getJNIType();
+                if (!jnitype.equals("jobject")) {
+                    cast = "(" + jnitype + ")";
+                }
+            }
+            return cast + getUseInternal(wantMultiRef);
         }
 
         String getDeclaration() {

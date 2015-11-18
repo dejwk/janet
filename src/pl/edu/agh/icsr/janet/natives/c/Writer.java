@@ -281,7 +281,7 @@ public class Writer implements IWriter {
             }
             cr(); write("} _JANET_END_TRY;");
             cr(); write("_JANET_EXCEPTION_CONTEXT_END_");
-            write(getLocalSuffix(dt.getParent()));
+            write(getLocalExceptionSuffix(dt.getParent()));
         }
     }
 
@@ -297,7 +297,9 @@ public class Writer implements IWriter {
         for (Iterator i = dt.variablesIterator(); i.hasNext();) {
             VariableTag vtag = (VariableTag)i.next();
             hasVariables = true;
-            cr(); write(vtag.getVariableRelease() + ";");
+            if (!cplusplus() || dt.getParent() != null) {
+                cr(); write(vtag.getVariableRelease() + ";");
+            }
         }
         return hasVariables;
     }
@@ -312,8 +314,14 @@ public class Writer implements IWriter {
         } catch (ParseException e) { throw new RuntimeException(); }
     }
 
-    private String getLocalSuffix(DeclarationTag dt) {
+    private String getLocalExceptionSuffix(DeclarationTag dt) {
         boolean isLocal = (dt != null && dt.isInLocalExceptionScope());
+        if (isLocal) return "LOCAL";
+        return "GLOBAL" + getTypeSuffix();
+    }
+
+    private String getLocalReturnSuffix(DeclarationTag dt) {
+        boolean isLocal = (dt != null && dt.isInLocalReturnScope());
         if (isLocal) return "LOCAL";
         return "GLOBAL" + getTypeSuffix();
     }
@@ -377,6 +385,9 @@ public class Writer implements IWriter {
             if (functionDclTag.maxMultiRefsUsed > 0) {
                 cr(); write("_JANET_DECLARE_MULTIREFS(" +
                     functionDclTag.maxMultiRefsUsed + ");");
+                if (cplusplus()) {
+                    cr(); write("_JANET_DECLARE_MULTIREF_DELETER;");
+                }
             }
 
             // if needed, declare auxiliary variables for exception handling
@@ -1835,7 +1846,7 @@ public class Writer implements IWriter {
                 cr(); write("_JANET_END_TRY;");
             }
             cr(); write("_JANET_EXCEPTION_CONTEXT_END_");
-            write(getLocalSuffix(dt.getParent()));
+            write(getLocalExceptionSuffix(dt.getParent()));
             currIndent -= tabSize; cr(); write("}");
             writeEndComment(s);
         }
@@ -1920,7 +1931,8 @@ public class Writer implements IWriter {
                 }
             }
             cr();
-            write("_JANET_" + action + "_" + getLocalSuffix(dt) +
+            write("_JANET_" + action + "_" +
+                (action.equals("THROW") ? getLocalExceptionSuffix(dt) : getLocalReturnSuffix(dt)) +
                   "(" + (baseTag == null ? "" : baseTag.getUse(false)) + ");");
             closeWriteContext("} while(0);");
             writeEndComment(s);

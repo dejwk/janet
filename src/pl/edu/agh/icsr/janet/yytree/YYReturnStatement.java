@@ -58,8 +58,12 @@ public class YYReturnStatement extends YYStatement { // JLS 14.16
             }
         }
         // if we are here, assignment check was successful
-        retexpr.setImplicitCastType(mthtype);
-        addExceptions(retexpr.getExceptionsThrown());
+        if (retexpr != null) {
+            retexpr.setImplicitCastType(mthtype);
+            addExceptions(retexpr.getExceptionsThrown());
+        } else {
+            addExceptions(new HashMap());
+        }
     }
 
     public YYExpression getReturnedExpression() { return retexpr; }
