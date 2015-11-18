@@ -46,6 +46,11 @@ public class Synchronized {
             `throw new Exception();`
             /* monitor is unlocked */
         }
+        `synchronized(o2)` {
+            printf("In synchronized code, early return\n");
+            `return;`
+            /* monitor is unlocked */
+        }
     }
 
 }
