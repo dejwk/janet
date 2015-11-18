@@ -1932,7 +1932,9 @@ public class Writer implements IWriter {
             }
             cr();
             write("_JANET_" + action + "_" +
-                (action.equals("THROW") ? getLocalExceptionSuffix(dt) : getLocalReturnSuffix(dt)) +
+                (action.equals("THROW")
+                    ? getLocalExceptionSuffix(dt)
+                    : (getLocalReturnSuffix(dt)) + (expr == null ? "_V" : "")) +
                   "(" + (baseTag == null ? "" : baseTag.getUse(false)) + ");");
             closeWriteContext("} while(0);");
             writeEndComment(s);

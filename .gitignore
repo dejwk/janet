@@ -8,3 +8,7 @@ examples/genfiles
 util/doc
 *.tab.c
 *.o
+doc/src/manual/*.c
+doc/src/manual/*.cc
+doc/src/manual/*.java
+doc/src/manual/*.class
