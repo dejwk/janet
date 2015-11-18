@@ -255,8 +255,18 @@ public class Writer implements IWriter {
         return hasVariables;
     }
 
+    // Optimization to try to avoid generation of try/finally clauses, in cases when
+    // the parent context already provides them, and it is safe to delegate.
+    // (Unsafe to delegate if we need our own destruct clause).
+    private static boolean reallyRequiresTryClause(DeclarationTag dt) {
+        if (!dt.requiresTryClause()) return false;
+        if (dt.getParent() == null) return true;
+        if (!dt.getParent().requiresTryClause()) return true;
+        return dt.requiresDestructClause();
+    }
+
     void writeDclUnitBegin(DeclarationTag dt) throws IOException {
-        if (dt.requiresTryClause()) {
+        if (reallyRequiresTryClause(dt)) {
             cr(); write("_JANET_EXCEPTION_CONTEXT_BEGIN");
             cr(); write("_JANET_TRY {");
             currIndent += tabSize;
@@ -264,7 +274,7 @@ public class Writer implements IWriter {
     }
 
     private void writeDclUnitEnd1(DeclarationTag dt) throws IOException {
-        if (dt.requiresTryClause()) {
+        if (reallyRequiresTryClause(dt)) {
             currIndent -= tabSize;
             cr();
             if (dt.requiresDestructClause()) {
@@ -275,13 +285,13 @@ public class Writer implements IWriter {
     }
 
     private void writeDclUnitEnd2(DeclarationTag dt) throws IOException {
-        if (dt.requiresTryClause()) {
+        if (reallyRequiresTryClause(dt)) {
             if (dt.requiresDestructClause()) {
                 currIndent -= tabSize;
             }
             cr(); write("} _JANET_END_TRY;");
             cr(); write("_JANET_EXCEPTION_CONTEXT_END_");
-            write(getLocalSuffix(dt.getParent()));
+            write(getLocalExceptionSuffix(dt.getParent()));
         }
     }
 
@@ -297,7 +307,9 @@ public class Writer implements IWriter {
         for (Iterator i = dt.variablesIterator(); i.hasNext();) {
             VariableTag vtag = (VariableTag)i.next();
             hasVariables = true;
-            cr(); write(vtag.getVariableRelease() + ";");
+            if (!cplusplus() || dt.getParent() != null) {
+                cr(); write(vtag.getVariableRelease() + ";");
+            }
         }
         return hasVariables;
     }
@@ -312,8 +324,14 @@ public class Writer implements IWriter {
         } catch (ParseException e) { throw new RuntimeException(); }
     }
 
-    private String getLocalSuffix(DeclarationTag dt) {
+    private String getLocalExceptionSuffix(DeclarationTag dt) {
         boolean isLocal = (dt != null && dt.isInLocalExceptionScope());
+        if (isLocal) return "LOCAL";
+        return "GLOBAL" + getTypeSuffix();
+    }
+
+    private String getLocalReturnSuffix(DeclarationTag dt) {
+        boolean isLocal = (dt != null && dt.isInLocalReturnScope());
         if (isLocal) return "LOCAL";
         return "GLOBAL" + getTypeSuffix();
     }
@@ -377,6 +395,9 @@ public class Writer implements IWriter {
             if (functionDclTag.maxMultiRefsUsed > 0) {
                 cr(); write("_JANET_DECLARE_MULTIREFS(" +
                     functionDclTag.maxMultiRefsUsed + ");");
+                if (cplusplus()) {
+                    cr(); write("_JANET_DECLARE_MULTIREF_DELETER;");
+                }
             }
 
             // if needed, declare auxiliary variables for exception handling
@@ -441,14 +462,14 @@ public class Writer implements IWriter {
             }
 
             DeclarationTag dt = getDeclarationTag(nimpl);
-            if (initializers) { // we must start a new block
+            if (initializers && !cplusplus()) { // we must start a new block
                 openWriteContext("{ ");
             }
             writeDclUnitBegin(dt);
             result = nimpl.getStatements().write(this, param);
             writeDclUnitEnd(dt);
             //writeDeclarationUnit(nimpl, param | BODY_SUFFIX);
-            if (initializers) { // we must start a new block
+            if (initializers && !cplusplus()) { // we must start a new block
                 closeWriteContext("}");
             }
         }
@@ -1835,7 +1856,7 @@ public class Writer implements IWriter {
                 cr(); write("_JANET_END_TRY;");
             }
             cr(); write("_JANET_EXCEPTION_CONTEXT_END_");
-            write(getLocalSuffix(dt.getParent()));
+            write(getLocalExceptionSuffix(dt.getParent()));
             currIndent -= tabSize; cr(); write("}");
             writeEndComment(s);
         }
@@ -1920,8 +1941,10 @@ public class Writer implements IWriter {
                 }
             }
             cr();
-            write("_JANET_" + action + "_" + getLocalSuffix(dt) +
-                  (expr == null ? "_V" : "") +
+            write("_JANET_" + action + "_" +
+                (action.equals("THROW")
+                    ? getLocalExceptionSuffix(dt)
+                    : (getLocalReturnSuffix(dt)) + (expr == null ? "_V" : "")) +
                   "(" + (baseTag == null ? "" : baseTag.getUse(false)) + ");");
             closeWriteContext("} while(0);");
             writeEndComment(s);
