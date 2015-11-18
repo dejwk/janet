@@ -255,8 +255,18 @@ public class Writer implements IWriter {
         return hasVariables;
     }
 
+    // Optimization to try to avoid generation of try/finally clauses, in cases when
+    // the parent context already provides them, and it is safe to delegate.
+    // (Unsafe to delegate if we need our own destruct clause).
+    private static boolean reallyRequiresTryClause(DeclarationTag dt) {
+        if (!dt.requiresTryClause()) return false;
+        if (dt.getParent() == null) return true;
+        if (!dt.getParent().requiresTryClause()) return true;
+        return dt.requiresDestructClause();
+    }
+
     void writeDclUnitBegin(DeclarationTag dt) throws IOException {
-        if (dt.requiresTryClause()) {
+        if (reallyRequiresTryClause(dt)) {
             cr(); write("_JANET_EXCEPTION_CONTEXT_BEGIN");
             cr(); write("_JANET_TRY {");
             currIndent += tabSize;
@@ -264,7 +274,7 @@ public class Writer implements IWriter {
     }
 
     private void writeDclUnitEnd1(DeclarationTag dt) throws IOException {
-        if (dt.requiresTryClause()) {
+        if (reallyRequiresTryClause(dt)) {
             currIndent -= tabSize;
             cr();
             if (dt.requiresDestructClause()) {
@@ -275,7 +285,7 @@ public class Writer implements IWriter {
     }
 
     private void writeDclUnitEnd2(DeclarationTag dt) throws IOException {
-        if (dt.requiresTryClause()) {
+        if (reallyRequiresTryClause(dt)) {
             if (dt.requiresDestructClause()) {
                 currIndent -= tabSize;
             }
@@ -452,14 +462,14 @@ public class Writer implements IWriter {
             }
 
             DeclarationTag dt = getDeclarationTag(nimpl);
-            if (initializers) { // we must start a new block
+            if (initializers && !cplusplus()) { // we must start a new block
                 openWriteContext("{ ");
             }
             writeDclUnitBegin(dt);
             result = nimpl.getStatements().write(this, param);
             writeDclUnitEnd(dt);
             //writeDeclarationUnit(nimpl, param | BODY_SUFFIX);
-            if (initializers) { // we must start a new block
+            if (initializers && !cplusplus()) { // we must start a new block
                 closeWriteContext("}");
             }
         }
