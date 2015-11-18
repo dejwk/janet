@@ -607,7 +607,6 @@ _JANET_IMPL_JPTR(J)
 _JANET_IMPL_JPTR(F)
 _JANET_IMPL_JPTR(D)
 
-#ifdef JANET_JNIEXT_1_2
 void* _jjp_critical_janet(JNIEnv* ENV, _janet_arr* ref, 
 			  const char* filename, int lineno)
 {
@@ -620,7 +619,6 @@ void* _jjp_critical_janet(JNIEnv* ENV, _janet_arr* ref,
     ref->releasef = (*ENV)->ReleasePrimitiveArrayCritical;
     return ref->jptr;
 }
-#endif
 
 
 void* _jcp_janet_cptr(JNIEnv* ENV, _janet_arr* ref,
