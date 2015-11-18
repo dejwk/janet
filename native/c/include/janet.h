@@ -512,6 +512,9 @@ struct _janet_exstruct {
     _janet_exception = e,                                                 \
     _JANET_LOCAL_PROPAGATE_EXCEPTION())
 
+#define _JANET_RETURN_LOCAL_V()                    \
+   (_janet_return_in_progress = JNI_TRUE, _JANET_LOCAL_PROPAGATE_RETURN())
+
 #define _JANET_RETURN_LOCAL(retval)                    \
    ((_janet_ret = (retval)), _janet_return_in_progress = JNI_TRUE, _JANET_LOCAL_PROPAGATE_RETURN())
 

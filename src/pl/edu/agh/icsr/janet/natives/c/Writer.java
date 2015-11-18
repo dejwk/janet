@@ -1921,6 +1921,7 @@ public class Writer implements IWriter {
             }
             cr();
             write("_JANET_" + action + "_" + getLocalSuffix(dt) +
+                  (expr == null ? "_V" : "") +
                   "(" + (baseTag == null ? "" : baseTag.getUse(false)) + ");");
             closeWriteContext("} while(0);");
             writeEndComment(s);
