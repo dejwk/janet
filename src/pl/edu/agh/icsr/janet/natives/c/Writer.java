@@ -2073,7 +2073,7 @@ public class Writer implements IWriter {
         case BinaryOperator.PLUS:
             if (!op.getResultType().isPrimitive()) {
                 // string concatenation
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("String concatenation is not supported");
             }
             return isFP(op) ? BINOP_DISCARDS_TYPE : 0;
         case BinaryOperator.MINUS:
