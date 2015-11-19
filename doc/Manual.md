@@ -4,7 +4,7 @@
 ## What is JANET?
 
 JANET simplifies development of Java-to-native interfaces by allowing you to mix
-Java and native syntax in your source files. JANET is two things:
+Java and native code (C and C++) in your source files. JANET is two things:
 
 1. A language extension that defines how the code can be mixed in `.janet` files;
 2. A code generating tool that translates `.janet` files into Java and native source files that
@@ -13,7 +13,7 @@ Java and native syntax in your source files. JANET is two things:
 The language extension allows you to define your native methods in-place. Furthermore, the native
 definitions can contain snippets of Java code, in which you can use most Java expressions and
 certain statements (e.g. `return`, `synchronized`, `try/catch/finally`), as well as certain new
-operators (e.g. to convert strings and primitive arrays between Java and native counterparts).
+operators, e.g. to convert strings and primitive arrays between Java and native counterparts.
 JANET tool translated these Java snippets to JNI calls.
 
 ## What is JANET not?
@@ -22,6 +22,13 @@ JANET is not a complete build system. It will not build your Java code and your 
 libraries. The exact way of building shared libraries depends on an operating system and on a
 compiler. Also, there are many different valid strategies for packaging native code into libraries.
 Making these choices and building native libs is still on you.
+
+For the most part, JANET does not understand your native code. It only does cursory parsing to
+detect high-level constructs like comments, blocks, and paired parentheses. It makes certain
+things simpler - e.g. you don't need to provide paths to resolve the includes - but it also
+introduces some constraints on the native code you write, and some weirdness in the operator
+syntax. (In contrast, JANET does analyze all your Java code semantically, so it is much smarter
+about it than about your native code).
 
 ## Preliminaries
 
@@ -34,8 +41,9 @@ achieve this by running the following commands:
 
 from JANET's root directory.
 
-To build native libraries, you'll need to tell your compiler where to find the JNI header file.
-It is normally found in `${JAVA_HOME}/include/${PLATFORM}/jni.h`. Assuming that you have `javac`
+To build native libraries, you'll need to tell your compiler where to find the JNI header file and
+its dependencies. The JNI heaer file
+is normally found in `${JAVA_HOME}/include/${PLATFORM}/jni.h`. Assuming that you have `javac`
 on your path, you should be able to resolve `${JAVA_HOME}` and `${PLATFORM}` in the following way:
 
     $ export JAVA_HOME=`realpath \`which javac\` | sed 's/\/bin\/javac//'`
@@ -44,8 +52,8 @@ on your path, you should be able to resolve `${JAVA_HOME}` and `${PLATFORM}` in 
 ## Basic usage
 
 You may remember that Java allows you to _declare_ a method as `native`. JANET
-extends it by allowing you to provide the implementation inline. As an example,
-let's create a file `manual/Main.janet`:
+extends it by allowing you to immediately provide the native _implementation_ inline. As an
+example, let's create a file (manual/Main.janet)[src/manual/Main.janet]:
 
 ```Java
 package manual;
@@ -133,8 +141,8 @@ Reference to a method's parameter, which you have used in the previous example, 
 simple Java expression. Importantly, the back-tick syntax can be used not just for referring to
 parameters, but for embedding nearly _any_ Java expression, including field accesses, method
 invocations, literals, `new`, `instanceof`, array access, and more (see inclusions and exclusions
-in README.md). You can also assign values to Java variables. The following code snippet illustrates
-the point:
+in the [README](../README.md)). You can also assign values to Java variables. The following code
+snippet illustrates the point:
 
 ```Java
 public class Main {
@@ -182,10 +190,10 @@ Which yields:
 ## Evaluation semantics
 
 Importantly, even though the embedded Java expressions are internally translated to JNI
-calls in native code, Janet preserves strict and safe Java evaluation semantics. Method parameters
-are evaluated right-to-left, and any exceptions immediately terminate evaluation and get
-propagated. Dereferencing null causes NullPointerException, rather than program crash. This is
-illustrated by the following example:
+calls, JANET preserves strict and safe Java evaluation semantics. Method parameters
+are evaluated left-to-right, and any exceptions immediately terminate evaluation and get
+propagated. Dereferencing `null` causes a `NullPointerException`, rather than program crash. It is
+illustrated in the following example:
 
 ```Java
 public class Main {
@@ -280,8 +288,8 @@ Which will print
     [0, 1, 2, 3, 4]
     bar(long)
 
-Note the cast in front of the `#()` expression in `embeddedMethodCall()`. JANET takes a safe
-path and requires such casts for disambiguation - in this case, to specify which of the two `bar()`
+Note the cast in front of the `#()` expression in `embeddedMethodCall()`. JANET plays it safe
+and requires such casts for disambiguation - in this case, to specify which of the two `bar()`
 methods should be called.
 
 ## Native blocks
@@ -316,11 +324,16 @@ As you can see, in the native block you can read local variables in the Java sco
 you cannot set any such local variables. You still can set fields and call methods to change
 state, though.
 
+Use native blocks if you have pure-Java boilerplate either at the beginning or at the end of
+your native method. Running Java code in Java will generally be more efficient than calling it
+via JNI calls. 
+
 ## Static native blocks
 
-In all but trivial cases, you will want to include some boilerplate native code in your source
-files, such as include directives or license headers. You can so so using static native blocks,
-that look the same as 'plain' native blocks except that they are defined outside of any method:
+In all but trivial cases, you will want to include raw native code into your source
+files, such as include directives, license headers, or helper functions. You can so so using static
+native blocks, that look the same as regular native blocks except that they are defined outside of
+        any method:
 
 ```Java
 public class Main {
@@ -352,13 +365,13 @@ will match the order of their declaration in the `.janet` file.
 
 You cannot embed any Java code in static native blocks.
 
-Note how we flushed both Java's `System.out` and C++'s `std::cout`. This is necessary if you
-want to get sequentially consistent log output. It is so because both streams are independently
-buffered in their respective language libraries.
+Note how we flushed both Java's `System.out` and C++'s `std::cout` in this example. This is
+necessary if you want to get sequentially consistent log output. It is so because both streams are
+independently buffered in their respective language libraries.
 
 ## Return statements and native control flow
 
-So far, our native methods were declared `void`. If your native method has a non-void result,
+So far, our native methods were all `void`. If your native method has a non-void result,
 you will want to use a `return` statement.
 
 As a rule, _always put the entire `return` statement in back-tick quotes_; for example:
@@ -430,16 +443,16 @@ Or, in the multi-line form:
 
 There are tree ways to handle and convert strings in Janet:
 
-1. Convert Java strings to and from C const char* arrays using the modified UTF8 encoding;
+1. Convert Java strings to and from C const char* arrays using the modified UTF-8 encoding;
 2. Convert Java strings to and from C const jchar* (uint32) arrays, representing Unicode
    characters;
-3. Using Java APIs to refer to the original Java string content.
+3. Using Java APIs to refer to string content directly.
 
 ### UTF-8 strings
 
 Janet provides a pair of operators: `#&` and `#$`, to convert Java strings to const char* arrays,
 and vice versa. The characters are encoded in Sun's
-[modified UTF8](https://docs.oracle.com/javase/8/docs/api/java/io/DataInput.html#modified-utf-8)
+[modified UTF-8](https://docs.oracle.com/javase/8/docs/api/java/io/DataInput.html#modified-utf-8)
 format. The following snippet takes a Java string, and returns a new string that contains two
 concatenated repetition of the input string, using these Janet operators:
 
@@ -478,8 +491,8 @@ Which prints:
     Hola UTF! Hola UTF! 
 
 Depending on how JVM represents strings internally, the `#&` operator may or may not make a copy
-of the string's data. You should not assume either way. Don't be tempted to cast away the const
-operator to directly mutate the data.
+of the string's data. You should not assume either way. Don't be tempted to cast away constness
+to directly mutate the data.
 
 The pointer returned by the `#&` operator is valid till the end of the block. Using it past that
 block results in undefined behavior. If you need to make a long-lived reference to a Java string,
@@ -490,24 +503,24 @@ not guaranteed by the JNI specification. That said, it has once been documented 
 and appeared in print, and it was close to making it to the JNI specification (See this
 [Stack Overflow discussion](http://stackoverflow.com/questions/16694239/java-native-code-string-ending)),
 and therefore so much existing code depends on it that no sane JVM implementer is likely to diverge
-from it.
+from this de-facto standard.
 
 The `#$` operator takes a zero-terminated modified UTF-8 character array, and returns a new Java
-String with the equivalent content. The data is copied, so it is your responsibility to release
+string with the same content. The data is copied, so it is your responsibility to release
 the original memory buffer (in our example, managed by `vector<char>`).
 
-You may have noted the weirdness that we've declared the `vector` at the beginning of the method,
-and wrapped everything else in a nested block. Unfortunately, this is currently necessary, due
-to the way Janet handles Java exceptions in generated C++ code (with setjmp/longjmp rather than
-C++ exceptions). As a consequence, any automatic object with non-trivial destructor (such as
-`std::vector`) must be declared outside of any block with embedded Java (using back-ticks),
-or else you'll get undefined behavior in case the embedded Java throws any exceptions.
+You may have noticed that we've declared the `vector` at the beginning of the method,
+and wrapped everything else in a nested block. Unfortunately, this weirdness is currently
+necessary, due to the way Janet handles Java exceptions in generated C++ code (with
+setjmp/longjmp rather than C++ exceptions). As a consequence, any automatic object with non-trivial
+destructor (such as `std::vector`) must be declared outside of any block with embedded Java (using
+back-ticks), or else you'll get undefined behavior in case the embedded Java throws any exceptions.
 
 ### Unicode strings
 
 Janet allows to convert Java strings to and from two-byte Unicode, represented in C/C++ as
-`const jchar*` array. (The `jchar` is unsigned 16-bit integer). You can do that using another
-pair of operators: '&' and '#$$':
+`const jchar*` array. (The `jchar` is unsigned 16-bit integer). You can perform the conversions
+using the following pair of operators: `&` and `#$$`:
 
 ```Java
 public class Main {
@@ -536,8 +549,8 @@ Which prints
     ...
     Hola Unicode! Hola Unicode!
 
-As you can see, te usage of these operators is similar to the UTF-8 operators, with few important
-exceptions:
+As you can see, te usage of these operators is similar to the use of the UTF-8 operators, with a
+few important exceptions:
 
 * When converting from Java string to `const jchar*` with the `&` operator, the resulting array is
   _not_ zero-terminated. You must manage string length explicitly.
@@ -546,14 +559,15 @@ exceptions:
 
 Just like with UTF-8 strings, the pointers are valid till the end of the block.
 
-The '&' operator may or may not copy the original string content. In theory, JVM is more likely
-to internally represent strings in a format compatible with const jchar* arrays, but don't get
-your hopes too high; many JVMs will still make a copy.
+At the discretion of the underlying JNI implementation, the '&' operator may or may not copy the
+original string content. In theory, JVM is more likely to internally represent strings in a format
+compatible with const jchar* arrays, but don't get your hopes too high; many JVMs will still make
+a copy.
 
 ### Java APIs
 
 If all you need is to access individual characters or small fragments of a Java string, it may
-be the most efficient to simply use methods of the `String` class from your native code:
+be best to simply use methods of the `String` class as embedded expressions:
 
 ```Java
 public class Main {
@@ -591,7 +605,7 @@ a loop will hurt performance.
 JANET offers two ways of interacting with Java arrays from native code:
 
 * Using standard Java APIs, that is, embedded Java array acess and array creation expressions;
-* For arrays or primitive types, JANET provides an `&` operator that returns a native pointer to
+* For arrays or primitive types, JANET provides the `&` operator that returns a native pointer to
   mutable array contents.
 
 ### Java APIs
@@ -621,18 +635,14 @@ Which prints
     ...
     [Hello, from, Janet!]
 
-In fact, as you may have noticed, the entire sequence of Java statements is enclosed in back-ticks;
-the only piece of native code in this example are the three native string literals.
-
 Use this technique in the following situations:
 
-* Handling arrays of reference types;
-* Handling higher dimensions of multi-dimensional arrays;
+* Handling arrays of reference types, including upper dimensions of multi-dimensional arrays;
 * Accessing few individual items of large primitive arrays.
 
 ### Obtaining native array pointers
 
-In the following example, we sort a Java array of int, using C++ `std::sort`, using the `&`
+In the following example, we sort a Java array of `int` with C++ `std::sort`, using the `&`
 operator to obtain the direct array pointer:
 
 ```Java
@@ -659,9 +669,9 @@ Which prints
     Array after sorting: [0, 2, 19, 21, 36, 38, 53, 55, 70, 72]
 
 The `&` operator returns a pointer to the native equivalent of the appropriate Java type. In this
-case, the operator will return jint*, that is, a pointer to an array of signed 32-bit integers).
+case, the operator will return jint*, that is, a pointer to an array of signed 32-bit integers.
 
-Even though 'it feels like' you're getting a direct pointer, the JVM is still at a discretion to
+Even though it feels like you're getting a direct pointer, the JVM is still at its discretion to
 internally make the copy of the array before returning the pointer to you, and then copy data back
 when the pointer is released (the release is performed implicitly at the end of the block).
 Obviously, it can be very inefficient for large arrays. If you compile your JANET-generated
@@ -696,7 +706,7 @@ statements: `try`, `catch`, `finally` and `throw`:
 
 Generally, when embedding Java statements that contain blocks, like the try/catch/finally
 statement above, you have some flexibility whether
-to use native blocks (like above) or Java blocks, like in the following equivalent example:
+to use native blocks, like above, or Java blocks, like in the following equivalent example:
 
 ```Java
     native "C++" static void tryCatchFinally() {
@@ -711,16 +721,16 @@ to use native blocks (like above) or Java blocks, like in the following equivale
     }
 ```
 
-As you can see, you can then use back-ticks to embed native statements in the Java code. You may
-want to use this flavor in Java-heavy fragments of your code.
+As you can see, in the latter case you use back-ticks to recursively embed native statements in the
+Java code. You may want to use this syntactic flavor in Java-heavy fragments of your code.
 
-Exception semantics is exactly as in pure Java. Other embedded Java statements and expressions,
-such as early return or `synchronized`, play well with exceptions and you can use them safely
-as long as you observe precautions discussed in the section on control flow.
+Exception handling semantics is the sae as in pure Java. Embedded Java statements and
+expressions, such as early return or `synchronized`, play well with exceptions and you can use
+them safely as long as you observe precautions discussed in the section on control flow.
 
 ## Synchronization
 
-To synchronize on Java monitors, simply embed the 'synchronized' statement into the native code,
+To synchronize on Java monitors, simply embed the `synchronized` statement into the native code,
 as in the following example:
 
 ```Java
@@ -742,5 +752,5 @@ public class Main {
 
 As you can see, the embedded `synchronized` statement plays well with embedded `return`. It also
 plays well with embedded exception statements. JANET-generated code will release all the monitors
-when returning abruptly.
+as needed.
 
