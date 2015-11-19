@@ -84,7 +84,7 @@ public class YYTryStatement extends YYStatement {
     class DumpIterator implements Iterator {
         int i=1;
         Object next = body;
-        public boolean hasNext() { return i<3; }
+        public boolean hasNext() { return i<4; }
         public Object next() {
             Object ret = i==1 ? body : i==2 ? catches : i==3 ? finly : null;
             i++;
