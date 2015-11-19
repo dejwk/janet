@@ -10,10 +10,16 @@ Java and native syntax in your source files. JANET is two things:
 2. A code generating tool that translates `.janet` files into Java and native source files that
    contain generated JNI bindings.
 
+The language extension allows you to define your native methods in-place. Furthermore, the native
+definitions can contain snippets of Java code, in which you can use most Java expressions and
+certain statements (e.g. `return`, `synchronized`, `try/catch/finally`), as well as certain new
+operators (e.g. to convert strings and primitive arrays between Java and native counterparts).
+JANET tool translated these Java snippets to JNI calls.
+
 ## What is JANET not?
 
 JANET is not a complete build system. It will not build your Java code and your native shared
-libraries. The exact way of building shared libraries depends on an operatin system and on a
+libraries. The exact way of building shared libraries depends on an operating system and on a
 compiler. Also, there are many different valid strategies for packaging native code into libraries.
 Making these choices and building native libs is still on you.
 
@@ -92,7 +98,7 @@ VM where to find the native library (or else you will get an UnsatisfiedLinkErro
 by setting the 'java.library.path' property accordingly:
 
     $ java -Djava.library.path=. manual.Main
-    $ 5
+    5
 
 Woohoo!
 
@@ -118,8 +124,8 @@ public class Main {
 And, after building:
 
     $ java -Djava.library.path=manual manual.Main
-    $ ...
-    $ 8
+    ...
+    8
 
 ## Embedding other Java expressions in native code
 
@@ -169,16 +175,72 @@ public class Main {
 
 Which yields:
 
-    $ In foo()
-    $ More sophisticated example
-    $ 5
+    In foo()
+    More sophisticated example
+    5
 
-### Evaluation semantics
+## Evaluation semantics
 
 Importantly, even though the embedded Java expressions are internally translated to JNI
-calls in native code, Janet preserves strict Java evaluation semantics. Method parameters
+calls in native code, Janet preserves strict and safe Java evaluation semantics. Method parameters
 are evaluated right-to-left, and any exceptions immediately terminate evaluation and get
-propagated out of the method.
+propagated. Dereferencing null causes NullPointerException, rather than program crash. This is
+illustrated by the following example:
+
+```Java
+public class Main {
+    public static void main(String[] args) {
+        ...
+        try {
+            main.testExceptionPropagation();
+            throw new AssertionError();
+        } catch (Exception e) {
+            if (e.getMessage().equals("from throwingMethod")) {
+                System.out.println("Exception thrown and caught as expected.");
+            } else {
+                throw e;
+            }
+        }
+
+        try {
+            main.testNullPointer();
+            throw new AssertionError();
+        } catch (NullPointerException e) {
+            System.out.println("NullPointerException caught as expected.");
+        }
+    }
+
+    ...
+    int throwingMethod() throws Exception {
+        throw new Exception("from throwingMethod");
+    }
+
+    int testMethod() {
+        throw new AssertionError();
+    }
+
+    void foo(int a, int b) {
+        throw new AssertionError();
+    }
+
+    native "C++" void testExceptionPropagation() {
+        // We expect to see the exception propagated,
+        // and neither testMethod() nor foo() to be called
+        `foo(throwingMethod(), testMethod())`;
+    }
+
+    native "C++" void testNullPointer() {
+        // Should throw NPE,
+        `Main obj = null; obj.testMethod();`
+    }
+}
+```
+
+Which yields
+
+    ...
+    Exception thrown and caught as expected.
+    NullPointerException caught as expected.
 
 ## Using native sub-expressions in embedded Java expressions
 
@@ -293,7 +355,77 @@ You cannot embed any Java code in static native blocks.
 Note how we flushed both Java's `System.out` and C++'s `std::cout`. This is necessary if you
 want to get sequentially consistent log output. It is so because both streams are independently
 buffered in their respective language libraries.
- 
+
+## Return statements and native control flow
+
+So far, our native methods were declared `void`. If your native method has a non-void result,
+you will want to use a `return` statement.
+
+As a rule, _always put the entire `return` statement in back-tick quotes_; for example:
+
+```Java
+`retun #(i);`  // Good!
+```
+
+rather than
+
+```Java
+`return i;`    // Yuck!
+```Java
+
+It is important for program correctness, due to the way JANET propagates Java exceptions, as
+explained in detail in the TODO(Implementation Notes).
+
+Similarly, you need to follow certain rules when using native control flow statements, such as
+`break`, `continue`, or `goto`. Specifically, these should never break out of a block that
+directly contains any embedded Java code. For example:
+
+```Java
+while (`foo()`) {
+    if (y()) coninue;  // OK; this is a pure-native block
+    if (x()) break;  // OK; this is a pure-native block
+}
+
+for (int = 0; i < 10; ++i) {
+    if (`arr[#(i)] > 0`) break;  // Yikes! Breaking out of the block.
+}
+
+for (int = 0; i < 10; ++i) {
+    bool result;
+    { result = `arr[#(i)] > 0`; }
+    if (result) break;  // This is OK now.
+}
+```Java
+
+This restriction is likely to be lifted in the future for C++ (but not for C).
+
+## Variable declarations
+
+Your native code may contain embedded declarations of Java local variables, and use them just
+like in Java; for instance:
+
+    `List list = new ArrayList();`
+    ...
+    `list.add(new Integer(#(x));`
+    ...
+
+## Compound statements
+
+You can skip adjacend back-tick characters if you have a sequence of embedded Java statements;
+for example:
+
+    native "C++" int foo() {
+        `int i = 0; i = i + 1; return i;`
+    }
+
+Or, in the multi-line form:
+
+    native "C++" int foo() {
+        `int i = 0;
+        i = i + 1;
+        return i;`
+    }
+
 ## Strings
 
 There are tree ways to handle and convert strings in Janet:
@@ -305,7 +437,7 @@ There are tree ways to handle and convert strings in Janet:
 
 ### UTF-8 strings
 
-Janet provides a pair of operators: `#&` and `#$', to convert Java strings to const char* arrays,
+Janet provides a pair of operators: `#&` and `#$`, to convert Java strings to const char* arrays,
 and vice versa. The characters are encoded in Sun's
 [modified UTF8](https://docs.oracle.com/javase/8/docs/api/java/io/DataInput.html#modified-utf-8)
 format. The following snippet takes a Java string, and returns a new string that contains two
@@ -455,4 +587,160 @@ methods. That said, JNI method calls are expensive, so making thousands of calls
 a loop will hurt performance.
 
 ## Arrays
+
+JANET offers two ways of interacting with Java arrays from native code:
+
+* Using standard Java APIs, that is, embedded Java array acess and array creation expressions;
+* For arrays or primitive types, JANET provides an `&` operator that returns a native pointer to
+  mutable array contents.
+
+### Java APIs
+
+In the following example, we use embedded Java expressions and assignments to create and initialize
+a Java array out of native strings:
+
+```Java
+public class Main {
+    ...
+    public static void main(String[] args) {
+        ...
+        System.out.println(Arrays.toString(main.helloFromJanet()));
+    }
+    ...
+    native "C++" String[] helloFromJanet() {
+        `String[] result = new String[3];
+        result[0] = #$("Hello");
+        result[1] = #$("from");
+        result[2] = #$("Janet!");
+        return result;`
+    }
+```
+
+Which prints
+
+    ...
+    [Hello, from, Janet!]
+
+In fact, as you may have noticed, the entire sequence of Java statements is enclosed in back-ticks;
+the only piece of native code in this example are the three native string literals.
+
+Use this technique in the following situations:
+
+* Handling arrays of reference types;
+* Handling higher dimensions of multi-dimensional arrays;
+* Accessing few individual items of large primitive arrays.
+
+### Obtaining native array pointers
+
+In the following example, we sort a Java array of int, using C++ `std::sort`, using the `&`
+operator to obtain the direct array pointer:
+
+```Java
+public class Main {
+    ...
+    public static void main(String[] args) {
+        ...
+        int arr[] = new int[10];
+        for (int i=0; i<10; i++) { arr[i] = (i * 1549) % 87; }
+        System.out.println("Array before sorting: " + Arrays.toString(arr));
+        sortArray(arr);
+        System.out.println("Array after sorting: " + Arrays.toString(arr));
+    }
+    ...
+    native "C++" static void sortArray(int[] arr) {
+        std::sort(`&arr`, `&arr` + `arr.length`);
+    }
+```
+
+Which prints
+
+    ...
+    Array before sorting: [0, 70, 53, 36, 19, 2, 72, 55, 38, 21]
+    Array after sorting: [0, 2, 19, 21, 36, 38, 53, 55, 70, 72]
+
+The `&` operator returns a pointer to the native equivalent of the appropriate Java type. In this
+case, the operator will return jint*, that is, a pointer to an array of signed 32-bit integers).
+
+Even though 'it feels like' you're getting a direct pointer, the JVM is still at a discretion to
+internally make the copy of the array before returning the pointer to you, and then copy data back
+when the pointer is released (the release is performed implicitly at the end of the block).
+Obviously, it can be very inefficient for large arrays. If you compile your JANET-generated
+source files with a `#define JANET_USE_FAST_ARRAYS 1`, JANET will internally use a different
+JNI method (`GetPrimitiveArrayCritical`), which has higher likelihood of obtaining a direct
+pointer, but comes with
+[its own set of restrictions](http://docs.oracle.com/javase/7/docs/technotes/guides/jni/spec/functions.html#GetPrimitiveArrayCritical).
+If you do decide to use this flag, make sure that the application of the `&` operator is the _only_
+backtick-embedded Java code in its block.
+
+If you happen to apply the `&` operator multiple times to the same array instance within a
+single code block, as we in fact did in the example above, JANET guarantees that you will always
+get the same native pointer (even in case if the copy of the array has been made).
+
+## Exceptions
+
+You can throw and handle Java exceptions in your native methods by embedding familiar Java
+statements: `try`, `catch`, `finally` and `throw`:
+
+```Java
+    native "C++" static void tryCatchFinally() {
+        `try` {
+            std::cout << "In try\n";
+            `throw new Exception();`
+        } `catch (Exception e)` {
+            std::cout << "In catch\n";
+        } `finally` {
+            std::cout << "In finally\n";
+        }
+    }
+```
+
+Generally, when embedding Java statements that contain blocks, like the try/catch/finally
+statement above, you have some flexibility whether
+to use native blocks (like above) or Java blocks, like in the following equivalent example:
+
+```Java
+    native "C++" static void tryCatchFinally() {
+        `try {
+            `std::cout << "In try\n";`
+            throw new Exception();
+        } catch (Exception e) {
+            `std::cout << "In catch\n";`
+        } finally {
+            `std::cout << "In finally\n";`
+        }`
+    }
+```
+
+As you can see, you can then use back-ticks to embed native statements in the Java code. You may
+want to use this flavor in Java-heavy fragments of your code.
+
+Exception semantics is exactly as in pure Java. Other embedded Java statements and expressions,
+such as early return or `synchronized`, play well with exceptions and you can use them safely
+as long as you observe precautions discussed in the section on control flow.
+
+## Synchronization
+
+To synchronize on Java monitors, simply embed the 'synchronized' statement into the native code,
+as in the following example:
+
+```Java
+public class Main {
+    ...
+    public static void main(String[] args) {
+        ...
+        boolean heldLock = synchronizedTest(main);
+        if (!heldLock || Thread.holdsLock(main)) throw new AssertionError();
+    }
+    ...
+    native "C++" static boolean synchronizedTest(Object target) {
+        `synchronized(target) {
+            `std::cout << "In synchronized\n";`
+            return Thread.holdsLock(target);
+         }`
+    }
+```
+
+As you can see, the embedded `synchronized` statement plays well with embedded `return`. It also
+plays well with embedded exception statements. JANET-generated code will release all the monitors
+when returning abruptly.
 
