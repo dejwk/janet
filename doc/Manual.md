@@ -370,8 +370,8 @@ As a rule, _always put the entire `return` statement in back-tick quotes_; for e
 rather than
 
 ```Java
-`return i;`    // Yuck!
-```Java
+return i;    // Yikes!
+```
 
 It is important for program correctness, due to the way JANET propagates Java exceptions, as
 explained in detail in the TODO(Implementation Notes).
@@ -382,7 +382,7 @@ directly contains any embedded Java code. For example:
 
 ```Java
 while (`foo()`) {
-    if (y()) coninue;  // OK; this is a pure-native block
+    if (y()) continue;  // OK; this is a pure-native block
     if (x()) break;  // OK; this is a pure-native block
 }
 
@@ -395,7 +395,7 @@ for (int = 0; i < 10; ++i) {
     { result = `arr[#(i)] > 0`; }
     if (result) break;  // This is OK now.
 }
-```Java
+```
 
 This restriction is likely to be lifted in the future for C++ (but not for C).
 
