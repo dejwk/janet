@@ -53,7 +53,7 @@ on your path, you should be able to resolve `${JAVA_HOME}` and `${PLATFORM}` in 
 
 You may remember that Java allows you to _declare_ a method as `native`. JANET
 extends it by allowing you to immediately provide the native _implementation_ inline. As an
-example, let's create a file (manual/Main.janet)[src/manual/Main.janet]:
+example, let's create a file [manual/Main.janet](src/manual/Main.janet):
 
 ```Java
 package manual;
