@@ -692,8 +692,13 @@ static void _janet_eat_exception(JNIEnv* _janet_jnienv, volatile jthrowable* t) 
               _JANET_LOCV_ASSIGN_NEW_MULTIREF(exobj, _janet_ex.catched), \
               _janet_exception = 0, 1))
 
+/* We can get here as a fall-through from try or catch, so jmpmark may be
+ * anything. We want to set it to FINALLY_MARKER, so that an exception thrown
+ * from the finally clause propagates out of the finally clause. */
 #define _JANET_FINALLY                              \
-   if ((_janet_ex.jmpmark & ~_JANET_EARLY_RETURN_MARKER) <= _JANET_FINALLY_MARKER)
+   if ((_janet_ex.jmpmark & ~_JANET_EARLY_RETURN_MARKER) <= _JANET_FINALLY_MARKER ? \
+           (_janet_ex.jmpmark = _JANET_FINALLY_MARKER | \
+               (_janet_ex.jmpmark & _JANET_EARLY_RETURN_MARKER), 1) : 0)
 
 #define _JANET_DESTRUCT
 
