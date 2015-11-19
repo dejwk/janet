@@ -370,8 +370,8 @@ As a rule, _always put the entire `return` statement in back-tick quotes_; for e
 rather than
 
 ```Java
-`return i;`    // Yuck!
-```Java
+`return i;`    // Yikes!
+```
 
 It is important for program correctness, due to the way JANET propagates Java exceptions, as
 explained in detail in the TODO(Implementation Notes).
