@@ -83,8 +83,8 @@ Goal
     ;
 
 CStatementsWithJavaTail
-    : BrokenJavaStatement             { if ($1 != null) { $$ = peekChunk().add($1);} else { $$ = peekChunk().expand(cxt); } }
-    | CStatements BrokenJavaStatement { if ($2 != null) { $$ = $1.add($2);} else { $$ = $1.expand(cxt); } }
+    : BrokenJavaStatement             { if ($1 != null) { $$ = peekChunk().add($1);} else { $$ = peekChunk(); } }
+    | CStatements BrokenJavaStatement { if ($2 != null) { $$ = $1.add($2);} else { $$ = $1; } }
     ;
 
 CStatements_opt

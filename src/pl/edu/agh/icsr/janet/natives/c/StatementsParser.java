@@ -425,10 +425,10 @@ case 7:
 { yyval = null; yyclearin(); yyreturn(YYRET_EPSILON); ;
     break;}
 case 8:
-{ if (((YYStatement)(yyvs.tth(0))) != null) { yyval = peekChunk().add(((YYStatement)(yyvs.tth(0))));} else { yyval = peekChunk().expand(cxt); } ;
+{ if (((YYStatement)(yyvs.tth(0))) != null) { yyval = peekChunk().add(((YYStatement)(yyvs.tth(0))));} else { yyval = peekChunk(); } ;
     break;}
 case 9:
-{ if (((YYStatement)(yyvs.tth(0))) != null) { yyval = ((YYCChunk)(yyvs.tth(-1))).add(((YYStatement)(yyvs.tth(0))));} else { yyval = ((YYCChunk)(yyvs.tth(-1))).expand(cxt); } ;
+{ if (((YYStatement)(yyvs.tth(0))) != null) { yyval = ((YYCChunk)(yyvs.tth(-1))).add(((YYStatement)(yyvs.tth(0))));} else { yyval = ((YYCChunk)(yyvs.tth(-1))); } ;
     break;}
 case 10:
 {;
