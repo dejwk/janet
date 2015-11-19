@@ -82,13 +82,10 @@ And you should see:
     Hello World!
     Hello via JNI
 
-### More examples
+### More examples and documentation
 
-See the `examples` subdirectory and its makefile.
-
-## Documentation
-
-See the [white paper](http://janet-project.sourceforge.net/papers/janet.pdf).
+Start with the [Manual](doc/Manual.md); see also the [examples](examples/) subdirectory
+and its makefile.
 
 ## Supported syntax
 
