@@ -18,7 +18,7 @@ taking care of hairy issues such as resolving signatures and references,
 checking for exceptions, converting strings, pinning arrays, reference
 counting, etc.
 
-For more information, see the [Manual](doc/Manual.md).
+For more information, see the [Manual](https://github.com/dejwk/janet/blob/master/doc/Manual.md).
 
 ## Licensing
 
