@@ -6,6 +6,7 @@
   </target>
  
   <property name="src.dir" value="src"/>
+  <property name="doc.dir" value="doc"/>
   <property name="build.dir" value="classes"/>
   <property name="examples.dir" value="examples"/>
   <property name="release.dir" value="release"/>
@@ -37,19 +38,20 @@
     <ant dir="util" target="javadoc"/>
   </target>
 
-  <target name="release" depends="build,build-util,build-util-doc">
+  <target name="release" depends="build,build-util">
     <mkdir dir="${release.dir}"/>
     <copy todir="${release.dir}">
       <fileset dir=".">
         <include name="janet.jar"/>
-        <include name="util/janet-util.jar"/>
         <include name="README.md"/>
         <include name="LICENSE"/>
       </fileset>
     </copy>
+    <copy todir="${release.dir}" file="util/bin/janet-util.jar"/>
     <chmod file="${release.dir}/janet.jar" perm="ugo+x"/>
+    <chmod file="${release.dir}/janet-util.jar" perm="ugo+x"/>
     <copy todir="${release.dir}/doc">
-      <fileset dir="util/doc"/>
+      <fileset dir="doc"/>
     </copy>
     <copy todir="${release.dir}/examples">
       <fileset dir="${examples.dir}">
@@ -90,6 +92,18 @@
       <fileset dir="${examples.dir}" includes="**/*.so"/>
       <fileset dir="${examples.dir}" includes="**/*.a"/>
       <fileset dir="${examples.dir}" includes="**/*~" defaultexcludes="no"/>
+    </delete>
+    <delete>
+      <fileset dir="${doc.dir}" defaultexcludes="no">
+        <include name="**/*.so"/>
+        <include name="**/*.a"/>
+        <include name="**/*.cc"/>
+        <include name="**/*.c"/>
+        <include name="**/*.java"/>
+        <include name="**/*.class"/>
+        <include name="**/*.o"/>
+        <include name="**/*~"/>
+      </fileset>
     </delete>
   </target>  
 
