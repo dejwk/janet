@@ -387,7 +387,8 @@ return i;    // Yikes!
 ```
 
 It is important for program correctness, due to the way JANET propagates Java exceptions, as
-explained in detail in the TODO(Implementation Notes).
+explained in detail in the [Understanding the generated code](#understanding-the-generated-code)
+section.
 
 Similarly, you need to follow certain rules when using native control flow statements, such as
 `break`, `continue`, or `goto`. Specifically, these should never break out of a block that
@@ -754,3 +755,97 @@ As you can see, the embedded `synchronized` statement plays well with embedded `
 plays well with embedded exception statements. JANET-generated code will release all the monitors
 as needed.
 
+## Understanding the generated code
+
+### Embedded expressions
+
+JANET performs complete semantic analysis of all the Java code, but only very limited analysis
+of your native code. It merely detects blocks, comments and matching parentheses. For this
+reason, your native code is largely copied raw. JANET will do the following processing:
+
+* it will decorate some of your blocks, by adding various auxiliary variable declarations,
+  initialization code, and stack unwinding code;
+* it will replace all the embedded Java with generated code, inserting special macros and JNI
+  calls.
+
+When JANET processes an embedded Java expression, such as `` `foo(x)` ``, it does not understand or
+change the surrounding native context, so it must assume that the context may be expecting an
+expression (e.g. as in ``bar(`foo(x)`)``. It implies that Java expressions must be converted to
+native expressions. It turns out to be challenging, because Java expressions often require series
+of operations and JNI calls. For example, to guarantee Java-compatible semantics of a method
+invocation, JANET must place a null-check of the target, evaluate all the arguments in the proper
+order, make the JNI call to invoke the method, and finally check for any exceptions. 
+
+JANET solves this problem by extensively using the comma operator
+(hidden in macros to some extent), and auxiliary variables inserted at beginnings
+of blocks.
+
+### Exception handling
+
+JANET uses `setjmp/longjmp` to implement Java exception handling semantics in your native code.
+It has the following caveats:
+
+* In both C and C++, control flow may be disrupted by statements like `break`,
+  `continue`, `goto`, and `return`. For example, breaking out of a `synchronized` block
+  would leave the lock held forever. Currently, the only way to avoid that is to
+  (1) always use the embedded Java `return` statement instead of the native return, and (2)
+  never put put breaking statements in blocks that directly contain any
+  embedded Java code. JANET will never put any important finalization code within such
+  blocks.
+* In C++, there is an additional problem that `longjmp` is not compatible with destructors.
+  Specifically, the standard says that it is undefined behavior to jump out of a block
+  containing any automatic (i.e. stack-allocated) object with a non-trivial destructor.
+  Hence, you should declare any such objects in the outer-most scope (clear of any
+  embedded Java code), and put all embedded Java code in a nested block, as in the
+  examples earlier above. (JANET will generate a normal `return` statement to break out
+  of the outer-most scope).
+
+For C, there is no good alternative to `setjmp/longjmp`, short of full semantic analysis
+and deep code rewriting. For C++, an arguably better alternative, that would allow to
+avoid all these issues, would be to use native C++ exceptions. It is likely to be
+implemented in a future version of JANET. (As with any other feature request, please use
+the [issue tracker](https://github.com/dejwk/janet/issues) if you would like it to be
+prioritized).
+
+Exception handling requires unwinding stack frames (nested blocks) and performing any
+necessary finalization (e.g. running Java finalizers, releasing local references, releasing
+monitors). To that end, JANET use custom macros that you will see a lot of in the
+generated code.
+
+### Reference management
+
+References to Java objects must be carefully managed, and released when necessary.
+To avoid reference thrashing (e.g. when repeatedly referring to the same object in
+a loop), JANET, when suitable, uses _multi-references_ that perform native reference
+counting and release Java references lazily. In the
+generated code, you will often see macros for assignments of multi-references,
+and reference cleanup code inserted in 'destruction' sections of nested blocks. 
+
+### Array de-duplication
+
+To ensure that the array address operator `&` always returns the same pointer
+when applied repetitively to the same object within a single block, JANET
+uses custom, thread-local, append-only hash tables. The tables are keyed on
+the array object's hash code, with clashes disambiguated by comparing
+identity of the objects using JNI's `IsSameObject`. Consequently, the
+the `&` operator makes two JNI method calls per use - so it is better,
+when feasible, to just capture the pointer once in a native variable,
+and reuse it.
+
+The de-duplication functionality is implemented mostly in the JANET's run-time
+library (in the file `janet.c`), and otherwise mostly hidden behind
+macros.
+
+### Cutting through the macros
+
+If you would like to cut through the layer of JANET macros to deeply understand
+what the generated code does, run your file through a C preprocessor and a
+beautifier:
+
+    g++ ${CFLAGS} -E -P <your file> | indent
+
+## How to get more help
+
+Look also at more [examples](../examples) (including examples in pure C).
+Please visit the [project page](https://github.com/dejwk/janet/) if you want to learn more
+or [report a bug](https://github.com/dejwk/janet/issues).
