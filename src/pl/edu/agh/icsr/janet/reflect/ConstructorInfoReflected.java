@@ -12,14 +12,14 @@ import pl.edu.agh.icsr.janet.yytree.YYVariableDeclarator;
 public final class ConstructorInfoReflected implements IMethodInfo {
 
     private ClassManager classMgr;
-    private Constructor cstr;
-    transient Map exceptionTypes;
+    private Constructor<?> cstr;
+    transient Map<String, IClassInfo> exceptionTypes;
     transient IClassInfo[] parameterTypes;
     transient String argsignature;
     transient String signature;
     transient String jlssignature;
 
-    public ConstructorInfoReflected(ClassManager mgr, Constructor cstr) {
+    public ConstructorInfoReflected(ClassManager mgr, Constructor<?> cstr) {
         this.cstr = cstr;
         this.classMgr = mgr;
     }
@@ -55,10 +55,10 @@ public final class ConstructorInfoReflected implements IMethodInfo {
 
     }
 
-    public Map getExceptionTypes() {
+    public Map<String, IClassInfo> getExceptionTypes() {
         if (exceptionTypes != null) return exceptionTypes;
-        exceptionTypes = new HashMap();
-        Class[] clss = cstr.getExceptionTypes();
+        exceptionTypes = new HashMap<String, IClassInfo>();
+        Class<?>[] clss = cstr.getExceptionTypes();
         for (int i=0; i<clss.length; i++) {
             IClassInfo cls = classMgr.forClass(clss[i]);
             exceptionTypes.put(cls.getFullName(), cls);
@@ -72,7 +72,7 @@ public final class ConstructorInfoReflected implements IMethodInfo {
 
     public IClassInfo[] getParameterTypes() {
         if (parameterTypes != null) return parameterTypes;
-        Class[] clss = cstr.getParameterTypes();
+        Class<?>[] clss = cstr.getParameterTypes();
         parameterTypes = new IClassInfo[clss.length];
         for (int i=0; i<clss.length; i++) {
             parameterTypes[i] = classMgr.forClass(clss[i]);

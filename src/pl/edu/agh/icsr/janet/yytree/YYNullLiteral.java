@@ -20,7 +20,7 @@ public class YYNullLiteral extends YYExpression {
 
     public void resolve(boolean isSubexpression) throws CompileException {
         expressionType = classMgr.NULL;
-        exceptions = new HashMap();
+        exceptions = new HashMap<IClassInfo, YYStatement>();
     }
 
     public boolean isVariable() { return false; }

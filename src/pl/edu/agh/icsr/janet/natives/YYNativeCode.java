@@ -34,20 +34,4 @@ public class YYNativeCode extends YYStatement {
 
         return this;
     }
-
-    class DumpIterator implements Iterator {
-        Iterator i;
-        DumpIterator() {
-            i = YYNativeCode.this.iterator();
-        }
-        public boolean hasNext() { return i.hasNext(); }
-        public Object next() {
-            if (i.hasNext()) return i.next();
-            return null;
-        }
-        public void remove() { throw new UnsupportedOperationException(); }
-    }
-
-    public Iterator getDumpIterator() { return new DumpIterator(); }
-
 }

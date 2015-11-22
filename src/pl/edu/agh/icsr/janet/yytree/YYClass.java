@@ -6,6 +6,7 @@ package pl.edu.agh.icsr.janet.yytree;
 
 import pl.edu.agh.icsr.janet.*;
 import pl.edu.agh.icsr.janet.reflect.*;
+import pl.edu.agh.icsr.janet.tree.Node;
 import pl.edu.agh.icsr.janet.natives.*;
 
 import java.lang.reflect.Modifier;
@@ -70,34 +71,34 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
     transient String signature;
     IClassInfo superclass;
     IScope enclosing; // compilation unit, class, or statement
-    Map dclfields;
-    Vector implicitNativeMethods;
+    Map<String, YYVariableDeclarator> dclfields;
+    Vector<YYNativeStatement> implicitNativeMethods;
 
-    transient SortedMap accfields;
-    transient SortedMap dclmethods;
-    transient SortedMap accmethods;
-    transient Map constructors;
-    transient Map interfaces;
-    transient Map assignableClasses;
+    transient SortedMap<String, IFieldInfo> accfields;
+    transient SortedMap<String, YYMethod> dclmethods;
+    transient SortedMap<String, IMethodInfo> accmethods;
+    transient Map<String, IMethodInfo> constructors;
+    transient Map<String, IClassInfo> interfaces;
+    transient Map<String, IClassInfo> assignableClasses;
 
     private YYType unresolvedSuperclass;
     private YYTypeList unresolvedInterfaces;
-    private Vector unresolvedMethods;
+    private Vector<YYMethod> unresolvedMethods;
 
     private boolean workingFlag;
 
     // maps signatures to indexes in appropriate vectors
-    Map referencedClassesIdx;
-    Map referencedFieldsIdx;
-    Map referencedMethodsIdx;
-    Map referencedStringLiteralsIdx;
+    Map<String, Integer> referencedClassesIdx;
+    Map<String, Integer> referencedFieldsIdx;
+    Map<String, Integer> referencedMethodsIdx;
+    Map<String, Integer> referencedStringLiteralsIdx;
 
-    Vector referencedClasses;
-    Vector referencedFields;
-    Vector referencedFieldsClsIdxs;
-    Vector referencedMethods;
-    Vector referencedMethodsClsIdxs;
-    Vector referencedStringLiterals;
+    Vector<IClassInfo> referencedClasses;
+    Vector<IFieldInfo> referencedFields;
+    Vector<Integer> referencedFieldsClsIdxs;
+    Vector<IMethodInfo> referencedMethods;
+    Vector<Integer> referencedMethodsClsIdxs;
+    Vector<String> referencedStringLiterals;
 //    boolean valid;
 
     private boolean hasNativeMethodImpls = false;
@@ -113,21 +114,21 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
         this.enclosing = cxt.getScope();
         this.type = type;
         this.modifiers = checkModifiers(m);
-        this.dclfields = new HashMap();
-        this.implicitNativeMethods = new Vector();
-        this.unresolvedMethods = new Vector();
+        this.dclfields = new HashMap<String, YYVariableDeclarator>();
+        this.implicitNativeMethods = new Vector<YYNativeStatement>();
+        this.unresolvedMethods = new Vector<YYMethod>();
 
-        this.referencedClassesIdx = new HashMap();
-        this.referencedFieldsIdx = new HashMap();
-        this.referencedMethodsIdx = new HashMap();
-        this.referencedStringLiteralsIdx = new HashMap();
+        this.referencedClassesIdx = new HashMap<String, Integer>();
+        this.referencedFieldsIdx = new HashMap<String, Integer>();
+        this.referencedMethodsIdx = new HashMap<String, Integer>();
+        this.referencedStringLiteralsIdx = new HashMap<String, Integer>();
 
-        this.referencedClasses = new Vector();
-        this.referencedFields = new Vector();
-        this.referencedFieldsClsIdxs = new Vector();
-        this.referencedMethods = new Vector();
-        this.referencedMethodsClsIdxs = new Vector();
-        this.referencedStringLiterals = new Vector();
+        this.referencedClasses = new Vector<IClassInfo>();
+        this.referencedFields = new Vector<IFieldInfo>();
+        this.referencedFieldsClsIdxs = new Vector<Integer>();
+        this.referencedMethods = new Vector<IMethodInfo>();
+        this.referencedMethodsClsIdxs = new Vector<Integer>();
+        this.referencedStringLiterals = new Vector<String>();
     }
 
     // inner classes (unsupported)
@@ -135,9 +136,9 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
         super(cxt);
         this.classMgr = cxt.getClassManager();
         this.enclosing = cxt.getScope();
-        this.dclfields = new HashMap();
-        this.implicitNativeMethods = new Vector();
-        this.unresolvedMethods = new Vector();
+        this.dclfields = new HashMap<String, YYVariableDeclarator>();
+        this.implicitNativeMethods = new Vector<YYNativeStatement>();
+        this.unresolvedMethods = new Vector<YYMethod>();
     }
 
     // inner classes (unsupported)
@@ -145,9 +146,9 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
         super(cxt);
         this.classMgr = cxt.getClassManager();
         this.enclosing = cxt.getScope();
-        this.dclfields = new HashMap();
-        this.implicitNativeMethods = new Vector();
-        this.unresolvedMethods = new Vector();
+        this.dclfields = new HashMap<String, YYVariableDeclarator>();
+        this.implicitNativeMethods = new Vector<YYNativeStatement>();
+        this.unresolvedMethods = new Vector<YYMethod>();
     }
 
     private int checkModifiers(YYModifierList m) throws CompileException {
@@ -231,13 +232,12 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
     public YYClass addField(YYField flds) throws CompileException {
         ensureUnlocked();
         super.append(flds);
-        Iterator i = flds.iterator();
-        while (i.hasNext()) {
-            YYVariableDeclarator fld = ((YYVariableDeclarator)i.next());
+        for (Node node : flds) {
+            YYVariableDeclarator fld = (YYVariableDeclarator)node;
             if (dclfields.containsKey(fld.getName())) {
                 fld.reportError("Duplicate field declaration: " +
                     fld.getName() + " already declared at line " +
-                    ((YYVariableDeclarator)dclfields.get(fld.getName())).
+                    dclfields.get(fld.getName()).
                         lbeg().getLine());
             }
             dclfields.put(fld.getName(), fld);
@@ -257,13 +257,13 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
     }
 
     private void resolveMethodsAndConstructors() throws ParseException {
-        dclmethods = new TreeMap();
-        constructors = new HashMap();
-        for (Iterator i = unresolvedMethods.iterator(); i.hasNext();) {
-            YYMethod mth = (YYMethod)i.next();
+        dclmethods = new TreeMap<String, YYMethod>();
+        constructors = new HashMap<String, IMethodInfo>();
+        for (Iterator<YYMethod> i = unresolvedMethods.iterator(); i.hasNext();) {
+            YYMethod mth = i.next();
             if (mth.isConstructor()) {
                 String key = mth.getJLSSignature();
-                YYMethod other = (YYMethod)constructors.get(key);
+                IMethodInfo other = constructors.get(key);
                 if (other != null) { // JLS 8.6.2
                     mth.reportError("Duplicate constructor declaration: " +
                         mth.toString());
@@ -272,7 +272,7 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
                 }
             } else { // method
                 String key = mth.getName() + mth.getJLSSignature();
-                YYMethod other = (YYMethod)dclmethods.get(key);
+                IMethodInfo other = dclmethods.get(key);
                 if (other != null) { // JLS 8.4.2
                     if (classMgr.equals(mth.getReturnType(),
                                         other.getReturnType())) {
@@ -345,7 +345,7 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
 
     public String getFullName() {
         if (enclosing instanceof YYCompilationUnit) {
-            return classMgr.getQualifiedName(((YYCompilationUnit)enclosing).
+            return ClassManager.getQualifiedName(((YYCompilationUnit)enclosing).
                 getPackageName(), name);
         } else if (enclosing instanceof YYClass) {
             return ((YYClass)enclosing).getFullName() + "." + name;
@@ -448,48 +448,48 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
         return signature = "L" + getJNIName() + ";";
     }
 
-    public Map getDeclaredFields() {
+    public Map<String, YYVariableDeclarator> getDeclaredFields() {
         return dclfields;
     }
 
     /**
      * Enforces deep fields resolving
      */
-    public SortedMap getAccessibleFields() throws ParseException {
+    public SortedMap<String, IFieldInfo> getAccessibleFields() throws ParseException {
         if (accfields != null) return accfields;
         lock();
         return accfields = classMgr.getAccessibleFields(this);
     }
 
-    public SortedMap getFields(String name) throws ParseException {
+    public SortedMap<String, ? extends IFieldInfo> getFields(String name) throws ParseException {
         return classMgr.getFields(this, name);
     }
 
     /**
      * Enforces method resolving
      */
-    public SortedMap getDeclaredMethods() throws ParseException {
+    public SortedMap<String, YYMethod> getDeclaredMethods() throws ParseException {
         if (dclmethods != null) return dclmethods;
         lock();
         resolveMethodsAndConstructors();
         return dclmethods;
     }
 
-    public SortedMap getAccessibleMethods() throws ParseException {
+    public SortedMap<String, IMethodInfo> getAccessibleMethods() throws ParseException {
         if (accmethods != null) return accmethods;
         return accmethods = classMgr.getAccessibleMethods(this);
     }
 
-    public SortedMap getMethods(String name) throws ParseException {
+    public SortedMap<String, ? extends IMethodInfo> getMethods(String name) throws ParseException {
         return classMgr.getMethods(this, name);
     }
 
-    public SortedMap getMethods(String name, String jlssignature)
+    public SortedMap<String, ? extends IMethodInfo> getMethods(String name, String jlssignature)
             throws ParseException {
         return classMgr.getMethods(this, name, jlssignature);
     }
 
-    public Map getConstructors() throws ParseException {
+    public Map<String, IMethodInfo> getConstructors() throws ParseException {
         if (constructors != null) return constructors;
         lock();
         resolveMethodsAndConstructors();
@@ -499,16 +499,16 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
     /**
      * Enforces interfaces resolving
      */
-    public Map getInterfaces() throws ParseException {
+    public Map<String, IClassInfo> getInterfaces() throws ParseException {
         if (interfaces != null) return interfaces;
         lock();
-        interfaces = new HashMap();
+        interfaces = new HashMap<String, IClassInfo>();
         if (unresolvedInterfaces == null) return interfaces;
-        for (Iterator i = unresolvedInterfaces.iterator(); i.hasNext();) {
-            YYType yyintf = ((YYType)i.next());
-            IClassInfo newintf = (IClassInfo)yyintf.getResolvedType();
+        for (Node node : unresolvedInterfaces) {
+            YYType yyintf = ((YYType)node);
+            IClassInfo newintf = yyintf.getResolvedType();
             String key = newintf.getFullName();
-            IClassInfo oldintf = (IClassInfo)interfaces.get(key);
+            IClassInfo oldintf = interfaces.get(key);
             if (oldintf != null) {
                 yyintf.reportError("Interface " + key + " repeated");
             } else {
@@ -593,7 +593,7 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
 
     public Integer addReferencedClass(IClassInfo cls) {
         String key = cls.getJNIName();
-        Integer old = (Integer)referencedClassesIdx.get(key);
+        Integer old = referencedClassesIdx.get(key);
         if (old != null) {
             return old;
         }
@@ -606,7 +606,7 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
     public Integer addReferencedMethod(int classidx, IMethodInfo mth)
             throws ParseException {
         String key = ClassManager.getMethodKey(mth);
-        Integer old = (Integer)referencedMethodsIdx.get(key);
+        Integer old = referencedMethodsIdx.get(key);
         if (old != null) {
             return old;
         }
@@ -620,7 +620,7 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
     public Integer addReferencedField(int classidx, IFieldInfo fld)
             throws CompileException {
         String key = ClassManager.getFieldKey(fld);
-        Integer old = (Integer)referencedFieldsIdx.get(key);
+        Integer old = referencedFieldsIdx.get(key);
         if (old != null) {
             return old;
         }
@@ -633,7 +633,7 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
 
     public Integer addReferencedStringLiteral(String lit) {
         String interlit = lit.intern();
-        Integer old = (Integer)referencedStringLiteralsIdx.get(interlit);
+        Integer old = referencedStringLiteralsIdx.get(interlit);
         if (old != null) {
             return old;
         }
@@ -643,12 +643,12 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
         return pos;
     }
 
-    public Vector getReferencedClasses() { return referencedClasses; }
-    public Vector getReferencedMethods() { return referencedMethods; }
-    public Vector getRefMethodClsIdxs() { return referencedMethodsClsIdxs; }
-    public Vector getReferencedFields() { return referencedFields; }
-    public Vector getRefFieldClsIdxs() { return referencedFieldsClsIdxs; }
-    public Vector getRefStringLiterals() { return referencedStringLiterals; }
+    public Vector<IClassInfo> getReferencedClasses() { return referencedClasses; }
+    public Vector<IMethodInfo> getReferencedMethods() { return referencedMethods; }
+    public Vector<Integer> getRefMethodClsIdxs() { return referencedMethodsClsIdxs; }
+    public Vector<IFieldInfo> getReferencedFields() { return referencedFields; }
+    public Vector<Integer> getRefFieldClsIdxs() { return referencedFieldsClsIdxs; }
+    public Vector<String> getRefStringLiterals() { return referencedStringLiterals; }
 
     public int addImplicitNativeMethod(YYNativeStatement stmt) {
         int pos = implicitNativeMethods.size();
@@ -662,7 +662,7 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
         try {
             String name = getPackageName();
             if (name.equals("")) name = getSimpleName();
-            return (libName = classMgr.mangle(name));
+            return (libName = ClassManager.mangle(name));
         } catch (CompileException e) {
             throw new RuntimeException();
         }
@@ -682,11 +682,11 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
 
         Writer.Substituter s = w.getSubstituter();
         String oldCls = s.setSubst("CLASSNAME", getSimpleName());
-        String oldInd = s.setSubst("INDENT", w.makeIndent(this.beg_charno + 4));
+        String oldInd = s.setSubst("INDENT", Writer.makeIndent(this.beg_charno + 4));
         String oldLib = s.setSubst("LOADLIBRARY", getLoadLibraryHeader());
 
         int beg = beg_charno0;
-        Iterator i = iterator();
+        Iterator<Node> i = iterator();
         YYNode n;
         StringBuffer buf = ibuf().getbuf();
 
@@ -697,7 +697,7 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
         pos++;
         w.write(buf.substring(beg, pos-1) + "\n");
         w.write(janetHeader, true);
-        w.write(w.makeIndent(n.beg_charno));
+        w.write(Writer.makeIndent(n.beg_charno));
         n.write(w);
         pos = n.end_charno0;
 
@@ -710,7 +710,7 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
 
         w.write("\n\n////// BEGIN OF GENERATED NATIVE METHODS //////\n\n");
         for (int j=0, len = implicitNativeMethods.size(); j<len; j++) {
-            ((YYNativeStatement)implicitNativeMethods.get(j)).writeMethod(w);
+            implicitNativeMethods.get(j).writeMethod(w);
             w.write("\n");
         }
         w.write("\n////// END OF GENERATED NATIVE METHODS //////\n");
@@ -731,36 +731,29 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
 
     public String describe() throws ParseException {
         String s = YYModifierList.toString(modifiers) + this.toString();
-        Iterator i;
         if (!isInterface()) s += " extends " + getSuperclass();
         s += "\n";
 
-        i = getInterfaces().keySet().iterator();
         s += "implemented interfaces:\n";
-        while (i.hasNext()) s += "    " + i.next() + "\n";
+        for (String i : getInterfaces().keySet()) s += "    " + i + "\n";
 
         s += "fields:\n";
-        i = getAccessibleFields().keySet().iterator();
-        while (i.hasNext()) s += "    " + i.next() + "\n";
+        for (String i : getAccessibleFields().keySet()) s += "    " + i + "\n";
 
         s += "constructors:\n";
-        i = getConstructors().keySet().iterator();
-        while (i.hasNext()) s += "    " + i.next() + "\n";
+        for (String i : getConstructors().keySet()) s += "    " + i + "\n";
 
         s += "methods:\n";
-        i = getAccessibleMethods().entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry e = (Map.Entry)i.next();
-            if (classMgr.equals(((IMethodInfo)e.getValue()).getDeclaringClass(), classMgr.Object)) {
+        for (Map.Entry<String, IMethodInfo> e : getAccessibleMethods().entrySet()) {
+            if (classMgr.equals((e.getValue()).getDeclaringClass(), classMgr.Object)) {
                 continue;
             }
             s += "    " + e.getKey() + "\n";
         }
 
         s += "referenced classes:\n";
-        i = referencedClasses.iterator();
-        while (i.hasNext()) {
-            s += "    " + ((IClassInfo)i.next()).getJNIName() + "\n";
+        for (IClassInfo cls : referencedClasses) {
+            s += "    " + cls.getJNIName() + "\n";
         }
         return s;
     }

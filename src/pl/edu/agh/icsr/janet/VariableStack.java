@@ -10,12 +10,12 @@ import pl.edu.agh.icsr.janet.yytree.IScope;
 import java.util.Stack;
 
 public class VariableStack {
-    Stack variables = new Stack();
+    Stack<YYVariableDeclarator> variables = new Stack<YYVariableDeclarator>();
 
     public YYVariableDeclarator find(String name) {
         for (int i=0, size = variables.size(); i<size; i++) {
             YYVariableDeclarator var;
-            var = (YYVariableDeclarator)variables.get(i);
+            var = variables.get(i);
             if (var.getName().equals(name)) {
                 return var;
             }
@@ -36,7 +36,7 @@ public class VariableStack {
 
     public void pop(IScope dclUnit) {
         while (!variables.empty() &&
-                ((YYVariableDeclarator)variables.peek()).
+                variables.peek().
                     getEnclosingScope() == dclUnit) {
         //System.out.println("popping " + ((YYVariableDeclarator)variables.peek()).getName());
             variables.pop();

@@ -117,9 +117,9 @@ public class YYClassInstanceCreationExpression extends YYExpression {
         }
     }
 
-    class DumpIterator implements Iterator {
+    class DumpIterator implements Iterator<YYNode> {
         boolean argsreturned;
-        Iterator i;
+        Iterator<YYNode> i;
         DumpIterator() {
             argsreturned = (argtypes.length == 0);
             i = (arguments == null ? null : arguments.getDumpIterator());
@@ -127,13 +127,13 @@ public class YYClassInstanceCreationExpression extends YYExpression {
         public boolean hasNext() {
             return (i != null && i.hasNext());
         }
-        public Object next() {
+        public YYNode next() {
             if (i != null) return i.next();
             return null;
         }
         public void remove() { throw new UnsupportedOperationException(); }
     }
 
-    public Iterator getDumpIterator() { return new DumpIterator(); }
+    public Iterator<YYNode> getDumpIterator() { return new DumpIterator(); }
 
 }

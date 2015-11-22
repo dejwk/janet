@@ -23,18 +23,18 @@ public class YYIntegerLiteral extends YYExpression {
 
     public void resolve(boolean isSubexpression) throws CompileException {
         expressionType = classMgr.INT;
-        exceptions = new HashMap();
+        exceptions = new HashMap<IClassInfo, YYStatement>();
     }
 
     public boolean isCastableTo(IClassInfo cls) {
         if (cls == classMgr.INT) {
             return true;
         } else if (cls == classMgr.SHORT) {
-            return (int)(short)(val) == val;
+            return (short)(val) == val;
         } else if (cls == classMgr.CHAR) {
-            return (int)(char)(val) == val;
+            return (char)(val) == val;
         } else if (cls == classMgr.BYTE) {
-            return (int)(byte)(val) == val;
+            return (byte)(val) == val;
         } else {
             throw new IllegalArgumentException();
         }

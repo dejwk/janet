@@ -15,11 +15,11 @@ class ArrayType implements IClassInfo {
     transient String signature;
     transient IClassInfo superclass; // java.lang.Object class
     transient IClassInfo comptype;
-    transient Map dclfields;
-    transient SortedMap accfields;
-    transient SortedMap dclmethods; // clone
-    transient SortedMap accmethods;
-    transient Map interfaces; // always empty
+    transient Map<String, IFieldInfo> dclfields;
+    transient SortedMap<String, IFieldInfo> accfields;
+    transient SortedMap<String, IMethodInfo> dclmethods; // clone
+    transient SortedMap<String, ? extends IMethodInfo> accmethods;
+    transient Map<String, IClassInfo> interfaces; // always empty
 
     private boolean workingFlag;
 /*
@@ -143,50 +143,50 @@ class ArrayType implements IClassInfo {
         return this.getSignature() == cls.getSignature();
     }
 */
-    public Map getDeclaredFields() { // final field length is not reflected
+    public Map<String, IFieldInfo> getDeclaredFields() { // final field length is not reflected
         if (dclfields != null) return dclfields;
-        dclfields = new HashMap();
+        dclfields = new HashMap<String, IFieldInfo>();
         dclfields.put("length", new ArrayLength());
         return dclfields;
     }
 
-    public SortedMap getAccessibleFields() throws ParseException {
+    public SortedMap<String, IFieldInfo> getAccessibleFields() throws ParseException {
         if (accfields != null) return accfields;
         return accfields = classMgr.getAccessibleFields(this);
     }
 
-    public SortedMap getFields(String name) throws ParseException {
+    public SortedMap<String, ? extends IFieldInfo> getFields(String name) throws ParseException {
         return classMgr.getFields(this, name);
     }
 
-    public Map getConstructors() {
+    public Map<String, IMethodInfo> getConstructors() {
         throw new UnsupportedOperationException();
     }
 
-    public SortedMap getDeclaredMethods() {
+    public SortedMap<String, IMethodInfo> getDeclaredMethods() {
         throw new UnsupportedOperationException();
 //        if (dclmethods != null) return dclmethods;
 //        return dclmethods = new TreeMap();
     }
 
-    public SortedMap getAccessibleMethods() throws ParseException {
+    public SortedMap<String, ? extends IMethodInfo> getAccessibleMethods() throws ParseException {
         if (accmethods != null) return accmethods;
         // the same as in java.lang.Object
         return accmethods = getSuperclass().getAccessibleMethods();
     }
 
-    public SortedMap getMethods(String name) throws ParseException {
+    public SortedMap<String, ? extends IMethodInfo> getMethods(String name) throws ParseException {
         return classMgr.getMethods(this, name);
     }
 
-    public SortedMap getMethods(String name, String jlssignature)
+    public SortedMap<String, ? extends IMethodInfo> getMethods(String name, String jlssignature)
             throws ParseException {
         return classMgr.getMethods(this, name, jlssignature);
     }
 
-    public Map getInterfaces() {
+    public Map<String, IClassInfo> getInterfaces() {
         if (interfaces != null) return interfaces;
-        return interfaces = new HashMap();
+        return interfaces = new HashMap<String, IClassInfo>();
     }
 
     public void setWorkingFlag(boolean working) {

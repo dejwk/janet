@@ -136,11 +136,11 @@ public class YYCastExpression extends YYExpression {
     public boolean requiresRuntimeCheck() { return requiresRTCheck; }
     public int getClassIdx() { return clsidx; }
 
-    class DumpIterator implements Iterator {
+    class DumpIterator implements Iterator<YYNode> {
         int i = 0;
         DumpIterator() {}
         public boolean hasNext() { return i<1; }
-        public Object next() {
+        public YYNode next() {
             i++;
             return (i == 1 ? target : null);
         }
@@ -151,5 +151,5 @@ public class YYCastExpression extends YYExpression {
         return w.write(this, param);
     }
 
-    public Iterator getDumpIterator() { return new DumpIterator(); }
+    public Iterator<YYNode> getDumpIterator() { return new DumpIterator(); }
 }

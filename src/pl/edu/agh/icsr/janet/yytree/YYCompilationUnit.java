@@ -9,6 +9,7 @@ import java.io.File;
 import java.net.URL;
 import pl.edu.agh.icsr.janet.*;
 import pl.edu.agh.icsr.janet.reflect.*;
+import pl.edu.agh.icsr.janet.tree.Node;
 
 public class YYCompilationUnit extends YYNode implements IScope {
 
@@ -25,7 +26,7 @@ public class YYCompilationUnit extends YYNode implements IScope {
     boolean markedForProcessing;
     String libName;
 
-    Map singles;
+    Map<String, IClassInfo> singles;
 
     public YYCompilationUnit(IJavaContext cxt, CompilationManager mgr,
         boolean doProcess)
@@ -72,15 +73,14 @@ public class YYCompilationUnit extends YYNode implements IScope {
     }
 */
 
-    public Map getSingleImportDeclarations() throws ParseException {
-        Map m = imports.getSingles();
+    public Map<String, IClassInfo> getSingleImportDeclarations() throws ParseException {
+        Map<String, YYName> m = imports.getSingles();
         if (singles == null) {
             lock();
-            singles = new HashMap();
+            singles = new HashMap<String, IClassInfo>();
             ClassManager classMgr = mgr.getClassManager();
             // exchange class names for their IClassInfo objects
-            for(Iterator i = m.values().iterator(); i.hasNext();) {
-                YYName t = (YYName)i.next();
+            for (YYName t : m.values()) {
                 String sname = t.lastNameNode().get();
                 IClassInfo cls = classMgr.forName(t.toString());
                 if (cls == null) {
@@ -98,7 +98,7 @@ public class YYCompilationUnit extends YYNode implements IScope {
         return singles;
     }
 
-    public List getImportOnDemandDeclarations() {
+    public List<String> getImportOnDemandDeclarations() {
         return imports.getOnDemands();
     }
 
@@ -114,8 +114,8 @@ public class YYCompilationUnit extends YYNode implements IScope {
         w.getSubstituter().unsetSubst("BASEFILE");
     }
 
-    private class ClsItr implements Iterator {
-        Iterator i;
+    private class ClsItr implements Iterator<YYClass> {
+        Iterator<Node> i;
         YYClass next;
 
         public ClsItr() {
@@ -127,7 +127,7 @@ public class YYCompilationUnit extends YYNode implements IScope {
             return next != null;
         }
 
-        public Object next() {
+        public YYClass next() {
             YYClass ret = next;
             next = findNextClass();
             return ret;
@@ -147,7 +147,7 @@ public class YYCompilationUnit extends YYNode implements IScope {
         }
     }
 
-    public Iterator getDeclaredClassesIterator() {
+    public Iterator<YYClass> getDeclaredClassesIterator() {
         return new ClsItr();
     }
 /*

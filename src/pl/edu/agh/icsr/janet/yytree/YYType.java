@@ -40,7 +40,7 @@ public class YYType extends YYNode /*implements IClassInfo*/ {
         this.compUnit = cu;
     }
 
-    public YYType(IDetailedLocationContext cxt, Class cls) {
+    public YYType(IDetailedLocationContext cxt, Class<?> cls) {
         super(cxt);
         this.context = ANY;
         this.classMgr = cxt.getClassManager();
@@ -69,7 +69,7 @@ public class YYType extends YYNode /*implements IClassInfo*/ {
 
     public String toString() {
         if (refersTo != null) return refersTo.toString();
-        return classMgr.getQualifiedName(
+        return ClassManager.getQualifiedName(
             pkg == null ? "" : pkg.toString(), name) + " (not resolved)";
     }
 
@@ -83,21 +83,19 @@ public class YYType extends YYNode /*implements IClassInfo*/ {
         String curpkgname = compUnit.getPackageName();
         if (refpkgname == "") { // simple name
             String qname;
-            Map m = compUnit.getSingleImportDeclarations();
-            result = (IClassInfo)m.get(name);
+            Map<String, IClassInfo> m = compUnit.getSingleImportDeclarations();
+            result = m.get(name);
             if (result != null) return result;
 
             // searching in current package (including current compUnit)
-            qname = classMgr.getQualifiedName(curpkgname, name);
+            qname = ClassManager.getQualifiedName(curpkgname, name);
             result = classMgr.forName(qname);
             if (result != null) return result;
 
             // checking type-import-on-demands
-            List l = compUnit.getImportOnDemandDeclarations();
-            Iterator i = l.iterator();
             IClassInfo other;
-            while (i.hasNext()) {
-                qname = classMgr.getQualifiedName((String)i.next(), name);
+            for (String decl : compUnit.getImportOnDemandDeclarations()) {
+                qname = ClassManager.getQualifiedName(decl, name);
                 other = classMgr.forName(qname);
                 if (other != null && !other.isAccessibleTo(curpkgname)) {
                     other = null;
@@ -113,12 +111,11 @@ public class YYType extends YYNode /*implements IClassInfo*/ {
 
             if (result == null) {
                 reportError(getContextDescription() + " " +
-                    classMgr.getQualifiedName(refpkgname, name) + " not found");
+                    ClassManager.getQualifiedName(refpkgname, name) + " not found");
             }
             return result;
         } else { // qualified name
-            result = classMgr.forName(classMgr.getQualifiedName(refpkgname,
-                name));
+            result = classMgr.forName(ClassManager.getQualifiedName(refpkgname, name));
             if (!result.isAccessibleTo(curpkgname)) {
                 reportError("Can't access " + result + ". " +
                     getContextDescription() + " should be " +
@@ -155,7 +152,7 @@ public class YYType extends YYNode /*implements IClassInfo*/ {
         }
         if (cls == null) {
             reportError(getContextDescription() + " " +
-                classMgr.getQualifiedName(refpkgname, name) + " not found");
+                ClassManager.getQualifiedName(refpkgname, name) + " not found");
         } else {
             refersTo = dims == 0 ? cls : cls.getArrayType(dims);
         }

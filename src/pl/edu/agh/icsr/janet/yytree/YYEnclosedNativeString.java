@@ -44,16 +44,16 @@ public class YYEnclosedNativeString extends YYExpression {
 
 
 
-    class DumpIterator implements Iterator {
+    class DumpIterator implements Iterator<YYNode> {
         boolean ncodereturned;
         public boolean hasNext() { return !ncodereturned; }
-        public Object next() {
+        public YYNode next() {
             if (!ncodereturned) { ncodereturned = true; return ncode; }
             return null;
         }
         public void remove() { throw new UnsupportedOperationException(); }
     }
 
-    public Iterator getDumpIterator() { return new DumpIterator(); }
+    public Iterator<YYNode> getDumpIterator() { return new DumpIterator(); }
 
 }

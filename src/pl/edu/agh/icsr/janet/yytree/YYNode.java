@@ -95,8 +95,13 @@ public class YYNode extends Node implements ILocationContext {
         }
     }
 
-    public Iterator getDumpIterator() {
-        return super.iterator();
+    public Iterator<YYNode> getDumpIterator() {
+        final Iterator<Node> i = super.iterator();
+        return new Iterator<YYNode>() {
+            public boolean hasNext() { return i.hasNext(); }
+            public YYNode next() { return (YYNode)i.next(); }
+            public void remove() { i.remove(); }
+        };
     }
 
     public String dump() {
@@ -117,9 +122,8 @@ public class YYNode extends Node implements ILocationContext {
         while (pos-- > 0) s+= " ";
         s += toString() + "\n";
 
-        Iterator i = getDumpIterator();
-        while (i.hasNext()) {
-            s += ((YYNode)i.next()).dump(level+1);
+        for (Iterator<YYNode> i = getDumpIterator(); i.hasNext();) {
+            s += (i.next()).dump(level+1);
         }
         return s;
     }
@@ -149,7 +153,7 @@ public class YYNode extends Node implements ILocationContext {
      * Default resolving procedure.
      */
     public void resolve() throws ParseException {
-        for(Iterator i = iterator(); i.hasNext();) {
+        for(Iterator<Node> i = iterator(); i.hasNext();) {
             ((YYNode)i.next()).resolve();
         }
     }
@@ -161,7 +165,7 @@ public class YYNode extends Node implements ILocationContext {
         StringBuffer buf = ibuf().getbuf();
         int beg = this.beg_charno0;
         int pos = beg;
-        Iterator i = iterator();
+        Iterator<Node> i = iterator();
         while (i.hasNext()) {
             YYNode n = (YYNode)i.next();
             w.write(buf.substring(pos, n.beg_charno0));

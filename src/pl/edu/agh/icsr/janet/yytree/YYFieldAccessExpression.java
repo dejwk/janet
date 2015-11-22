@@ -121,7 +121,7 @@ public class YYFieldAccessExpression extends YYExpression {
             declCls = target.getExpressionType();
             addExceptions(target.getExceptionsThrown());
         } else {
-            exceptions = new HashMap();
+            exceptions = new HashMap<IClassInfo, YYStatement>();
         }
         switch (targetType) {
         case THIS:
@@ -150,14 +150,14 @@ public class YYFieldAccessExpression extends YYExpression {
         }
 
         // we got declaring class and field name; time to get the field
-        Iterator i = declCls.getFields(fieldName).values().iterator();
+        Iterator<? extends IFieldInfo> i = declCls.getFields(fieldName).values().iterator();
 
         if (!i.hasNext()) {
             reportError("No variable " + fieldName + " defined in " + declCls);
         }
 fields:
         while (i.hasNext()) {
-            IFieldInfo fld = (IFieldInfo)i.next();
+            IFieldInfo fld = i.next();
 
             // JLS 6.6.1 - is field accessible?
             if (!classMgr.isAccessibleTo(fld, myclass,
@@ -251,18 +251,18 @@ fields:
         return w.write(this, param);
     }
 
-    class DumpIterator implements Iterator {
+    class DumpIterator implements Iterator<YYNode> {
         boolean targetReturned;
         DumpIterator() { targetReturned = (target == null); }
         public boolean hasNext() { return !targetReturned; }
-        public Object next() {
+        public YYNode next() {
             if (!targetReturned) { targetReturned = true; return target; }
             return null;
         }
         public void remove() { throw new UnsupportedOperationException(); }
     }
 
-    public Iterator getDumpIterator() { return new DumpIterator(); }
+    public Iterator<YYNode> getDumpIterator() { return new DumpIterator(); }
 
     public String toString() { return field.toString(); }
 }

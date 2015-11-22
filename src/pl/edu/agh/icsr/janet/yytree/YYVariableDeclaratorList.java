@@ -7,6 +7,7 @@ package pl.edu.agh.icsr.janet.yytree;
 import pl.edu.agh.icsr.janet.*;
 import java.util.*;
 import pl.edu.agh.icsr.janet.natives.IWriter;
+import pl.edu.agh.icsr.janet.tree.Node;
 
 public class YYVariableDeclaratorList extends YYStatement {
 
@@ -29,7 +30,7 @@ public class YYVariableDeclaratorList extends YYStatement {
     }
 
     public YYVariableDeclaratorList setDeclarationType(int dcltype) {
-        Iterator i = iterator();
+        Iterator<Node> i = iterator();
         while (i.hasNext()) {
             ((YYVariableDeclarator)i.next()).setDeclarationType(dcltype);
         }
@@ -38,7 +39,7 @@ public class YYVariableDeclaratorList extends YYStatement {
 
     public YYVariableDeclaratorList setModifiers(int modifiers) {
 //        this.modifiers = m.getModifiers();
-        Iterator i = iterator();
+        Iterator<Node> i = iterator();
         while (i.hasNext()) {
             ((YYVariableDeclarator)i.next()).setModifiers(modifiers);
         }
@@ -47,7 +48,7 @@ public class YYVariableDeclaratorList extends YYStatement {
 
     public YYVariableDeclaratorList setType(YYType t) {
 //        this.type = t;
-        Iterator i = iterator();
+        Iterator<Node> i = iterator();
         while (i.hasNext()) {
             ((YYVariableDeclarator)i.next()).setType(t);
         }
@@ -56,7 +57,7 @@ public class YYVariableDeclaratorList extends YYStatement {
 
     public YYVariableDeclaratorList setDeclaringClass(YYClass cls) {
 //        this.type = t;
-        Iterator i = iterator();
+        Iterator<Node> i = iterator();
         while (i.hasNext()) {
             ((YYVariableDeclarator)i.next()).setDeclaringClass(cls);
         }
@@ -65,7 +66,7 @@ public class YYVariableDeclaratorList extends YYStatement {
 
     public String toString() {
         String s = "";
-        for (Iterator i = iterator(); i.hasNext();) {
+        for (Iterator<Node> i = iterator(); i.hasNext();) {
             s += ((YYVariableDeclarator)i.next()).toString();
             if (i.hasNext()) s += ", ";
         }
@@ -79,7 +80,7 @@ public class YYVariableDeclaratorList extends YYStatement {
     public String getTypeList() {
         try {
             String s = "";
-            for (Iterator i = iterator(); i.hasNext();) {
+            for (Iterator<Node> i = iterator(); i.hasNext();) {
                 s += ((YYVariableDeclarator)i.next()).getType().getFullName();
                 if (i.hasNext()) s += ", ";
             }

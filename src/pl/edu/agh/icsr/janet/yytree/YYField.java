@@ -5,6 +5,8 @@
 package pl.edu.agh.icsr.janet.yytree;
 
 import pl.edu.agh.icsr.janet.*;
+import pl.edu.agh.icsr.janet.tree.Node;
+
 import java.lang.reflect.Modifier;
 import java.util.*;
 
@@ -52,6 +54,6 @@ public class YYField extends YYStatement {
         return modifiers;
     }
 
-    public Iterator iterator() { return decls.iterator(); }
+    public Iterator<Node> iterator() { return decls.iterator(); }
 
 }

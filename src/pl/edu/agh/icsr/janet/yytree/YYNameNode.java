@@ -163,7 +163,7 @@ public class YYNameNode extends YYNode implements IDetailedLocationContext {
 
             // maybe it is a field of current class or interface
             cls = getScope().getCurrentClass();
-            Map fields = cls.getFields(this.text);
+            Map<String, ? extends IFieldInfo> fields = cls.getFields(this.text);
             if (!fields.isEmpty()) {
                 return new YYFieldAccessExpression(this, this.text);
             }

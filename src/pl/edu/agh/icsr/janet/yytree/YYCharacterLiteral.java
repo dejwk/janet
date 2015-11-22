@@ -7,6 +7,7 @@ package pl.edu.agh.icsr.janet.yytree;
 import java.util.*;
 import pl.edu.agh.icsr.janet.*;
 import pl.edu.agh.icsr.janet.natives.*;
+import pl.edu.agh.icsr.janet.reflect.IClassInfo;
 
 public class YYCharacterLiteral extends YYExpression {
     char val;
@@ -26,7 +27,7 @@ public class YYCharacterLiteral extends YYExpression {
 
     public void resolve(boolean isSubexpression) throws CompileException {
         expressionType = classMgr.CHAR;
-        exceptions = new HashMap();
+        exceptions = new HashMap<IClassInfo, YYStatement>();
     }
 
     public char getValue() { return val; }

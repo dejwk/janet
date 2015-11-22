@@ -11,7 +11,7 @@ import java.util.*;
  * The node can have at most one parent node and any number of
  * (bidirectionally linked) sons.
  */
-public class Node {
+public class Node implements Iterable<Node> {
     private Node parent;
     private Node first_son;
     private Node last_son;
@@ -274,11 +274,11 @@ public class Node {
         return b.toString();
     }
 
-    public Iterator iterator() {
+    public Iterator<Node> iterator() {
         return new Itr();
     }
 
-    class Itr implements Iterator {
+    class Itr implements Iterator<Node> {
         Node nthis = null;
         Node nnext = first_son;
 
@@ -286,7 +286,7 @@ public class Node {
             return nnext != null;
         }
 
-        public Object next() {
+        public Node next() {
             if (nnext == null) {
                 throw new NoSuchElementException();
             }

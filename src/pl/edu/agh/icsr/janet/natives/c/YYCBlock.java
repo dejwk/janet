@@ -6,6 +6,7 @@ package pl.edu.agh.icsr.janet.natives.c;
 
 import pl.edu.agh.icsr.janet.IJavaContext;
 import pl.edu.agh.icsr.janet.natives.c.Tags.*;
+import pl.edu.agh.icsr.janet.tree.Node;
 import pl.edu.agh.icsr.janet.natives.YYNativeCode;
 import pl.edu.agh.icsr.janet.yytree.YYNode;
 import pl.edu.agh.icsr.janet.yytree.YYStatement;
@@ -37,7 +38,7 @@ public class YYCBlock extends YYCChunk {
         YYNode n;
         StringBuffer buf = ibuf().getbuf();
         int pos = this.beg_charno0;
-        Iterator i = iterator();
+        Iterator<Node> i = iterator();
         if (!i.hasNext()) { // only write {}
             if ((param & Writer.PHASE_WRITE) != 0) {
                 w.write(buf.substring(pos, this.lend().charno0));

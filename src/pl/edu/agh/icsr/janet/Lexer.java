@@ -39,7 +39,7 @@ class Lexer {
 
     JavaLexer jlex;
 
-    Hashtable parsers = new Hashtable();
+    Hashtable<String, IParser> parsers = new Hashtable<String, IParser>();
 
     /***************************************************************************
      * construction
@@ -128,7 +128,7 @@ class Lexer {
         if (nlang_parser != null) {
             return nlang_parser;
         } else {
-            nlang_parser = (IParser)parsers.get(nlang_name);
+            nlang_parser = parsers.get(nlang_name);
             if (nlang_parser == null) { // not yet loaded
                 if (nlang_name.equals("cplusplus")) {
                     nlang_name = "c";
@@ -137,7 +137,7 @@ class Lexer {
                 String errstr = "Unable to load parser for native language \"" +
                         nlang_name + "\": class " + clname + " ";
                 try {
-                    Class cls = Class.forName(clname);
+                    Class<?> cls = Class.forName(clname);
                     nlang_parser = (IParser)cls.newInstance();
                     nlang_parser.init(this.ibuf, this.yyerr, this.loc, this.jeparser,
                             this.dbg_level);

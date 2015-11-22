@@ -12,7 +12,7 @@ import pl.edu.agh.icsr.janet.reflect.*;
 
 public class CompilationManager {
 
-    Map compUnits;
+    Map<URL, YYCompilationUnit> compUnits;
     ClassManager classMgr;
     Janet.Settings settings;
 
@@ -23,7 +23,7 @@ public class CompilationManager {
     String currentLibName;
 
     public CompilationManager(Janet.Settings settings) {
-        compUnits = new HashMap();
+        compUnits = new HashMap<URL, YYCompilationUnit>();
         this.settings = settings;
         classMgr = new ClassManager(this, settings);
     }
@@ -74,9 +74,8 @@ public class CompilationManager {
      * @param isInput
      */
     public void resolve() throws ParseException {
-        Iterator i = compUnits.values().iterator();
-        while (i.hasNext()) {
-            ((YYCompilationUnit)i.next()).resolve();
+        for (YYCompilationUnit unit : compUnits.values()) {
+            unit.resolve();
         }
     }
 
@@ -99,9 +98,8 @@ public class CompilationManager {
 
     public String toString() {
         String s = "";
-        Iterator i;
-        for (i = compUnits.values().iterator(); i.hasNext(); ) {
-            s += ((YYCompilationUnit)i.next()).dump() + "\n\n";
+        for (YYCompilationUnit unit : compUnits.values()) {
+            s += unit.dump() + "\n\n";
         }
 
         s += classMgr.toString();
@@ -110,9 +108,8 @@ public class CompilationManager {
 
     public String dumpTree() {
         String s = "";
-        Iterator i;
-        for (i = compUnits.values().iterator(); i.hasNext(); ) {
-            s += ((YYCompilationUnit)i.next()).dump() + "\n\n";
+        for (YYCompilationUnit unit : compUnits.values()) {
+            s += unit.dump() + "\n\n";
         }
 
         return s;

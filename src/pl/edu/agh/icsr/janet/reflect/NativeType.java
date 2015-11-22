@@ -88,39 +88,39 @@ class NativeType implements IClassInfo {
         return false;
     }
 
-    public Map getDeclaredFields() { // final field length is not reflected
+    public Map<String, IFieldInfo> getDeclaredFields() { // final field length is not reflected
         throw new UnsupportedOperationException();
     }
 
-    public SortedMap getAccessibleFields() throws CompileException {
+    public SortedMap<String, IFieldInfo> getAccessibleFields() throws CompileException {
         throw new UnsupportedOperationException();
     }
 
-    public SortedMap getFields(String name) throws CompileException {
+    public SortedMap<String, IFieldInfo> getFields(String name) throws CompileException {
         throw new UnsupportedOperationException();
     }
 
-    public SortedMap getDeclaredMethods() {
+    public SortedMap<String, IMethodInfo> getDeclaredMethods() {
         throw new UnsupportedOperationException();
     }
 
-    public Map getConstructors() {
+    public Map<String, IMethodInfo> getConstructors() {
         throw new UnsupportedOperationException();
     }
 
-    public SortedMap getAccessibleMethods() {
+    public SortedMap<String, IMethodInfo> getAccessibleMethods() {
         throw new UnsupportedOperationException();
     }
 
-    public SortedMap getMethods(String name) {
+    public SortedMap<String, IMethodInfo> getMethods(String name) {
         throw new UnsupportedOperationException();
     }
 
-    public SortedMap getMethods(String name, String jlssignature) {
+    public SortedMap<String, IMethodInfo> getMethods(String name, String jlssignature) {
         throw new UnsupportedOperationException();
     }
 
-    public Map getInterfaces() {
+    public Map<String, IClassInfo> getInterfaces() {
         throw new UnsupportedOperationException();
     }
 

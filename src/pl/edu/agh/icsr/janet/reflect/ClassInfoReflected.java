@@ -9,35 +9,35 @@ import java.util.*;
 import pl.edu.agh.icsr.janet.*;
 
 public final class ClassInfoReflected implements IClassInfo {
-    private Class cls;
+    private Class<?> cls;
     private ClassManager classMgr;
     transient String signature;
-    transient Map dclfields;
-    transient SortedMap accfields;
-    transient SortedMap dclmethods;
-    transient SortedMap accmethods;
-    transient Map constructors;
+    transient Map<String, IFieldInfo> dclfields;
+    transient SortedMap<String, IFieldInfo> accfields;
+    transient SortedMap<String, IMethodInfo> dclmethods;
+    transient SortedMap<String, IMethodInfo> accmethods;
+    transient Map<String, IMethodInfo> constructors;
     transient IClassInfo superclass;
     transient IClassInfo dclclass;
-    transient Map interfaces;
-    transient Map assignableClasses;
+    transient Map<String, IClassInfo> interfaces;
+    transient Map<String, IClassInfo> assignableClasses;
 
     private boolean workingFlag = false;
 
-    ClassInfoReflected(Class cls, ClassManager classMgr) {
+    ClassInfoReflected(Class<?> cls, ClassManager classMgr) {
         this.cls = cls;
         this.classMgr = classMgr;
     }
 
     public IClassInfo getDeclaringClass() {
         if (dclclass != null) return dclclass;
-        Class dcl = cls.getDeclaringClass();
+        Class<?> dcl = cls.getDeclaringClass();
         return dclclass = (dcl == null ? null : classMgr.forClass(dcl));
     }
 
     public IClassInfo getSuperclass() {
         if (superclass != null) return superclass;
-        Class c = cls.getSuperclass();
+        Class<?> c = cls.getSuperclass();
         return (c == null) ? null : (superclass = classMgr.forClass(c));
     }
 
@@ -61,7 +61,7 @@ public final class ClassInfoReflected implements IClassInfo {
         return isClassAccessibleToPkg(cls, pkg);
     }
 
-    public static boolean isClassAccessibleToPkg(Class cls, String pkg) {
+    public static boolean isClassAccessibleToPkg(Class<?> cls, String pkg) {
         if (cls.isPrimitive() || Modifier.isPublic(cls.getModifiers())) {
             return true;
         }
@@ -174,10 +174,10 @@ public final class ClassInfoReflected implements IClassInfo {
         return this.getSignature() == cls.getSignature();
     }
 
-    public Map getDeclaredFields() {
+    public Map<String, IFieldInfo> getDeclaredFields() {
         if (dclfields != null) return dclfields;
         if (isPrimitive()) throw new UnsupportedOperationException();
-        dclfields = new HashMap();
+        dclfields = new HashMap<String, IFieldInfo>();
         Field[] flds = cls.getDeclaredFields();
         for (int i=0; i<flds.length; i++) {
             FieldInfoReflected fld = new FieldInfoReflected(classMgr, flds[i]);
@@ -186,19 +186,19 @@ public final class ClassInfoReflected implements IClassInfo {
         return dclfields;
     }
 
-    public SortedMap getAccessibleFields() throws ParseException {
+    public SortedMap<String, IFieldInfo> getAccessibleFields() throws ParseException {
         if (accfields != null) return accfields;
         return accfields = classMgr.getAccessibleFields(this);
     }
 
-    public SortedMap getFields(String name) throws ParseException {
+    public SortedMap<String, ? extends IFieldInfo> getFields(String name) throws ParseException {
         return classMgr.getFields(this, name);
     }
 
-    public SortedMap getDeclaredMethods() throws CompileException {
+    public SortedMap<String, IMethodInfo> getDeclaredMethods() throws CompileException {
         if (dclmethods != null) return dclmethods;
         if (isPrimitive()) throw new UnsupportedOperationException();
-        dclmethods = new TreeMap();
+        dclmethods = new TreeMap<String, IMethodInfo>();
         Method[] mths = cls.getDeclaredMethods();
         for (int i=0; i<mths.length; i++) {
             MethodInfoReflected mth = new MethodInfoReflected(classMgr, mths[i]);
@@ -207,24 +207,24 @@ public final class ClassInfoReflected implements IClassInfo {
         return dclmethods;
     }
 
-    public SortedMap getAccessibleMethods() throws ParseException {
+    public SortedMap<String, IMethodInfo> getAccessibleMethods() throws ParseException {
         if (accmethods != null) return accmethods;
         return accmethods = classMgr.getAccessibleMethods(this);
     }
 
-    public SortedMap getMethods(String name) throws ParseException {
+    public SortedMap<String, ? extends IMethodInfo> getMethods(String name) throws ParseException {
         return classMgr.getMethods(this, name);
     }
 
-    public SortedMap getMethods(String name, String jlssignature)
+    public SortedMap<String, ? extends IMethodInfo> getMethods(String name, String jlssignature)
             throws ParseException {
         return classMgr.getMethods(this, name, jlssignature);
     }
 
-    public Map getInterfaces() throws CompileException {
+    public Map<String, IClassInfo> getInterfaces() throws CompileException {
         if (interfaces != null) return interfaces;
-        interfaces = new HashMap();
-        Class[] intfs = cls.getInterfaces();
+        interfaces = new HashMap<String, IClassInfo>();
+        Class<?>[] intfs = cls.getInterfaces();
         for (int i=0; i<intfs.length; i++) {
             IClassInfo c = classMgr.forClass(intfs[i]);
             interfaces.put(c.getFullName(), c);
@@ -232,10 +232,10 @@ public final class ClassInfoReflected implements IClassInfo {
         return interfaces;
     }
 
-    public Map getConstructors() throws ParseException {
+    public Map<String, IMethodInfo> getConstructors() throws ParseException {
         if (constructors != null) return constructors;
-        constructors = new HashMap();
-        Constructor[] cstrs = cls.getDeclaredConstructors();
+        constructors = new HashMap<String, IMethodInfo>();
+        Constructor<?>[] cstrs = cls.getDeclaredConstructors();
         for (int i=0; i<cstrs.length; i++) {
             IMethodInfo c = new ConstructorInfoReflected(classMgr, cstrs[i]);
             constructors.put(c.getJLSSignature(), c);

@@ -7,6 +7,7 @@ package pl.edu.agh.icsr.janet.yytree;
 import java.util.*;
 import pl.edu.agh.icsr.janet.*;
 import pl.edu.agh.icsr.janet.natives.*;
+import pl.edu.agh.icsr.janet.reflect.IClassInfo;
 
 public class YYLongLiteral extends YYExpression {
     long val;
@@ -24,7 +25,7 @@ public class YYLongLiteral extends YYExpression {
 
     public void resolve(boolean isSubexpression) throws CompileException {
         expressionType = classMgr.LONG;
-        exceptions = new HashMap();
+        exceptions = new HashMap<IClassInfo, YYStatement>();
     }
 
     public long getValue() { return val; }

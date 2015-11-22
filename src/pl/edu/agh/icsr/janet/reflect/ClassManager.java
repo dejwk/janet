@@ -14,9 +14,9 @@ import pl.edu.agh.icsr.janet.reflect.*;
 
 public class ClassManager {
 
-    Map compClasses = new HashMap(256);
-    Map reflClasses = new HashMap(256);
-    Map arrayClasses = new HashMap(256);
+    Map<String, YYClass> compClasses = new HashMap<String, YYClass>(256);
+    Map<String, IClassInfo> reflClasses = new HashMap<String, IClassInfo>(256);
+    Map<String, IClassInfo> arrayClasses = new HashMap<String, IClassInfo>(256);
 
     private boolean locked = false;
     CompilationManager compMgr;
@@ -32,7 +32,7 @@ public class ClassManager {
         this.settings = settings;
     }
 
-    public IClassInfo forClass(Class cls) {
+    public IClassInfo forClass(Class<?> cls) {
         if (cls.isArray()) {
             try {
                 return getArrayClass(forClass(cls.getComponentType()), 1);
@@ -42,9 +42,9 @@ public class ClassManager {
         }
         IClassInfo c;
         String name = cls.getName();
-        c = (IClassInfo)compClasses.get(name);
+        c = compClasses.get(name);
         if (c == null) {
-            c = (IClassInfo)reflClasses.get(name);
+            c = reflClasses.get(name);
         }
         if (c == null) {
             reflClasses.put(name, c = new ClassInfoReflected(cls, this));
@@ -56,16 +56,16 @@ public class ClassManager {
         IClassInfo c;
 
         // check if already defined in parsed files
-        c = (IClassInfo)compClasses.get(qname);
+        c = compClasses.get(qname);
         if (c != null) return c;
 
         // check if already defined by reflection
-        c = (IClassInfo)reflClasses.get(qname);
+        c = reflClasses.get(qname);
         if (c != null) return c;
 
         try {
             // look at the classpath
-            Class cls = settings.getClassLoader().loadClass(qname);
+            Class<?> cls = settings.getClassLoader().loadClass(qname);
             c = new ClassInfoReflected(cls, this);
             reflClasses.put(qname, c);
             return c;
@@ -82,7 +82,7 @@ public class ClassManager {
 
                 // if the class was defined in that source file, it should now
                 // be visible through compClasses
-                c = (IClassInfo)compClasses.get(qname);
+                c = compClasses.get(qname);
                 if (c != null) return c;
             }
         }
@@ -101,7 +101,7 @@ public class ClassManager {
         }
         IClassInfo c;
         String name = cls.getFullName() + "_" + dims;
-        c = (IClassInfo)arrayClasses.get(name);
+        c = arrayClasses.get(name);
         if (c == null) {
             arrayClasses.put(name, c = new ArrayType(this, cls, dims));
         }
@@ -119,11 +119,11 @@ public class ClassManager {
             }
         }
         String clname = cls.getFullName();
-        IClassInfo c_ref = (IClassInfo)reflClasses.get(clname);
+        IClassInfo c_ref = reflClasses.get(clname);
         if (c_ref != null) { // class can't be added after it is reflected
             throw new IllegalStateException();
         }
-        YYClass cls_prv = (YYClass)compClasses.get(clname);
+        YYClass cls_prv = compClasses.get(clname);
         if (cls_prv != null) {
             cls.reportError((cls.isInterface() ? "Interface " : "Class ") +
                 clname + " already defined in " +
@@ -217,17 +217,16 @@ public class ClassManager {
         }
     }
 
-    public SortedMap getAccessibleFields(IClassInfo cls) throws ParseException {
-        SortedMap result = new TreeMap();
+    public SortedMap<String, IFieldInfo> getAccessibleFields(IClassInfo cls) throws ParseException {
+        SortedMap<String, IFieldInfo> result = new TreeMap<String, IFieldInfo>();
         try {
             if (cls.getWorkingFlag()) { // circularity
                 reportError(cls, "Circularity detected: " + cls +
                     " inherits from itself");
             } else {
                 cls.setWorkingFlag(true);
-                Iterator i = cls.getInterfaces().values().iterator();
-                while (i.hasNext()) {
-                    addFieldsOfClass(result, cls, (IClassInfo)i.next());
+                for (IClassInfo iface : cls.getInterfaces().values()) {
+                    addFieldsOfClass(result, cls, iface);
                 }
                 if (!cls.isInterface()) {
                     IClassInfo superclass = cls.getSuperclass();
@@ -243,7 +242,7 @@ public class ClassManager {
         return result;
     }
 
-    public SortedMap getFields(IClassInfo cls, String name)
+    public SortedMap<String, ? extends IFieldInfo> getFields(IClassInfo cls, String name)
         throws ParseException
     {
         return cls.getAccessibleFields().subMap(getFieldLookupKeyFirst(name),
@@ -262,28 +261,30 @@ public class ClassManager {
         return name + ".";
     }
 
-    private SortedMap getFields(SortedMap allfields, String name) {
+    private SortedMap<String, IFieldInfo> getFields(
+            SortedMap<String, IFieldInfo> allfields, String name) {
         return allfields.subMap(getFieldLookupKeyFirst(name),
                                 getFieldLookupKeyLast(name));
     }
 
-    private final SortedMap addFieldsOfClass(SortedMap result,
+    private final SortedMap<String, IFieldInfo> addFieldsOfClass(
+            SortedMap<String, IFieldInfo> result,
         IClassInfo maincls, IClassInfo addcls) throws ParseException
     {
-        Iterator newfields, oldfields;
+        Iterator<? extends IFieldInfo> newfields, oldfields;
 
         newfields = (maincls == addcls)
             ? maincls.getDeclaredFields().values().iterator()
             : addcls.getAccessibleFields().values().iterator();
 enumnew:
         while (newfields.hasNext()) { // JLS 8.3.3
-            IFieldInfo newfld = (IFieldInfo)newfields.next();
+            IFieldInfo newfld = newfields.next();
             if (!shouldMemberBeIncluded(maincls, addcls, newfld)) {
                 continue enumnew; // field is not inherited
             }
             oldfields = getFields(result, newfld.getName()).values().iterator();
             while (oldfields.hasNext()) {
-                IFieldInfo oldfld = (IFieldInfo)oldfields.next();
+                IFieldInfo oldfld = oldfields.next();
                 // maybe it's re-inherited interface field? (JLS 8.3.3.4)
                 if (newfld == oldfld) {
                     continue enumnew; // ignore it
@@ -299,8 +300,8 @@ enumnew:
 
     // this is for nonarray reference types, JLS 5.1.4
     // rules for arrays are defined in ArrayType.java
-    public Map getAssignableClasses(IClassInfo cls) throws ParseException {
-        HashMap result = new HashMap();
+    public Map<String, IClassInfo> getAssignableClasses(IClassInfo cls) throws ParseException {
+        HashMap<String, IClassInfo> result = new HashMap<String, IClassInfo>();
         addAssignableClasses(cls, result);
         // any class or _interface_ is assignable from Object
         result.put("java.lang.Object", this.Object);
@@ -308,7 +309,7 @@ enumnew:
         return result;
     }
 
-    private void addAssignableClasses(IClassInfo cls, HashMap result)
+    private void addAssignableClasses(IClassInfo cls, HashMap<String, IClassInfo> result)
         throws ParseException
     {
         try {
@@ -324,9 +325,8 @@ enumnew:
                         addAssignableClasses(superclass, result);
                     }
                 }
-                Iterator i = cls.getInterfaces().values().iterator();
-                while (i.hasNext()) {
-                    addAssignableClasses((IClassInfo)i.next(), result);
+                for (IClassInfo iface : cls.getInterfaces().values()) {
+                    addAssignableClasses(iface, result);
                 }
             }
         } finally {
@@ -359,13 +359,9 @@ enumnew:
                 if (t.isAssignableFrom(s)) return true;
                 // must check for methods with the same signature and different
                 // return types
-                Iterator i = s.getAccessibleMethods().values().iterator();
-                while (i.hasNext()) {
-                    IMethodInfo m1 = (IMethodInfo)i.next();
-                    Iterator j = t.getMethods(m1.getName(),
-                        m1.getJLSSignature()).values().iterator();
-                    while (j.hasNext()) {
-                        IMethodInfo m2 = (IMethodInfo)j.next();
+                for (IMethodInfo m1 : s.getAccessibleMethods().values()) {
+                    for (IMethodInfo m2 : t.getMethods(m1.getName(),
+                        m1.getJLSSignature()).values()) {
                         if (m1.getReturnType() != m2.getReturnType()) {
                             return false;
                         }
@@ -388,9 +384,9 @@ enumnew:
         } catch (ParseException e) { throw new RuntimeException(); }
     }
 
-    public SortedMap getAccessibleMethods(IClassInfo cls)
+    public SortedMap<String, IMethodInfo> getAccessibleMethods(IClassInfo cls)
             throws ParseException {
-        SortedMap result = new TreeMap();
+        SortedMap<String, IMethodInfo> result = new TreeMap<String, IMethodInfo>();
         try {
             if (cls.getWorkingFlag()) { // circularity
                 reportError(cls, "Circularity detected: " + cls +
@@ -398,9 +394,8 @@ enumnew:
             } else {
                 cls.setWorkingFlag(true);
                 // interface (abstract) methods first
-                Iterator i = cls.getInterfaces().values().iterator();
-                while (i.hasNext()) {
-                    addMethodsOfClass(result, cls, (IClassInfo)i.next());
+                for (IClassInfo iface : cls.getInterfaces().values()) {
+                    addMethodsOfClass(result, cls, iface);
                 }
                 if (!cls.isInterface()) {
                     IClassInfo superclass = cls.getSuperclass();
@@ -413,9 +408,7 @@ enumnew:
                 // check whether the class is not abstract, when declared
                 // not to be
                 if (!Modifier.isAbstract(cls.getModifiers())) {
-                    i = result.values().iterator();
-                    while (i.hasNext()) {
-                        IMethodInfo m = (IMethodInfo)i.next();
+                    for (IMethodInfo m : result.values()) {
                         if (Modifier.isAbstract(m.getModifiers())) {
                             reportError(cls, "" + cls + " should be declared " +
                                 "abstract. It does not define " +
@@ -430,12 +423,12 @@ enumnew:
         return result;
     }
 
-    public SortedMap getMethods(IClassInfo cls, String name)
+    public SortedMap<String, ? extends IMethodInfo> getMethods(IClassInfo cls, String name)
             throws ParseException {
         return getMethods(cls.getAccessibleMethods(), name);
     }
 
-    public SortedMap getMethods(IClassInfo cls, String name,
+    public SortedMap<String, ? extends IMethodInfo> getMethods(IClassInfo cls, String name,
         String jlssignature) throws ParseException
     {
         return getMethods(cls.getAccessibleMethods(), name, jlssignature);
@@ -462,13 +455,14 @@ enumnew:
         return name + " " + jlssignature + ".";
     }
 
-    private SortedMap getMethods(SortedMap allmethods, String name) {
+    private SortedMap<String, ? extends IMethodInfo> getMethods(
+            SortedMap<String, ? extends IMethodInfo> allmethods, String name) {
         return allmethods.subMap(getMethodLookupKeyFirst(name),
                                  getMethodLookupKeyLast(name));
     }
 
-    private SortedMap getMethods(SortedMap allmethods, String name,
-                                 String jlssignature) {
+    private SortedMap<String, ? extends IMethodInfo> getMethods(
+            SortedMap<String, ? extends IMethodInfo> allmethods, String name, String jlssignature) {
         return allmethods.subMap(getMethodLookupKeyFirst(name, jlssignature),
                                  getMethodLookupKeyLast(name, jlssignature));
     }
@@ -513,15 +507,16 @@ enumnew:
             (newstatic ? "an instance " : "a static ") + "method";
     }
 
-    private SortedMap addMethodsOfClass(SortedMap result, IClassInfo maincls,
+    private SortedMap<String, IMethodInfo> addMethodsOfClass(
+            SortedMap<String, IMethodInfo> result, IClassInfo maincls,
             IClassInfo addcls) throws ParseException {
-        Iterator newmethods, oldmethods;
+        Iterator<? extends IMethodInfo> newmethods, oldmethods;
         newmethods = (maincls == addcls)
             ? maincls.getDeclaredMethods().values().iterator()
             : addcls.getAccessibleMethods().values().iterator();
 enumnew:
         while (newmethods.hasNext()) { // JLS 8.4.6
-            IMethodInfo newmth = (IMethodInfo)newmethods.next();
+            IMethodInfo newmth = newmethods.next();
             int newmods = newmth.getModifiers();
             if (!shouldMemberBeIncluded(maincls, addcls, newmth)) {
                 continue enumnew; // member is not inherited
@@ -530,7 +525,7 @@ enumnew:
             oldmethods = getMethods(result, newmth.getName(),
                 newmth.getJLSSignature()).values().iterator();
             while (oldmethods.hasNext()) {
-                IMethodInfo oldmth = (IMethodInfo)oldmethods.next();
+                IMethodInfo oldmth = oldmethods.next();
                 boolean multiInherit = maincls != addcls &&
                             Modifier.isAbstract(newmth.getModifiers());
                 Object errtarget = (maincls == addcls) ? (Object)newmth
@@ -619,9 +614,7 @@ enumnew:
 
     private String getIncompatibleExceptions(IMethodInfo oldmth,
             IMethodInfo newmth) throws ParseException { // JLS 8.4.4
-        Iterator i = newmth.getExceptionTypes().values().iterator();
-        while (i.hasNext()) {
-            IClassInfo exc = (IClassInfo)i.next();
+        for (IClassInfo exc : newmth.getExceptionTypes().values()) {
             if (isUncheckedException(exc)) continue;
             if (!canThrow(oldmth, exc)) {
                 return exc.getFullName(); // TODO: whole list, not just first
@@ -673,12 +666,12 @@ enumnew:
     /**
      * Does excs contain e (or its superclass)?
      */
-    public final static boolean containsException(Collection excs, IClassInfo e)
+    public final static boolean containsException(Collection<IClassInfo> excs, IClassInfo e)
         throws ParseException
     {
 //        if (excs == null) return false;
-        for(Iterator i = excs.iterator(); i.hasNext();) {
-            if (e.isSubclassOf((IClassInfo)i.next())) {
+        for (IClassInfo exc : excs) {
+            if (e.isSubclassOf(exc)) {
                 return true;
             }
         }
@@ -736,8 +729,8 @@ enumnew:
         String curpkgname = compUnit.getPackageName();
         if (refpkgname == "") { // simple name
             String qname;
-            Map m = compUnit.getSingleImportDeclarations();
-            result = (IClassInfo)m.get(clsname);
+            Map<String, IClassInfo> m = compUnit.getSingleImportDeclarations();
+            result = m.get(clsname);
             if (result != null) return result;
 
             // searching in current package (including current compUnit)
@@ -746,11 +739,9 @@ enumnew:
             if (result != null) return result;
 
             // checking type-import-on-demands
-            List l = compUnit.getImportOnDemandDeclarations();
-            Iterator i = l.iterator();
             IClassInfo other;
-            while (i.hasNext()) {
-                qname = getQualifiedName((String)i.next(), clsname);
+            for (String decl : compUnit.getImportOnDemandDeclarations()) {
+                qname = getQualifiedName(decl, clsname);
                 other = forName(qname);
                 if (other != null && !other.isAccessibleTo(curpkgname)) {
                     other = null;
@@ -794,16 +785,16 @@ enumnew:
         return true;
     }
 
-    private IMethodInfo findTheMostSpecificInternal(Collection whereToSearch,
+    private IMethodInfo findTheMostSpecificInternal(Collection<? extends IMethodInfo> whereToSearch,
             IClassInfo[] argtypes, IClassInfo enclClass, boolean selfcxt,
             boolean allowWeak) throws ParseException {
-        Iterator methods = whereToSearch.iterator();
+        Iterator<? extends IMethodInfo> methods = whereToSearch.iterator();
         IMethodInfo applicable = null;
         int noOfApplicables = 0;
-        List maximallySpecifics = new LinkedList();
+        List<IMethodInfo> maximallySpecifics = new LinkedList<IMethodInfo>();
 methods:
         while (methods.hasNext()) {
-            IMethodInfo mth = (IMethodInfo)methods.next();
+            IMethodInfo mth = methods.next();
             // JLS 15.11.2.1
 
             // is the method or constructor applicable?
@@ -832,8 +823,8 @@ methods:
             // update list of maximally specifics
             boolean shouldBeAdded = true;
             if (!hasNativeTypes) {
-                for (Iterator j = maximallySpecifics.iterator(); j.hasNext();) {
-                    IMethodInfo oldmth = (IMethodInfo)j.next();
+                for (Iterator<IMethodInfo> j = maximallySpecifics.iterator(); j.hasNext();) {
+                    IMethodInfo oldmth = j.next();
                     if (isMoreSpecific(oldmth, mth)) {
                         shouldBeAdded = false;
                         break;
@@ -862,7 +853,7 @@ methods:
             }
         }
 
-        IMethodInfo mth = (IMethodInfo)methods.next();
+        IMethodInfo mth = methods.next();
 
         if (methods.hasNext()) { // ambigious
             throw new AmbigiousReferenceException(mth, methods.next());
@@ -871,7 +862,7 @@ methods:
         return mth;
     }
 
-    public IMethodInfo findTheMostSpecific(Collection whereToSearch,
+    public IMethodInfo findTheMostSpecific(Collection<? extends IMethodInfo> whereToSearch,
         boolean isConstructor, IClassInfo[] argtypes, IClassInfo enclClass,
         boolean selfcxt) throws ParseException
     {
@@ -893,9 +884,9 @@ methods:
 
     public String toString() {
         String s = "";
-        Iterator i;
+        Iterator<YYClass> i;
         for (i = compClasses.values().iterator(); i.hasNext(); ) {
-            YYClass c = (YYClass)i.next();
+            YYClass c = i.next();
             try {
                 s += c.getFullName() + ":\n" + c.describe() + "\n";
             } catch (ParseException e) {

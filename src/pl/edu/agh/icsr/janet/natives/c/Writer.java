@@ -9,6 +9,8 @@ import pl.edu.agh.icsr.janet.natives.IWriter;
 import pl.edu.agh.icsr.janet.*;
 import pl.edu.agh.icsr.janet.yytree.*;
 import pl.edu.agh.icsr.janet.reflect.*;
+import pl.edu.agh.icsr.janet.tree.Node;
+
 import java.io.*;
 import java.util.*;
 import java.lang.reflect.*;
@@ -247,8 +249,8 @@ public class Writer implements IWriter {
 
     boolean writeDclUnitDeclarations(DeclarationTag dt) throws IOException {
         boolean hasVariables = false;
-        for (Iterator i = dt.variablesIterator(); i.hasNext();) {
-            VariableTag vtag = (VariableTag)i.next();
+        for (Iterator<VariableTag> i = dt.variablesIterator(); i.hasNext();) {
+            VariableTag vtag = i.next();
             hasVariables = true;
             cr(); write(vtag.getDeclaration());
         }
@@ -304,8 +306,8 @@ public class Writer implements IWriter {
 
     boolean writeDclUnitDestructors(DeclarationTag dt) throws IOException {
         boolean hasVariables = false;
-        for (Iterator i = dt.variablesIterator(); i.hasNext();) {
-            VariableTag vtag = (VariableTag)i.next();
+        for (Iterator<VariableTag> i = dt.variablesIterator(); i.hasNext();) {
+            VariableTag vtag = i.next();
             hasVariables = true;
             if (!cplusplus() || dt.getParent() != null) {
                 cr(); write(vtag.getVariableRelease() + ";");
@@ -418,8 +420,8 @@ public class Writer implements IWriter {
             // write variable declarations
 
             boolean hasVariables = false;
-            for (Iterator i = functionDclTag.variablesIterator(); i.hasNext();) {
-                VariableTag v = (VariableTag)i.next();
+            for (Iterator<VariableTag> i = functionDclTag.variablesIterator(); i.hasNext();) {
+                VariableTag v = i.next();
                 //if (v.mustBeReleased()) continue;
                 cr(); write(v.getDeclaration());
                 hasVariables = true;
@@ -477,7 +479,7 @@ public class Writer implements IWriter {
     }
 
     public int write(YYNode node, int param) throws IOException {
-        for(Iterator i = node.iterator(); i.hasNext();) {
+        for(Iterator<Node> i = node.iterator(); i.hasNext();) {
             YYNode n = (YYNode)i.next();
             n.write(this, param);
         }
@@ -573,7 +575,7 @@ public class Writer implements IWriter {
         write(",");
         cr(); write("_janet_methods[" + mthidx + "].id");
 
-        for (Iterator i = arguments.iterator(); i.hasNext();) {
+        for (Iterator<Node> i = arguments.iterator(); i.hasNext();) {
             write(",");
             cr(); write((getTag((YYExpression)i.next())).getUse());
         }
@@ -598,7 +600,7 @@ public class Writer implements IWriter {
                 target.write(this, PHASE_PREPARE + REUSABLE);
             }
 
-            for (Iterator i = args.iterator(); i.hasNext();) {
+            for (Iterator<Node> i = args.iterator(); i.hasNext();) {
                 YYExpression expr = (YYExpression)i.next();
                 expr.write(this, PHASE_PREPARE + REUSABLE);
             }
@@ -626,7 +628,7 @@ public class Writer implements IWriter {
             }
 
             // write parameter evaluations
-            for (Iterator i = args.iterator(); i.hasNext();) {
+            for (Iterator<Node> i = args.iterator(); i.hasNext();) {
                 YYExpression arg = (YYExpression)i.next();
                 ExpressionTag tag = getTag(arg);
                 if (tag.needsEvaluation()) {
@@ -714,7 +716,7 @@ public class Writer implements IWriter {
 
             initExpressionTag(e, null, param, true);
 
-            for (Iterator i = args.iterator(); i.hasNext();) {
+            for (Iterator<Node> i = args.iterator(); i.hasNext();) {
                 YYExpression expr = (YYExpression)i.next();
                 expr.write(this, PHASE_PREPARE + REUSABLE);
             }
@@ -740,7 +742,7 @@ public class Writer implements IWriter {
             write(","); cr(); write("_JANET_LOCAL_HANDLE_EXCEPTION()");
 
             // write parameters evaluation
-            for (Iterator i = args.iterator(); i.hasNext();) {
+            for (Iterator<Node> i = args.iterator(); i.hasNext();) {
                 YYExpression arg = (YYExpression)i.next();
                 ExpressionTag tag = getTag(arg);
                 if (tag.needsEvaluation()) {
@@ -763,7 +765,7 @@ public class Writer implements IWriter {
             cr(); write(getTag(e).getUse() + ",");
             cr(); write("_janet_classes[" + e.getClassIdx() + "].id,");
             cr(); write("_janet_methods[" + e.getMethodIdx() + "].id");
-            for (Iterator i = args.iterator(); i.hasNext();) {
+            for (Iterator<Node> i = args.iterator(); i.hasNext();) {
                 write(","); cr();
                 write((getTag((YYExpression)i.next())).getUse());
             }
@@ -1535,7 +1537,7 @@ public class Writer implements IWriter {
 
             initExpressionTag(e, null, param, false);
 
-            for (Iterator i = dimexprs.iterator(); i.hasNext();) {
+            for (Iterator<Node> i = dimexprs.iterator(); i.hasNext();) {
                 YYExpression expr = (YYExpression)i.next();
                 expr.write(this, PHASE_PREPARE + REUSABLE);
             }
@@ -1544,7 +1546,7 @@ public class Writer implements IWriter {
 
         } else {
 
-            Iterator itr;
+            Iterator<Node> itr;
             int i;
             boolean first = true;
             ExpressionTag myTag = getTag(e);
@@ -1961,7 +1963,7 @@ public class Writer implements IWriter {
     }
 
     public int write(YYVariableDeclaratorList s, int param) throws IOException {
-        for (Iterator i = s.iterator(); i.hasNext();) {
+        for (Iterator<Node> i = s.iterator(); i.hasNext();) {
             ((YYVariableDeclarator)i.next()).write(this, param);
         }
         return 0;

@@ -20,20 +20,20 @@ public class YYNativeStatement extends YYStatement implements INativeMethodInfo 
     boolean isStatic;
 
     transient String argsignature;
-    transient Map exceptions;
+    transient Map<String, IClassInfo> exceptions;
     transient YYVariableDeclarator[] parameters;
     transient IClassInfo[] paramtypes;
 
-    private HashSet unresolvedParameterSet;
-    private Vector unresolvedParameters;
+    private HashSet<YYVariableDeclarator> unresolvedParameterSet;
+    private Vector<YYVariableDeclarator> unresolvedParameters;
 
     public YYNativeStatement(IJavaContext cxt) {
         super(cxt, false, true);
         this.classMgr = cxt.getClassManager();
         IScope scope = cxt.getScope();
         this.declaringClass = scope.getCurrentClass();
-        unresolvedParameterSet = new HashSet();
-        unresolvedParameters = new Vector();
+        unresolvedParameterSet = new HashSet<YYVariableDeclarator>();
+        unresolvedParameters = new Vector<YYVariableDeclarator>();
         isStatic = ((getCurrentMember().getScopeType() & IScope.INSTANCE_CONTEXT) == 0);
     }
 
@@ -115,13 +115,11 @@ public class YYNativeStatement extends YYStatement implements INativeMethodInfo 
         return getJLSSignature() + "V";
     }
 
-    public Map getExceptionTypes() {
+    public Map<String, IClassInfo> getExceptionTypes() {
         if (exceptions != null) return exceptions;
         lock();
-        Iterator i = implementation.getExceptionsThrown().keySet().iterator();
-        exceptions = new HashMap();
-        while (i.hasNext()) {
-            IClassInfo cls = (IClassInfo)i.next();
+        exceptions = new HashMap<String, IClassInfo>();
+        for (IClassInfo cls : implementation.getExceptionsThrown().keySet()) {
             exceptions.put(cls.getFullName(), cls);
         }
         return exceptions;
@@ -132,7 +130,7 @@ public class YYNativeStatement extends YYStatement implements INativeMethodInfo 
         lock();
         parameters = new YYVariableDeclarator[unresolvedParameters.size()];
         for (int i=0, len = unresolvedParameters.size(); i<len; i++) {
-            parameters[i] = (YYVariableDeclarator)unresolvedParameters.get(i);
+            parameters[i] = unresolvedParameters.get(i);
         }
         return parameters;
     }
@@ -191,9 +189,9 @@ public class YYNativeStatement extends YYStatement implements INativeMethodInfo 
 
         //write throws
         boolean first = true;
-        Iterator i = getExceptionTypes().values().iterator();
+        Iterator<IClassInfo> i = getExceptionTypes().values().iterator();
         while (i.hasNext()) {
-            IClassInfo exc = (IClassInfo)i.next();
+            IClassInfo exc = i.next();
             try {
                 if (classMgr.isUncheckedException(exc)) continue;
             } catch (ParseException e) {
@@ -212,28 +210,28 @@ public class YYNativeStatement extends YYStatement implements INativeMethodInfo 
         w.getNativeWriter().writeNativeMethod(this);
     }
 
-    public Collection getUsedClassIdxs() {
+    public Collection<Integer> getUsedClassIdxs() {
         if (implementation.clsidxs == null) {
             throw new IllegalStateException();
         }
         return implementation.clsidxs;
     }
 
-    public Collection getUsedFieldsIdxs() {
+    public Collection<Integer> getUsedFieldsIdxs() {
         if (implementation.fldidxs == null) {
             throw new IllegalStateException();
         }
         return implementation.fldidxs;
     }
 
-    public Collection getUsedMethodsIdxs() {
+    public Collection<Integer> getUsedMethodsIdxs() {
         if (implementation.mthidxs == null) {
             throw new IllegalStateException();
         }
         return implementation.mthidxs;
     }
 
-    public Collection getUsedStringsIdxs() {
+    public Collection<Integer> getUsedStringsIdxs() {
         if (implementation.stridxs == null) {
             throw new IllegalStateException();
         }
@@ -244,7 +242,7 @@ public class YYNativeStatement extends YYStatement implements INativeMethodInfo 
         return "janetmth$" + mthIdx;
     }
 
-    class DumpIterator implements Iterator {
+    class DumpIterator implements Iterator<YYNode> {
         boolean bodyreturned;
         DumpIterator() {
             bodyreturned = false;
@@ -252,13 +250,13 @@ public class YYNativeStatement extends YYStatement implements INativeMethodInfo 
         public boolean hasNext() {
             return !bodyreturned;
         }
-        public Object next() {
+        public YYNode next() {
             if (!bodyreturned) { bodyreturned = true; return implementation; }
             return null;
         }
         public void remove() { throw new UnsupportedOperationException(); }
     }
 
-    public Iterator getDumpIterator() { return new DumpIterator(); }
+    public Iterator<YYNode> getDumpIterator() { return new DumpIterator(); }
 
 }

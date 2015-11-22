@@ -62,7 +62,7 @@ public class YYReturnStatement extends YYStatement { // JLS 14.16
             retexpr.setImplicitCastType(mthtype);
             addExceptions(retexpr.getExceptionsThrown());
         } else {
-            addExceptions(new HashMap());
+            addExceptions(new HashMap<IClassInfo, YYStatement>());
         }
     }
 
@@ -72,10 +72,10 @@ public class YYReturnStatement extends YYStatement { // JLS 14.16
         return w.write(this, param);
     }
 
-    class DumpIterator implements Iterator {
+    class DumpIterator implements Iterator<YYNode> {
         boolean retexpreturned = false;
         public boolean hasNext() { return !retexpreturned; }
-        public Object next() {
+        public YYNode next() {
             if (retexpreturned) return null;
             retexpreturned = true;
             return retexpr;
@@ -83,5 +83,5 @@ public class YYReturnStatement extends YYStatement { // JLS 14.16
         public void remove() { throw new UnsupportedOperationException(); }
     }
 
-    public Iterator getDumpIterator() { return new DumpIterator(); }
+    public Iterator<YYNode> getDumpIterator() { return new DumpIterator(); }
 }

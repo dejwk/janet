@@ -223,7 +223,7 @@ public class YYMethodInvocationExpression extends YYExpression {
             invocationMode = IMODE_VIRTUAL;
         }
 
-        if (exceptions == null) exceptions = new HashMap();
+        if (exceptions == null) exceptions = new HashMap<IClassInfo, YYStatement>();
     }
 
     public int write(IWriter w, int param) throws java.io.IOException {
@@ -275,10 +275,10 @@ public class YYMethodInvocationExpression extends YYExpression {
                method.getName().equals("length");
     }
 
-    class DumpIterator implements Iterator {
+    class DumpIterator implements Iterator<YYNode> {
         boolean targetReturned;
         boolean argsreturned;
-        Iterator i;
+        Iterator<YYNode> i;
         DumpIterator() {
             targetReturned = (target == null);
             argsreturned = (argtypes.length == 0);
@@ -287,7 +287,7 @@ public class YYMethodInvocationExpression extends YYExpression {
         public boolean hasNext() {
             return !targetReturned || (i != null && i.hasNext());
         }
-        public Object next() {
+        public YYNode next() {
             if (!targetReturned) { targetReturned = true; return target; }
             if (i != null) return i.next();
             return null;
@@ -295,7 +295,7 @@ public class YYMethodInvocationExpression extends YYExpression {
         public void remove() { throw new UnsupportedOperationException(); }
     }
 
-    public Iterator getDumpIterator() { return new DumpIterator(); }
+    public Iterator<YYNode> getDumpIterator() { return new DumpIterator(); }
 
 
     public String toString() {

@@ -7,6 +7,8 @@ package pl.edu.agh.icsr.janet.yytree;
 import pl.edu.agh.icsr.janet.*;
 import pl.edu.agh.icsr.janet.reflect.*;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
+
 import pl.edu.agh.icsr.janet.natives.IWriter;
 
 /**
@@ -103,7 +105,7 @@ public class YYVariableDeclarator extends YYStatement implements IFieldInfo {
             initializer.setImplicitCastType(this.getType());
             addExceptions(initializer.getExceptionsThrown());
         } else {
-            exceptions = new java.util.HashMap();
+            exceptions = new HashMap<IClassInfo, YYStatement>();
         }
     }
 

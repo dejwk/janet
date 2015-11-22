@@ -47,17 +47,17 @@ public class YYConditionalExpression extends YYExpression {
         reportError("invalid type; required: boolean, found: " + cls);
     }
 
-    class DumpIterator implements Iterator {
+    class DumpIterator implements Iterator<YYNode> {
         int i = 0;
         DumpIterator() {}
         public boolean hasNext() { return i<2; }
-        public Object next() {
+        public YYNode next() {
             i++;
             return (i == 1 ? e1 : i == 2 ? e2 : null);
         }
         public void remove() { throw new UnsupportedOperationException(); }
     }
 
-    public Iterator getDumpIterator() { return new DumpIterator(); }
+    public Iterator<YYNode> getDumpIterator() { return new DumpIterator(); }
 
 }

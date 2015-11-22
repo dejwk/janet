@@ -11,27 +11,28 @@ import pl.edu.agh.icsr.janet.CompileException;
 
 public class YYImportDeclarationList extends YYNode {
 
-    HashMap singles;
-    Vector onDemands;
+    HashMap<String, YYName> singles;
+    Vector<String> onDemands;
 
     public YYImportDeclarationList(IJavaContext cxt) {
         super(cxt);
-        singles = new HashMap();
-        onDemands = new Vector();
+        singles = new HashMap<String, YYName>();
+        onDemands = new Vector<String>();
         onDemands.addElement("java.lang");
     }
 
-    Map getSingles() {
+    Map<String, YYName> getSingles() {
         return singles;
     }
 
-    List getOnDemands() {
+    List<String> getOnDemands() {
         return onDemands;
     }
 
     public String findSingle(String singleName) {
         ensureUnlocked();
-        return (String)singles.get(singleName);
+        YYName name = singles.get(singleName);
+        return name == null ? null : name.toString();
     }
 
 /*    public YYImportDeclarationList add(YYNode n) throws CompileException {
@@ -63,7 +64,7 @@ public class YYImportDeclarationList extends YYNode {
         ensureUnlocked();
         String simple = n.lastNameNode().toString();
         String newtype = n.toString();
-        String oldtype = (String)singles.get(simple);
+        String oldtype = findSingle(simple);
         if (oldtype != null) {
             if (!oldtype.equals(n.toString())) {
                 n.reportError("Ambigious class: " + oldtype + " and " +

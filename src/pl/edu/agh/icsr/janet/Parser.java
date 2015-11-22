@@ -30,6 +30,7 @@ import pl.edu.agh.icsr.janet.yytree.*;
 import java.lang.reflect.Modifier; // for Modifiers productions
 
 import pl.edu.agh.icsr.janet.reflect.ClassManager;
+import pl.edu.agh.icsr.janet.tree.Node;
 import pl.edu.agh.icsr.janet.ILocationContext;
 import pl.edu.agh.icsr.janet.natives.YYNativeCode;
 
@@ -478,10 +479,10 @@ case 45:
 { yyval = ((YYName)(yyvs.tth(-1))).reclassifyAsPackage().expand(cxt); ;
     break;}
 case 46:
-{ yyval = ((YYName)(yyvs.tth(-1))); ;
+{ yyval = ((yyvs.tth(-1))); ;
     break;}
 case 47:
-{ yyval = ((YYName)(yyvs.tth(-3))); ;
+{ yyval = ((yyvs.tth(-3))); ;
     break;}
 case 50:
 { yyval = null; ;
@@ -839,10 +840,10 @@ case 181:
 { yyval = ((YYStatement)(yyvs.tth(-1))).add(((YYStatement)(yyvs.tth(0)))); ;
     break;}
 case 182:
-{ yyval = ((YYVariableDeclaratorList)(yyvs.tth(0))); ;
+{ yyval = ((yyvs.tth(0))); ;
     break;}
 case 184:
-{ yyval = ((YYClass)(yyvs.tth(0))); ;
+{ yyval = ((yyvs.tth(0))); ;
     break;}
 case 185:
 { yyval = ((YYVariableDeclaratorList)(yyvs.tth(-1))).expand(cxt); addVariables(((YYVariableDeclaratorList)(yyvs.tth(-1)))); ;
@@ -856,7 +857,7 @@ case 187:
                                                             .setDeclarationType(YYVariableDeclarator.LOCAL_VARIABLE); ;
     break;}
 case 210:
-{ yyval = ((YYNativeStatement)(yyvs.tth(0))); ;
+{ yyval = ((yyvs.tth(0))); ;
     break;}
 case 211:
 { yyval = new YYStatement(cxt); ;
@@ -2965,7 +2966,7 @@ public class Context implements IMutableContext {
     public final JanetSourceReader ibuf() { return yylex.ibuf(); }
 
     public final void reportError(String msg) throws CompileException {
-        Parser.this.reportError(this, msg, true);
+        Parser.reportError(this, msg, true);
     }
 
     public final ClassManager getClassManager() { return compMgr.getClassManager(); }
@@ -2984,10 +2985,8 @@ public class Context implements IMutableContext {
 
     public void addVariables(YYVariableDeclaratorList vars) throws CompileException {
         if (vars == null) return;
-        YYVariableDeclarator var;
-        Iterator i = vars.iterator();
-        while (i.hasNext()) {
-            variables.push((YYVariableDeclarator)i.next());
+        for (Node node : vars) {
+            variables.push((YYVariableDeclarator)node);
         }
     }
 
@@ -3008,7 +3007,7 @@ ILocationContext tokencxt = new ILocationContext() {
         public final YYLocation lend() { return Parser.this.lend(); }
         public final JanetSourceReader ibuf() { return yylex.ibuf(); }
         public final void reportError(String msg) throws CompileException {
-            Parser.this.reportError(this, msg, true);
+            Parser.reportError(this, msg, true);
         }
     };
 

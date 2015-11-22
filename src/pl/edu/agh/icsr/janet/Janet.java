@@ -36,7 +36,6 @@ public class Janet {
 
         Settings s = new Settings();
         PrintWriter ferr = s.getFErr();
-        Vector files = new Vector();
         CompilationManager cm = new CompilationManager(s);
         int exitstatus = 0;
 
@@ -216,7 +215,7 @@ public class Janet {
 
     private static URL[] path2URLs(String path) {
         StringTokenizer tokenizer = new StringTokenizer(path, File.pathSeparator);
-        Collection urls = new ArrayList();
+        Collection<URL> urls = new ArrayList<URL>();
         while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();
             File file = new File(token);
@@ -229,7 +228,7 @@ public class Janet {
                 e.printStackTrace();
             }
         }
-        return (URL[])urls.toArray(new URL[urls.size()]);
+        return urls.toArray(new URL[urls.size()]);
     }
 
     private static URL resolveFile(File f, Settings s) {

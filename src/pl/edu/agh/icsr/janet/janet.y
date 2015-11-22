@@ -22,6 +22,7 @@ import pl.edu.agh.icsr.janet.yytree.*;
 import java.lang.reflect.Modifier; // for Modifiers productions
 
 import pl.edu.agh.icsr.janet.reflect.ClassManager;
+import pl.edu.agh.icsr.janet.tree.Node;
 import pl.edu.agh.icsr.janet.ILocationContext;
 import pl.edu.agh.icsr.janet.natives.YYNativeCode;
 %}
@@ -1300,7 +1301,7 @@ public class Context implements IMutableContext {
     public final JanetSourceReader ibuf() { return yylex.ibuf(); }
 
     public final void reportError(String msg) throws CompileException {
-        Parser.this.reportError(this, msg, true);
+        Parser.reportError(this, msg, true);
     }
 
     public final ClassManager getClassManager() { return compMgr.getClassManager(); }
@@ -1319,10 +1320,8 @@ public class Context implements IMutableContext {
 
     public void addVariables(YYVariableDeclaratorList vars) throws CompileException {
         if (vars == null) return;
-        YYVariableDeclarator var;
-        Iterator i = vars.iterator();
-        while (i.hasNext()) {
-            variables.push((YYVariableDeclarator)i.next());
+        for (Node node : vars) {
+            variables.push((YYVariableDeclarator)node);
         }
     }
 
@@ -1343,7 +1342,7 @@ ILocationContext tokencxt = new ILocationContext() {
         public final YYLocation lend() { return Parser.this.lend(); }
         public final JanetSourceReader ibuf() { return yylex.ibuf(); }
         public final void reportError(String msg) throws CompileException {
-            Parser.this.reportError(this, msg, true);
+            Parser.reportError(this, msg, true);
         }
     };
 

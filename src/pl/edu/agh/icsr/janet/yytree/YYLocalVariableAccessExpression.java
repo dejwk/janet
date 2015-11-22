@@ -25,7 +25,7 @@ public class YYLocalVariableAccessExpression extends YYExpression {
 
     public void resolve(boolean isSubexpression) throws ParseException {
         expressionType = variable.getType();
-        exceptions = new HashMap(); // no exceptions
+        exceptions = new HashMap<IClassInfo, YYStatement>(); // no exceptions
 
         IScope scope = getCurrentMember();
 

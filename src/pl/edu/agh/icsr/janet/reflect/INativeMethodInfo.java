@@ -12,9 +12,9 @@ import pl.edu.agh.icsr.janet.yytree.YYVariableDeclarator;
 public interface INativeMethodInfo extends IMethodInfo {
     public String getNativeLanguage();
     public YYVariableDeclarator[] getParameters() throws CompileException;
-    public Collection getUsedClassIdxs();
-    public Collection getUsedFieldsIdxs();
-    public Collection getUsedMethodsIdxs();
-    public Collection getUsedStringsIdxs();
+    public Collection<Integer> getUsedClassIdxs();
+    public Collection<Integer> getUsedFieldsIdxs();
+    public Collection<Integer> getUsedMethodsIdxs();
+    public Collection<Integer> getUsedStringsIdxs();
     public YYNativeMethodImplementation getImplementation();
 }

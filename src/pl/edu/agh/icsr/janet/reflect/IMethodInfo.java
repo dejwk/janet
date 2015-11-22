@@ -13,6 +13,6 @@ public interface IMethodInfo extends IMemberInfo {
     public String getArgumentSignature() throws ParseException;
     public String getJLSSignature() throws ParseException;
     public String getJNISignature() throws ParseException;
-    public Map getExceptionTypes() throws ParseException;
+    public Map<String, IClassInfo> getExceptionTypes() throws ParseException;
     public IClassInfo[] getParameterTypes() throws ParseException;
 }

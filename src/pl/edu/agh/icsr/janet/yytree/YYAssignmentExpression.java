@@ -60,10 +60,10 @@ public class YYAssignmentExpression extends YYExpression {
         addExceptions(leftHandSide.getExceptionsThrown());
         addExceptions(assignment.getExceptionsThrown());
         if (op != null) {
-            Collection c = op.getExceptionsThrown();
+            Collection<IClassInfo> c = op.getExceptionsThrown();
             if (c != null) {
-                for (Iterator i = c.iterator(); i.hasNext();) {
-                    addException((IClassInfo)i.next());
+                for (IClassInfo exc : c) {
+                    addException(exc);
                 }
             }
         }
@@ -136,17 +136,17 @@ public class YYAssignmentExpression extends YYExpression {
         return w.write(this, param);
     }
 
-    class DumpIterator implements Iterator {
+    class DumpIterator implements Iterator<YYNode> {
         int i = 0;
         DumpIterator() {}
         public boolean hasNext() { return i<2; }
-        public Object next() {
+        public YYNode next() {
             i++;
             return (i == 1 ? leftHandSide : i == 2 ? assignment : null);
         }
         public void remove() { throw new UnsupportedOperationException(); }
     }
 
-    public Iterator getDumpIterator() { return new DumpIterator(); }
+    public Iterator<YYNode> getDumpIterator() { return new DumpIterator(); }
 
 }

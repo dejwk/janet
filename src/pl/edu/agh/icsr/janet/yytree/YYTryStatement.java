@@ -6,6 +6,8 @@ package pl.edu.agh.icsr.janet.yytree;
 
 import pl.edu.agh.icsr.janet.*;
 import pl.edu.agh.icsr.janet.reflect.*;
+import pl.edu.agh.icsr.janet.tree.Node;
+
 import java.util.*;
 import pl.edu.agh.icsr.janet.natives.IWriter;
 
@@ -34,8 +36,8 @@ public class YYTryStatement extends YYStatement {
         body.resolve();
         addExceptions(body.getExceptionsThrown());
         if (catches != null) {
-            Iterator i;
-            // remove catched exception
+            Iterator<Node> i;
+            // remove caught exception
             for (i = catches.iterator(); i.hasNext();) {
                 YYCatchClause c = (YYCatchClause)i.next();
                 c.resolve();
@@ -65,8 +67,8 @@ public class YYTryStatement extends YYStatement {
 
     public boolean catchException(IClassInfo catched) throws ParseException {
         boolean mayBeThrown = false;
-        for (Iterator i = exceptions.keySet().iterator(); i.hasNext();) {
-            IClassInfo exc = (IClassInfo)i.next();
+        for (Iterator<IClassInfo> i = exceptions.keySet().iterator(); i.hasNext();) {
+            IClassInfo exc = i.next();
             if (exc.isSubclassOf(catched)) {
                 i.remove();
                 mayBeThrown = true;
@@ -81,12 +83,12 @@ public class YYTryStatement extends YYStatement {
         return w.write(this, param);
     }
 
-    class DumpIterator implements Iterator {
+    class DumpIterator implements Iterator<YYNode> {
         int i=1;
         Object next = body;
         public boolean hasNext() { return i<4; }
-        public Object next() {
-            Object ret = i==1 ? body : i==2 ? catches : i==3 ? finly : null;
+        public YYNode next() {
+            YYNode ret = i==1 ? body : i==2 ? catches : i==3 ? finly : null;
             i++;
             if (i==2 && catches == null) i++;
             if (i==3 && finly == null) i++;
@@ -95,5 +97,5 @@ public class YYTryStatement extends YYStatement {
         public void remove() { throw new UnsupportedOperationException(); }
     }
 
-    public Iterator getDumpIterator() { return new DumpIterator(); }
+    public Iterator<YYNode> getDumpIterator() { return new DumpIterator(); }
 }

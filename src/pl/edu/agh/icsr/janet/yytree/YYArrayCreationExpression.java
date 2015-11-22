@@ -7,6 +7,7 @@ package pl.edu.agh.icsr.janet.yytree;
 import java.lang.reflect.*;
 import pl.edu.agh.icsr.janet.*;
 import pl.edu.agh.icsr.janet.reflect.*;
+import pl.edu.agh.icsr.janet.tree.Node;
 import pl.edu.agh.icsr.janet.natives.*;
 import java.util.*;
 
@@ -59,9 +60,8 @@ public class YYArrayCreationExpression extends YYExpression {
 
         // check dim expressions
         dimexprs.resolve();
-        Iterator itr = dimexprs.iterator();
-        while (itr.hasNext()) {
-            YYExpression dimexpr = (YYExpression)itr.next();
+        for (Node node : dimexprs) {
+            YYExpression dimexpr = (YYExpression)node;
             if (dimexpr.getExpressionType() != classMgr.NATIVETYPE &&
                     !dimexpr.getExpressionType().isAssignableFrom(classMgr.INT)) {
                 dimexpr.reportError(dimexpr.getExpressionType() +
@@ -96,6 +96,6 @@ public class YYArrayCreationExpression extends YYExpression {
     public int[] getClassIdxs() { return classidxs.clone(); }
     public IClassInfo getBaseType() { return baseType; }
 
-    public Iterator getDumpIterator() { return dimexprs.getDumpIterator(); }
+    public Iterator<YYNode> getDumpIterator() { return dimexprs.getDumpIterator(); }
 
 }

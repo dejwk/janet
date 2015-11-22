@@ -101,7 +101,7 @@ JavaEnd
         return Lexer.NATIVE_STATEMENTS;
     }
 
-    Stack chunks = new Stack();
+    Stack<YYCChunk> chunks = new Stack<YYCChunk>();
     void pushChunk(YYCChunk c) { chunks.push(c); }
-    YYCChunk popChunk() { return (YYCChunk)chunks.pop(); }
-    YYCChunk peekChunk() { return (YYCChunk)chunks.peek(); }
+    YYCChunk popChunk() { return chunks.pop(); }
+    YYCChunk peekChunk() { return chunks.peek(); }

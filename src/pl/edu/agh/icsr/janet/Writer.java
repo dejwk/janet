@@ -35,9 +35,7 @@ public class Writer {
     }
 
     public void write() {
-        Iterator cunits = compMgr.compUnits.values().iterator();
-        while (cunits.hasNext()) {
-            YYCompilationUnit cunit = (YYCompilationUnit)cunits.next();
+        for (YYCompilationUnit cunit : compMgr.compUnits.values()) {
             if (!cunit.markedForProcessing()) {
                 // skip this file
                 continue;
@@ -135,10 +133,10 @@ public class Writer {
     }
 
     public class Substituter {
-        HashMap substs = new HashMap();
+        HashMap<String, String> substs = new HashMap<String, String>();
 
         public String setSubst(String tag, String value) {
-            return (String)substs.put(tag, value);
+            return substs.put(tag, value);
         }
 
         public void unsetSubst(String tag) {
@@ -155,7 +153,7 @@ public class Writer {
                     throw new RuntimeException("Mismatched '%'");
                 }
                 String varname = s.substring(pos+1, varend);
-                String subst = (String)substs.get(varname);
+                String subst = substs.get(varname);
                 if (subst == null) {
                     throw new RuntimeException("Undefined variable " + varname);
                 }

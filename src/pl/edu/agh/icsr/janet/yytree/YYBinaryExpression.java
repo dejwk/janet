@@ -46,10 +46,10 @@ public class YYBinaryExpression extends YYExpression {
 
         addExceptions(left.getExceptionsThrown());
         addExceptions(right.getExceptionsThrown());
-        Collection c = op.getExceptionsThrown();
+        Collection<IClassInfo> c = op.getExceptionsThrown();
         if (c != null) {
-            for (Iterator i = c.iterator(); i.hasNext();) {
-                addException((IClassInfo)i.next());
+            for (IClassInfo ex : c) {
+                addException(ex);
             }
         }
         expressionType = op.getResultType();
@@ -127,16 +127,16 @@ public class YYBinaryExpression extends YYExpression {
         return w.write(this, param);
     }
 
-    class DumpIterator implements Iterator {
+    class DumpIterator implements Iterator<YYNode> {
         int i = 0;
         DumpIterator() {}
         public boolean hasNext() { return i<2; }
-        public Object next() {
+        public YYNode next() {
             i++;
             return (i == 1 ? left : i == 2 ? right : null);
         }
         public void remove() { throw new UnsupportedOperationException(); }
     }
 
-    public Iterator getDumpIterator() { return new DumpIterator(); }
+    public Iterator<YYNode> getDumpIterator() { return new DumpIterator(); }
 }

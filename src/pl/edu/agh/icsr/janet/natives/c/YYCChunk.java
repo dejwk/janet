@@ -7,6 +7,8 @@ package pl.edu.agh.icsr.janet.natives.c;
 import pl.edu.agh.icsr.janet.IJavaContext;
 import pl.edu.agh.icsr.janet.yytree.*;
 import pl.edu.agh.icsr.janet.natives.*;
+import pl.edu.agh.icsr.janet.tree.Node;
+
 import java.io.*;
 import java.util.*;
 
@@ -36,7 +38,7 @@ public int write(IWriter w, int param) throws IOException {
     StringBuffer buf = ibuf().getbuf();
         int beg = this.beg_charno0;
         int pos = beg;
-        Iterator i = iterator();
+        Iterator<Node> i = iterator();
         while (i.hasNext()) {
             YYNode n = (YYNode)i.next();
             if ((param & Writer.PHASE_WRITE) != 0) {

@@ -27,7 +27,7 @@ public class NativeWriter {
     Writer.Substituter subst;
     ClassManager classMgr;
     Janet.Settings settings;
-    Hashtable nwriters;
+    Hashtable<String, IWriter> nwriters;
     String filename;
 
     public NativeWriter(Writer.Substituter subst, Janet.Settings settings,
@@ -35,7 +35,7 @@ public class NativeWriter {
         this.subst = subst;
         this.settings = settings;
         this.classMgr = classMgr;
-        this.nwriters = new Hashtable();
+        this.nwriters = new Hashtable<String, IWriter>();
     }
 
     public void classWriteInit(YYClass cls) throws IOException {
@@ -63,13 +63,13 @@ public class NativeWriter {
     }
 
     void writeRefClasses(YYClass cls) throws IOException {
-        Vector refClasses = cls.getReferencedClasses();
+        Vector<IClassInfo> refClasses = cls.getReferencedClasses();
         if (refClasses.size() == 0) {
             fileWriter.write("#define _janet_depclasses ((void*)0)\n\n");
         } else {
             fileWriter.write("static _janet_cls _janet_depclasses[] = {\n");
             for (int i=0, len = refClasses.size(); i<len; i++) {
-                IClassInfo refcls = (IClassInfo)refClasses.get(i);
+                IClassInfo refcls = refClasses.get(i);
                 fileWriter.write("   { 0, " + (i==0 ? "1" : "0") + ", \"");
                 fileWriter.write(refcls.getJNIName());
                 fileWriter.write("\" },\n");
@@ -79,16 +79,16 @@ public class NativeWriter {
     }
 
     void writeRefFields(YYClass cls) throws IOException {
-        Vector refFields = cls.getReferencedFields();
-        Vector refFieldsClsIdxs = cls.getRefFieldClsIdxs();
+        Vector<IFieldInfo> refFields = cls.getReferencedFields();
+        Vector<Integer> refFieldsClsIdxs = cls.getRefFieldClsIdxs();
         if (refFields.size() == 0) {
             fileWriter.write("#define _janet_depfields ((void*)0)\n\n");
             return;
         }
         fileWriter.write("static _janet_fld _janet_depfields[] = {\n");
         for (int i=0, len = refFields.size(); i<len; i++) {
-            IFieldInfo reffld = (IFieldInfo)refFields.get(i);
-            int clsidx = ((Integer)refFieldsClsIdxs.get(i)).intValue();
+            IFieldInfo reffld = refFields.get(i);
+            int clsidx = refFieldsClsIdxs.get(i).intValue();
             try {
                 fileWriter.write("   { 0, " +
                     "&_janet_depclasses[" + clsidx + "], " +
@@ -103,16 +103,16 @@ public class NativeWriter {
     }
 
     void writeRefMethods(YYClass cls) throws IOException {
-        Vector refMethods = cls.getReferencedMethods();
-        Vector refMethodsClsIdxs = cls.getRefMethodClsIdxs();
+        Vector<IMethodInfo> refMethods = cls.getReferencedMethods();
+        Vector<Integer> refMethodsClsIdxs = cls.getRefMethodClsIdxs();
         if (refMethods.size() == 0) {
             fileWriter.write("#define _janet_depmethods ((void*)0)\n\n");
             return;
         }
         fileWriter.write("static _janet_mth _janet_depmethods[] = {\n");
         for (int i=0, len = refMethods.size(); i<len; i++) {
-            IMethodInfo refmth = (IMethodInfo)refMethods.get(i);
-            int clsidx = ((Integer)refMethodsClsIdxs.get(i)).intValue();
+            IMethodInfo refmth = refMethods.get(i);
+            int clsidx = refMethodsClsIdxs.get(i).intValue();
             try {
                 fileWriter.write("   { 0, " +
                     "&_janet_depclasses[" + clsidx + "], " +
@@ -129,7 +129,7 @@ public class NativeWriter {
     }
 
     void writeRefStringLiterals(YYClass cls) throws IOException {
-        Vector refStrings = cls.getRefStringLiterals();
+        Vector<String> refStrings = cls.getRefStringLiterals();
         //Vector refFieldsClsIdxs = cls.getRefFieldClsIdxs();
         if (refStrings.size() == 0) {
             fileWriter.write("#define _janet_depstrings ((void*)0)\n\n");
@@ -137,8 +137,8 @@ public class NativeWriter {
         }
         fileWriter.write("static _janet_str _janet_depstrings[] = {\n");
         for (int i=0, len = refStrings.size(); i<len; i++) {
-            String utf = classMgr.utf2cstring(classMgr.unicode2UTF(
-                (String)refStrings.get(i)));
+            String utf = ClassManager.utf2cstring(ClassManager.unicode2UTF(
+                refStrings.get(i)));
             fileWriter.write("   { 0, " + "\"" + utf + "\" },\n");
         }
         fileWriter.write("};\n\n");
@@ -194,7 +194,7 @@ public class NativeWriter {
     }
 
     IWriter nwload(String nlang_name) throws Janet.JanetException {
-        IWriter nlang_writer = (IWriter)nwriters.get(nlang_name);
+        IWriter nlang_writer = nwriters.get(nlang_name);
         if (nlang_writer == null) { // not yet loaded
             String pkgName = nlang_name;
             if (pkgName.equals("cplusplus")) {
@@ -204,7 +204,7 @@ public class NativeWriter {
             String errstr = "Unable to load writer for native language \"" +
                     nlang_name + "\": class " + clname + " ";
             try {
-                Class cls = Class.forName(clname);
+                Class<?> cls = Class.forName(clname);
                 nlang_writer = (IWriter)cls.newInstance();
                 nlang_writer.init(settings, subst, classMgr, nlang_name);
             } catch (ClassNotFoundException e) {
@@ -222,12 +222,12 @@ public class NativeWriter {
 
     public void writeNativeMethod(INativeMethodInfo mth) throws IOException {
         YYClass cls = (YYClass)mth.getDeclaringClass();
-        Vector classes = cls.getReferencedClasses();
-        Vector fields = cls.getReferencedFields();
-        Vector fldclsidxs = cls.getRefFieldClsIdxs();
-        Vector methods = cls.getReferencedMethods();
-        Vector mthclsidxs = cls.getRefMethodClsIdxs();
-        Vector strings = cls.getRefStringLiterals();
+        Vector<IClassInfo> classes = cls.getReferencedClasses();
+        Vector<IFieldInfo> fields = cls.getReferencedFields();
+        Vector<Integer> fldclsidxs = cls.getRefFieldClsIdxs();
+        Vector<IMethodInfo> methods = cls.getReferencedMethods();
+        Vector<Integer> mthclsidxs = cls.getRefMethodClsIdxs();
+        Vector<String> strings = cls.getRefStringLiterals();
 
         YYNativeMethodImplementation nimpl = mth.getImplementation();
 
@@ -239,7 +239,7 @@ public class NativeWriter {
 
         // write data structures for primitive type arrays if required
         if (nimpl.usesPrimitiveTypeArrays()) {
-            int initsize = nimpl.radkeNumbers[nimpl.getInitialRadkeIdx()];
+            int initsize = YYNativeMethodImplementation.radkeNumbers[nimpl.getInitialRadkeIdx()];
             write("    _janet_arr _janet_arrhtdata[" + initsize +
                     "] = { { 0, 0, 0, 0, 0, 0, 0, 0, 0 } };\n");
 
@@ -268,9 +268,8 @@ public class NativeWriter {
         }
 
         // linking classes
-        for (Iterator i = mth.getUsedClassIdxs().iterator(); i.hasNext();) {
-            int clsidx = ((Integer)i.next()).intValue();
-            IClassInfo rcls = (IClassInfo)classes.get(clsidx);
+        for (int clsidx : mth.getUsedClassIdxs()) {
+            IClassInfo rcls = classes.get(clsidx);
             write("    _JANET_LOAD_CLASS" + suffix + "(" + clsidx + ");");
             write(settings.sourceComments()
                 ? " /* " + rcls.getJNIName() + " */\n"
@@ -279,11 +278,10 @@ public class NativeWriter {
 
         // linking fields
         try {
-            for (Iterator i = mth.getUsedFieldsIdxs().iterator(); i.hasNext();) {
-                int fldidx = ((Integer)i.next()).intValue();
-                IFieldInfo rfld = (IFieldInfo)fields.get(fldidx);
-                int clsidx = ((Integer)fldclsidxs.get(fldidx)).intValue();
-                IClassInfo rcls = (IClassInfo)classes.get(clsidx);
+            for (int fldidx : mth.getUsedFieldsIdxs()) {
+                IFieldInfo rfld = fields.get(fldidx);
+                int clsidx = fldclsidxs.get(fldidx).intValue();
+                IClassInfo rcls = classes.get(clsidx);
                 write("    _JANET_LOAD_FIELD" + suffix + "(" + fldidx + ");");
                 write(settings.sourceComments()
                     ? " /* " + rcls.getJNIName() + "/" + rfld.getName() + " " +
@@ -297,11 +295,10 @@ public class NativeWriter {
 
         // linking methods
         try {
-            for (Iterator i = mth.getUsedMethodsIdxs().iterator(); i.hasNext();) {
-                int mthidx = ((Integer)i.next()).intValue();
-                IMethodInfo rmth = (IMethodInfo)methods.get(mthidx);
-                int clsidx = ((Integer)mthclsidxs.get(mthidx)).intValue();
-                IClassInfo rcls = (IClassInfo)classes.get(clsidx);
+            for (int mthidx : mth.getUsedMethodsIdxs()) {
+                IMethodInfo rmth = methods.get(mthidx);
+                int clsidx = mthclsidxs.get(mthidx).intValue();
+                IClassInfo rcls = classes.get(clsidx);
                 write("    _JANET_LOAD_METHOD" + suffix + "(" + mthidx + ");");
                 write(settings.sourceComments()
                     ? " /* " + rcls.getJNIName() + "/" +
@@ -314,9 +311,8 @@ public class NativeWriter {
         }
 
         // loading string literals
-        for (Iterator i = mth.getUsedStringsIdxs().iterator(); i.hasNext();) {
-            int stridx = ((Integer)i.next()).intValue();
-            String s = (String)strings.get(stridx);
+        for (int stridx : mth.getUsedStringsIdxs()) {
+            String s = strings.get(stridx);
             write("    _JANET_LOAD_STRING" + suffix + "(" + stridx + ");");
             write(settings.sourceComments()
                 ? " /* " + s + " */\n"
@@ -381,7 +377,6 @@ public class NativeWriter {
 
 
     static String getNativeMethodHeader(INativeMethodInfo mth) {
-        Iterator i;
         try {
             return getNativeMethodHeader(mth.getDeclaringClass(),
                     (mth.getModifiers() & Modifier.STATIC) != 0,
@@ -439,13 +434,9 @@ public class NativeWriter {
 
     public final static boolean isNativeMethodOverridden(
             INativeMethodInfo mth) {
-        Iterator i;
         try {
-            i = mth.getDeclaringClass().getMethods(mth.getName()).values().
-                iterator();
             int no = 0;
-            while (i.hasNext()) {
-                IMethodInfo m = (IMethodInfo)i.next();
+            for (IMethodInfo m : mth.getDeclaringClass().getMethods(mth.getName()).values()) {
                 if (Modifier.isNative(mth.getModifiers())) {
                     no++;
                     if (no>1) return true;

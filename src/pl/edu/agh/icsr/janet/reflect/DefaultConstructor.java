@@ -14,7 +14,7 @@ public final class DefaultConstructor implements IMethodInfo { // JLS 8.6.7
     private ClassManager classMgr;
     private IClassInfo declCls;
     transient String signature;
-    transient HashMap exceptionTypes;
+    transient HashMap<String, IClassInfo> exceptionTypes;
     transient IClassInfo[] parameterTypes;
 
     public DefaultConstructor(ClassManager mgr, IClassInfo cls) {
@@ -61,9 +61,9 @@ public final class DefaultConstructor implements IMethodInfo { // JLS 8.6.7
         return "()V";
     }
 
-    public Map getExceptionTypes() {
+    public Map<String, IClassInfo> getExceptionTypes() {
         if (exceptionTypes != null) return exceptionTypes;
-        return exceptionTypes = new HashMap();
+        return exceptionTypes = new HashMap<String, IClassInfo>();
     }
 
     public YYVariableDeclarator[] getParameters() {

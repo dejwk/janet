@@ -39,15 +39,15 @@ public class YYThrowStatement extends YYStatement {
         return w.write(this, param);
     }
 
-    class DumpIterator implements Iterator {
+    class DumpIterator implements Iterator<YYNode> {
         boolean excreturned;
         public boolean hasNext() { return !excreturned; }
-        public Object next() {
+        public YYNode next() {
             if (!excreturned) { excreturned = true; return exception; }
             return null;
         }
         public void remove() { throw new UnsupportedOperationException(); }
     }
 
-    public Iterator getDumpIterator() { return new DumpIterator(); }
+    public Iterator<YYNode> getDumpIterator() { return new DumpIterator(); }
 }

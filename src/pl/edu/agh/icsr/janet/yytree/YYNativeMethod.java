@@ -71,35 +71,35 @@ public class YYNativeMethod extends YYMethod implements INativeMethodInfo {
         w.getNativeWriter().writeNativeMethod(this);
     }
 
-    public Collection getUsedClassIdxs() {
+    public Collection<Integer> getUsedClassIdxs() {
         if (implementation.clsidxs == null) {
             throw new IllegalStateException();
         }
         return implementation.clsidxs;
     }
 
-    public Collection getUsedFieldsIdxs() {
+    public Collection<Integer> getUsedFieldsIdxs() {
         if (implementation.fldidxs == null) {
             throw new IllegalStateException();
         }
         return implementation.fldidxs;
     }
 
-    public Collection getUsedMethodsIdxs() {
+    public Collection<Integer> getUsedMethodsIdxs() {
         if (implementation.mthidxs == null) {
             throw new IllegalStateException();
         }
         return implementation.mthidxs;
     }
 
-    public Collection getUsedStringsIdxs() {
+    public Collection<Integer> getUsedStringsIdxs() {
         if (implementation.stridxs == null) {
             throw new IllegalStateException();
         }
         return implementation.stridxs;
     }
 
-    class DumpIterator implements Iterator {
+    class DumpIterator implements Iterator<YYNode> {
         boolean bodyreturned;
         DumpIterator() {
             bodyreturned = false;
@@ -107,15 +107,12 @@ public class YYNativeMethod extends YYMethod implements INativeMethodInfo {
         public boolean hasNext() {
             return !bodyreturned;
         }
-        public Object next() {
+        public YYNode next() {
             if (!bodyreturned) { bodyreturned = true; return implementation; }
             return null;
         }
         public void remove() { throw new UnsupportedOperationException(); }
     }
 
-    public Iterator getDumpIterator() { return new DumpIterator(); }
-
-
-
+    public Iterator<YYNode> getDumpIterator() { return new DumpIterator(); }
 }

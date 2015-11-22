@@ -12,7 +12,7 @@ public final class MethodInfoReflected implements IMethodInfo {
 
     private ClassManager classMgr;
     private Method mth;
-    transient Map exceptionTypes;
+    transient Map<String, IClassInfo> exceptionTypes;
     transient IClassInfo[] parameterTypes;
     transient String argsignature;
     transient String signature;
@@ -43,10 +43,10 @@ public final class MethodInfoReflected implements IMethodInfo {
         return false;
     }
 
-    public Map getExceptionTypes() {
+    public Map<String, IClassInfo> getExceptionTypes() {
         if (exceptionTypes != null) return exceptionTypes;
-        exceptionTypes = new HashMap();
-        Class[] clss = mth.getExceptionTypes();
+        exceptionTypes = new HashMap<String, IClassInfo>();
+        Class<?>[] clss = mth.getExceptionTypes();
         for (int i=0; i<clss.length; i++) {
             IClassInfo cls = classMgr.forClass(clss[i]);
             exceptionTypes.put(cls.getFullName(), cls);
@@ -56,7 +56,7 @@ public final class MethodInfoReflected implements IMethodInfo {
 
     public IClassInfo[] getParameterTypes() {
         if (parameterTypes != null) return parameterTypes;
-        Class[] clss = mth.getParameterTypes();
+        Class<?>[] clss = mth.getParameterTypes();
         parameterTypes = new IClassInfo[clss.length];
         for (int i=0; i<clss.length; i++) {
             parameterTypes[i] = classMgr.forClass(clss[i]);

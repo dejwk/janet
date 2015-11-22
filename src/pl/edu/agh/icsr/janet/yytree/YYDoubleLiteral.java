@@ -7,6 +7,7 @@ package pl.edu.agh.icsr.janet.yytree;
 import java.util.*;
 import pl.edu.agh.icsr.janet.*;
 import pl.edu.agh.icsr.janet.natives.*;
+import pl.edu.agh.icsr.janet.reflect.IClassInfo;
 
 public class YYDoubleLiteral extends YYExpression {
     double val;
@@ -22,7 +23,7 @@ public class YYDoubleLiteral extends YYExpression {
 
     public void resolve(boolean isSubexpression) throws CompileException {
         expressionType = classMgr.DOUBLE;
-        exceptions = new HashMap();
+        exceptions = new HashMap<IClassInfo, YYStatement>();
     }
 
     public double getValue() { return val; }

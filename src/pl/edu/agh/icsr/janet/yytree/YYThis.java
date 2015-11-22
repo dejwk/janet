@@ -43,7 +43,7 @@ public class YYThis extends YYExpression { // JLS 15.7.2, 15.10.2
         } else {
             throw new RuntimeException();
         }
-        exceptions = new HashMap(); // no exceptions thrown
+        exceptions = new HashMap<IClassInfo, YYStatement>(); // no exceptions thrown
     }
 
     public boolean isVariable() { return false; }

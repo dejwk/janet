@@ -101,7 +101,7 @@ public abstract class BinaryOperator {
         }
     }
 
-    public Collection getExceptionsThrown() {
+    public Collection<IClassInfo> getExceptionsThrown() {
         return null;
     }
 
@@ -169,7 +169,7 @@ public abstract class BinaryOperator {
             lt = rt = classMgr.getBinaryNumericPromotedType(ltype, rtype);
         }
         /* integer division by zero throws exception */
-        public Collection getExceptionsThrown() {
+        public Collection<IClassInfo> getExceptionsThrown() {
             if (rt == classMgr.INT || rt == classMgr.LONG) {
                 return Collections.singleton(classMgr.ArithmeticException);
             }

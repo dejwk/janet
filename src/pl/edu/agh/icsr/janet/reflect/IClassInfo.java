@@ -27,15 +27,15 @@ public interface IClassInfo {
     IClassInfo getComponentType() throws CompileException;
     IClassInfo getArrayType() throws CompileException;
     IClassInfo getArrayType(int dims) throws CompileException;
-    Map getInterfaces() throws ParseException;
-    Map getDeclaredFields() throws ParseException;
-    SortedMap getAccessibleFields() throws ParseException;
-    SortedMap getFields(String name) throws ParseException;
-    SortedMap getDeclaredMethods() throws ParseException;
-    SortedMap getAccessibleMethods() throws ParseException;
-    SortedMap getMethods(String name) throws ParseException;
-    SortedMap getMethods(String name, String jlssign) throws ParseException;
-    Map getConstructors() throws ParseException;
+    Map<String, ? extends IClassInfo> getInterfaces() throws ParseException;
+    Map<String, ? extends IFieldInfo> getDeclaredFields() throws ParseException;
+    SortedMap<String, ? extends IFieldInfo> getAccessibleFields() throws ParseException;
+    SortedMap<String, ? extends IFieldInfo> getFields(String name) throws ParseException;
+    SortedMap<String, ? extends IMethodInfo> getDeclaredMethods() throws ParseException;
+    SortedMap<String, ? extends IMethodInfo> getAccessibleMethods() throws ParseException;
+    SortedMap<String, ? extends IMethodInfo> getMethods(String name) throws ParseException;
+    SortedMap<String, ? extends IMethodInfo> getMethods(String name, String jlssign) throws ParseException;
+    Map<String, ? extends IMethodInfo> getConstructors() throws ParseException;
 //    boolean equals(IClassInfo cls) throws CompileException;
     // in terms of method invocation conversion (JLS 5.3)
     boolean isAssignableFrom(IClassInfo cls) throws ParseException;

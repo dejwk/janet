@@ -47,23 +47,23 @@ public class YYCatchClause extends YYStatement {
                 ", it must be subclass of java.lang.Throwable");
         }
         excclsidx = registerClass(exctype);
-        exceptions = new HashMap();
+        exceptions = new HashMap<IClassInfo, YYStatement>();
     }
 
     public int write(IWriter w, int param) throws java.io.IOException {
         return w.write(this, param);
     }
 
-    class DumpIterator implements Iterator {
+    class DumpIterator implements Iterator<YYNode> {
         int i=0;
         DumpIterator() { i=0; }
         public boolean hasNext() { return i<2; }
-        public Object next() {
+        public YYNode next() {
             i++;
             return i==1 ? formalParameter : i==2 ? body : null;
         }
         public void remove() { throw new UnsupportedOperationException(); }
     }
 
-    public Iterator getDumpIterator() { return new DumpIterator(); }
+    public Iterator<YYNode> getDumpIterator() { return new DumpIterator(); }
 }

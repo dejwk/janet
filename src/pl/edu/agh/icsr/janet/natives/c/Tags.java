@@ -25,7 +25,7 @@ class Tags {
     static class DeclarationTag {
         private DeclarationTag parent;
         private FunctionDeclarationTag main;
-        Vector myVariables;
+        Vector<VariableTag> myVariables;
         //TreeMap myVariables;
         boolean usesLocalExceptions;
         private boolean requiresTryClause;
@@ -42,7 +42,7 @@ class Tags {
             this.main = ftag;
             this.parent = parent;
             this.relatedStatement = relatedStatement;
-            myVariables = new Vector();
+            myVariables = new Vector<VariableTag>();
             //myVariables = new TreeMap();
         }
 
@@ -51,7 +51,7 @@ class Tags {
         public void setRequiresTryClause() { requiresDestructClause = true; }
         public boolean requiresTryClause() { return requiresTryClause; }
         public boolean requiresDestructClause() { return requiresDestructClause; }
-        public Collection getVariables() { return myVariables; }
+        public Collection<VariableTag> getVariables() { return myVariables; }
         public FunctionDeclarationTag getMain() { return main; }
         public DeclarationTag getParent() { return parent; }
 
@@ -75,7 +75,7 @@ class Tags {
                 /* if some variables need releasing, the try/destruct required */
                 if ((abruptingChildren > 0 || usesLocalExceptions) && parent != null) {
                     for (int i=0, len = myVariables.size(); i<len; i++) {
-                        if (((VariableTag)myVariables.get(i)).mustBeReleased()) {
+                        if (myVariables.get(i).mustBeReleased()) {
     //                for (Iterator i = variablesIterator(); i.hasNext();) {
     //                    if (((VariableTag)i.next()).mustBeReleased()) {
                             requiresTryClause = true;
@@ -133,8 +133,8 @@ class Tags {
         }*/
 
         // Only variables local to this declaration unit (with destructors here)
-        private class MyVariablesIterator implements java.util.Iterator {
-            Iterator itr;
+        private class MyVariablesIterator implements Iterator<VariableTag> {
+            Iterator<VariableTag> itr;
             VariableTag currentTag;
 
             MyVariablesIterator() {
@@ -146,7 +146,7 @@ class Tags {
                 return (currentTag != null);
             }
 
-            public Object next() {
+            public VariableTag next() {
                 VariableTag ret = currentTag;
                 fetchNextLocally();
                 return ret;
@@ -159,7 +159,7 @@ class Tags {
             private void fetchNextLocally() {
                 do {
                     if (itr.hasNext()) {
-                        currentTag = (VariableTag)itr.next();
+                        currentTag = itr.next();
                     } else {
                         currentTag = null;
                     }
@@ -167,14 +167,14 @@ class Tags {
             }
         }
 
-        public Iterator variablesIterator() {
+        public Iterator<VariableTag> variablesIterator() {
             return new MyVariablesIterator();
         }
     }
 
     static class FunctionDeclarationTag {
         IClassInfo thisclass;
-        TreeMap variables;
+        TreeMap<String, VariableTag> variables;
         private VariableTag javaThisVariableTag;
         int maxMultiRefsUsed;
         boolean usesExceptions;
@@ -185,7 +185,7 @@ class Tags {
                 ClassManager classMgr) {
             this.thisclass = nimpl.getDeclaringClass();
             this.usesPrimitiveTypeArrays = nimpl.usesPrimitiveTypeArrays();
-            variables = new TreeMap();
+            variables = new TreeMap<String, VariableTag>();
         }
 
         public void setVariableForThis() {
@@ -208,7 +208,7 @@ class Tags {
 
         VariableTag addVariable(VariableTag tag) {
             VariableTag first, last;
-            first = (VariableTag)variables.get(tag.basename);
+            first = variables.get(tag.basename);
             if (first != null) {
                 last = first.prev; // cyclic list
                 tag.idx = last.idx + 1;
@@ -232,13 +232,13 @@ class Tags {
             return myDeclarationTag.requiresDestructClause();
         }
 
-        public Iterator variablesIterator() {
+        public Iterator<VariableTag> variablesIterator() {
             return new MyVariablesIterator();
         }
 
         // only NOT handled by appropriate blocks
-        private class MyVariablesIterator implements java.util.Iterator {
-            Iterator itr1;//, itr2;
+        private class MyVariablesIterator implements Iterator<VariableTag> {
+            Iterator<VariableTag> itr1;//, itr2;
             //boolean finishedWithOwn;
 
             VariableTag currentTag;
@@ -254,7 +254,7 @@ class Tags {
                 return (currentTag != null);
             }
 
-            public Object next() {
+            public VariableTag next() {
                 VariableTag ret = currentTag;
                 fetchNextLocally();
                 return ret;
@@ -269,7 +269,7 @@ class Tags {
                     do {
                         if (currentTag == null || currentTag.next == currentGuardTag) { // get next serie
                             if (itr1.hasNext()) {
-                                currentTag = currentGuardTag = (VariableTag)itr1.next();
+                                currentTag = currentGuardTag = itr1.next();
                             } else {
                                 currentTag = null;
                                 break;

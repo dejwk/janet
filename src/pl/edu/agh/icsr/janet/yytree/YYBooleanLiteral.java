@@ -7,6 +7,8 @@ package pl.edu.agh.icsr.janet.yytree;
 import java.util.*;
 import pl.edu.agh.icsr.janet.*;
 import pl.edu.agh.icsr.janet.natives.*;
+import pl.edu.agh.icsr.janet.reflect.IClassInfo;
+
 import java.io.*;
 
 public class YYBooleanLiteral extends YYExpression {
@@ -29,7 +31,7 @@ public class YYBooleanLiteral extends YYExpression {
 
     public void resolve(boolean isSubexpression) throws CompileException {
         expressionType = classMgr.BOOLEAN;
-        exceptions = new HashMap();
+        exceptions = new HashMap<IClassInfo, YYStatement>();
     }
 
     public boolean isVariable() { return false; }

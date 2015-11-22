@@ -6,12 +6,14 @@ package pl.edu.agh.icsr.janet.yytree;
 
 import pl.edu.agh.icsr.janet.*;
 import pl.edu.agh.icsr.janet.reflect.*;
+import pl.edu.agh.icsr.janet.tree.Node;
+
 import java.util.*;
 import pl.edu.agh.icsr.janet.natives.IWriter;
 
 public class YYStatement extends YYNode implements IScope {
     boolean pure = true;
-    Map exceptions; // maps exceptions to statements where they originate
+    Map<IClassInfo, YYStatement> exceptions; // maps exceptions to statements where they originate
     boolean exceptionsShared; // is "exceptions" shared with another statement
 
     YYCompilationUnit compUnit;
@@ -106,7 +108,7 @@ public class YYStatement extends YYNode implements IScope {
         return dclUnitType;
     }
 
-    public Map getExceptionsThrown() {
+    public Map<IClassInfo, YYStatement> getExceptionsThrown() {
         // must be resolved
         if (exceptions == null) throw new IllegalStateException();
         return exceptions;
@@ -114,21 +116,20 @@ public class YYStatement extends YYNode implements IScope {
 
     public void resolve() throws ParseException {
         boolean shared = false;
-        for(Iterator i = iterator(); i.hasNext();) {
+        for (Iterator<Node> i = iterator(); i.hasNext();) {
             YYStatement s = (YYStatement)i.next();
             s.resolve();
             addExceptions(s.getExceptionsThrown());
         }
-        if (exceptions == null) exceptions = new HashMap();
+        if (exceptions == null) exceptions = new HashMap<IClassInfo, YYStatement>();
     }
 
-    public final void addExceptions(Map excs) throws ParseException {
+    public final void addExceptions(Map<IClassInfo, YYStatement> excs) throws ParseException {
         if (exceptions == null || exceptions.isEmpty()) {
             exceptions = excs;
             exceptionsShared = true;
         } else {
-            for (Iterator i = excs.keySet().iterator(); i.hasNext();) {
-                IClassInfo e = (IClassInfo)i.next();
+            for (IClassInfo e : excs.keySet()) {
                 addException(e);
             }
         }
@@ -136,11 +137,11 @@ public class YYStatement extends YYNode implements IScope {
 
     public final void addException(IClassInfo e) throws ParseException {
         if (exceptions == null) {
-            exceptions = new HashMap();
+            exceptions = new HashMap<IClassInfo, YYStatement>();
             exceptions.put(e, this);
         } else if (!ClassManager.containsException(exceptions.keySet(), e)) {
             if (exceptionsShared) { // clone
-                exceptions = new HashMap(exceptions);
+                exceptions = new HashMap<IClassInfo, YYStatement>(exceptions);
                 exceptionsShared = false;
             }
             exceptions.put(e, this);

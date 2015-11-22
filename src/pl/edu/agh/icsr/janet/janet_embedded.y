@@ -18,11 +18,11 @@
  * (see README.html for details).
  */
 
-import pl.edu.agh.icsr.janet.yytree.*;
-import pl.edu.agh.icsr.janet.reflect.*;
-import pl.edu.agh.icsr.janet.natives.*;
-//import pl.edu.agh.icsr.janet.ParseException;
 import java.lang.reflect.Modifier; // for Modifiers productions
+
+import pl.edu.agh.icsr.janet.natives.YYNativeCode;
+import pl.edu.agh.icsr.janet.reflect.ClassManager;
+
 %}
 
 %union {

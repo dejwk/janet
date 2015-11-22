@@ -26,12 +26,12 @@ public class YYNativeMethodImplementation extends YYStatement {
     YYClass declCls;
     YYNativeCode ncode;
     INativeMethodInfo mth;
-    Vector externalVariables; // used with native statement (not method)
+    //Vector externalVariables; // used with native statement (not method)
 
-    Set clsidxs;
-    Set fldidxs;
-    Set mthidxs;
-    Set stridxs;
+    Set<Integer> clsidxs;
+    Set<Integer> fldidxs;
+    Set<Integer> mthidxs;
+    Set<Integer> stridxs;
 
     int refarrs;
     int syncnum;
@@ -63,10 +63,10 @@ public class YYNativeMethodImplementation extends YYStatement {
     public INativeMethodInfo getNativeMethodHeader() { return mth; }
 
     public void resolve() throws ParseException {
-        this.clsidxs = new HashSet();
-        this.fldidxs = new HashSet();
-        this.mthidxs = new HashSet();
-        this.stridxs = new HashSet();
+        this.clsidxs = new HashSet<Integer>();
+        this.fldidxs = new HashSet<Integer>();
+        this.mthidxs = new HashSet<Integer>();
+        this.stridxs = new HashSet<Integer>();
 
         ncode.resolve();
         addExceptions(ncode.getExceptionsThrown());
@@ -139,17 +139,17 @@ public class YYNativeMethodImplementation extends YYStatement {
         return w.write(this, param);
     }
 
-    class DumpIterator implements Iterator {
+    class DumpIterator implements Iterator<YYNode> {
         int i=1;
         DumpIterator() { i=0; }
         public boolean hasNext() { return i<1; }
-        public Object next() {
+        public YYNode next() {
             i++;
             return i==1 ? ncode : null;
         }
         public void remove() { throw new UnsupportedOperationException(); }
     }
 
-    public Iterator getDumpIterator() { return new DumpIterator(); }
+    public Iterator<YYNode> getDumpIterator() { return new DumpIterator(); }
 
 }

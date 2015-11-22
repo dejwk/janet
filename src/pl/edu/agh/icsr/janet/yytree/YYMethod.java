@@ -6,8 +6,11 @@ package pl.edu.agh.icsr.janet.yytree;
 
 import pl.edu.agh.icsr.janet.*;
 import pl.edu.agh.icsr.janet.reflect.*;
+import pl.edu.agh.icsr.janet.tree.Node;
+
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.Map.Entry;
 
 public class YYMethod extends YYNode implements IMethodInfo, IScope {
 
@@ -36,7 +39,7 @@ public class YYMethod extends YYNode implements IMethodInfo, IScope {
     int rettypedims;
     String name;
     YYStatement body;
-    transient HashMap throwlist;
+    transient HashMap<String, IClassInfo> throwlist;
     transient YYVariableDeclarator[] parameters;
     transient IClassInfo[] paramtypes;
     transient String argsignature;
@@ -194,8 +197,8 @@ public class YYMethod extends YYNode implements IMethodInfo, IScope {
         lock();
         String s = "";
         if (unresolvedParameters != null) {
-            for (Iterator i = unresolvedParameters.iterator(); i.hasNext();) {
-                s += ((YYVariableDeclarator)i.next()).getType().getSignature();
+            for (Node node : unresolvedParameters) {
+                s += ((YYVariableDeclarator)node).getType().getSignature();
             }
         }
         return argsignature = s;
@@ -212,14 +215,14 @@ public class YYMethod extends YYNode implements IMethodInfo, IScope {
             getReturnType().getSignature();
     }
 
-    public Map getExceptionTypes() throws ParseException { // JLS 8.4.4
+    public Map<String, IClassInfo> getExceptionTypes() throws ParseException { // JLS 8.4.4
         if (throwlist != null) return throwlist;
         lock();
-        throwlist = new HashMap();
+        throwlist = new HashMap<String, IClassInfo>();
         if (unresolvedThrows != null) {
             ClassManager cm = cls.getClassManager();
-            for(Iterator i = unresolvedThrows.iterator(); i.hasNext();) {
-                YYType t = (YYType)i.next();
+            for(Node node : unresolvedThrows) {
+                YYType t = (YYType)node;
                 IClassInfo rest = t.getResolvedType();
                 String name = rest.getFullName();
                 if (!rest.isAssignableFrom(cm.Throwable)) {
@@ -241,7 +244,7 @@ public class YYMethod extends YYNode implements IMethodInfo, IScope {
         }
         int len = unresolvedParameters.countSons();
         parameters = new YYVariableDeclarator[len];
-        Iterator i;
+        Iterator<Node> i;
         int idx;
         for (i = unresolvedParameters.iterator(), idx=0; i.hasNext(); idx++) {
             parameters[idx] = (YYVariableDeclarator)i.next();
@@ -273,17 +276,15 @@ public class YYMethod extends YYNode implements IMethodInfo, IScope {
         if (body == null) return;
         body.resolve();
         // checking the exceptions
-        Collection marked = getExceptionTypes().values();
-        Iterator i = body.getExceptionsThrown().entrySet().iterator();
+        Collection<IClassInfo> marked = getExceptionTypes().values();
         ClassManager classMgr = cls.getClassManager();
-        while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry)i.next();
-            IClassInfo exc = (IClassInfo)entry.getKey();
+        for (Map.Entry<IClassInfo, YYStatement> entry : body.getExceptionsThrown().entrySet()) {
+            IClassInfo exc = entry.getKey();
             if (classMgr.isUncheckedException(exc)) {
                 continue;
             }
             if (!ClassManager.containsException(marked, exc)) {
-                YYStatement origin = (YYStatement)entry.getValue();
+                YYStatement origin = entry.getValue();
                 origin.reportError("Exception " + exc.getFullName() +
                     " must be caught, or it must be declared in the throws" +
                     " clause of " + this);
@@ -313,7 +314,7 @@ public class YYMethod extends YYNode implements IMethodInfo, IScope {
                 "(" + (unresolvedParameters == null ? "" : unresolvedParameters.toString()) +
                 ")" +
                 " _" + getJNISignature() + "_";
-            Iterator i = getExceptionTypes().values().iterator();
+            Iterator<IClassInfo> i = getExceptionTypes().values().iterator();
             if (i.hasNext()) {
                 s += " throws ";
                 while (i.hasNext()) {
