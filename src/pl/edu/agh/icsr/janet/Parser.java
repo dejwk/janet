@@ -4,9 +4,6 @@ package pl.edu.agh.icsr.janet;
 
 /**************************************************/
 
-import java.util.*;
-import java.io.*;
-import java.net.URL;
 import jbf.Int_Stack;
 import jbf.Object_Stack;
 import jbf.YYlocation;

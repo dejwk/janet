@@ -4,8 +4,6 @@ package pl.edu.agh.icsr.janet.natives.c;
 
 /**************************************************/
 
-import java.util.*;
-import java.io.*;
 import jbf.Int_Stack;
 import jbf.Object_Stack;
 import jbf.YYlocation;
@@ -13,7 +11,6 @@ import jbf.YYlocation;
 import pl.edu.agh.icsr.janet.YYLocation;
 import pl.edu.agh.icsr.janet.YYLocationStack;
 import pl.edu.agh.icsr.janet.natives.IParser;
-import pl.edu.agh.icsr.janet.natives.YYNativeCode;
 import pl.edu.agh.icsr.janet.VariableStack;
 import pl.edu.agh.icsr.janet.reflect.ClassManager;
 
@@ -1004,7 +1001,7 @@ private static final int[] yycheckTableCreator() {
         return Lexer.NATIVE_STATEMENTS;
     }
 
-    Stack<YYCChunk> chunks = new Stack<YYCChunk>();
+    java.util.Stack<YYCChunk> chunks = new java.util.Stack<YYCChunk>();
     void pushChunk(YYCChunk c) { chunks.push(c); }
     YYCChunk popChunk() { return chunks.pop(); }
     YYCChunk peekChunk() { return chunks.peek(); }
