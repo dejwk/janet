@@ -4,7 +4,8 @@
 
 package pl.edu.agh.icsr.janet.tree;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * The class representing node of a tree.

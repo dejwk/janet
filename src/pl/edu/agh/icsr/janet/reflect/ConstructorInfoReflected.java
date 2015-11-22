@@ -4,9 +4,11 @@
 
 package pl.edu.agh.icsr.janet.reflect;
 
-import pl.edu.agh.icsr.janet.*;
 import java.lang.reflect.Constructor;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import pl.edu.agh.icsr.janet.CompileException;
 import pl.edu.agh.icsr.janet.yytree.YYVariableDeclarator;
 
 public final class ConstructorInfoReflected implements IMethodInfo {

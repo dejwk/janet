@@ -4,10 +4,19 @@
 
 package pl.edu.agh.icsr.janet.yytree;
 
-import java.util.*;
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.reflect.*;
-import pl.edu.agh.icsr.janet.natives.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+import pl.edu.agh.icsr.janet.CompileException;
+import pl.edu.agh.icsr.janet.IJavaContext;
+import pl.edu.agh.icsr.janet.ParseException;
+import pl.edu.agh.icsr.janet.natives.IWriter;
+import pl.edu.agh.icsr.janet.natives.YYNativeCode;
+import pl.edu.agh.icsr.janet.reflect.IClassInfo;
+import pl.edu.agh.icsr.janet.reflect.IFieldInfo;
+import pl.edu.agh.icsr.janet.reflect.IMethodInfo;
+import pl.edu.agh.icsr.janet.reflect.INativeMethodInfo;
 
 
 public class YYNativeMethodImplementation extends YYStatement {

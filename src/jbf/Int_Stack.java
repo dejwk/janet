@@ -1,6 +1,6 @@
 package jbf;
 
-import java.util.*;
+import java.util.EmptyStackException;
 
 public
 class Int_Stack extends Int_Vector {

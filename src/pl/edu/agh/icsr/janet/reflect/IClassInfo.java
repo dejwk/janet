@@ -3,8 +3,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 package pl.edu.agh.icsr.janet.reflect;
-import pl.edu.agh.icsr.janet.*;
-import java.util.*;
+import java.util.Map;
+import java.util.SortedMap;
+
+import pl.edu.agh.icsr.janet.CompileException;
+import pl.edu.agh.icsr.janet.ParseException;
 
 public interface IClassInfo {
 

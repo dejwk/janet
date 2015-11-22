@@ -4,11 +4,13 @@
 
 package pl.edu.agh.icsr.janet.yytree;
 
-import java.util.*;
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.reflect.*;
-import pl.edu.agh.icsr.janet.natives.*;
-import java.io.*;
+import java.io.IOException;
+import java.util.HashMap;
+
+import pl.edu.agh.icsr.janet.IDetailedLocationContext;
+import pl.edu.agh.icsr.janet.ParseException;
+import pl.edu.agh.icsr.janet.natives.IWriter;
+import pl.edu.agh.icsr.janet.reflect.IClassInfo;
 
 public class YYThis extends YYExpression { // JLS 15.7.2, 15.10.2
 

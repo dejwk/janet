@@ -4,8 +4,9 @@
 
 package pl.edu.agh.icsr.janet.reflect;
 
-import pl.edu.agh.icsr.janet.*;
-import java.util.*;
+import java.util.Collection;
+
+import pl.edu.agh.icsr.janet.CompileException;
 import pl.edu.agh.icsr.janet.yytree.YYNativeMethodImplementation;
 import pl.edu.agh.icsr.janet.yytree.YYVariableDeclarator;
 

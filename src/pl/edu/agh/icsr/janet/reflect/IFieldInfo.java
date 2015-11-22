@@ -4,7 +4,7 @@
 
 package pl.edu.agh.icsr.janet.reflect;
 
-import pl.edu.agh.icsr.janet.*;
+import pl.edu.agh.icsr.janet.ParseException;
 
 public interface IFieldInfo extends /*IVariableInfo, */IMemberInfo {
     IClassInfo getType() throws ParseException;

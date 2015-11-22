@@ -3,10 +3,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 package pl.edu.agh.icsr.janet.natives;
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.reflect.*;
-import pl.edu.agh.icsr.janet.yytree.*;
 import java.io.IOException;
+
+import pl.edu.agh.icsr.janet.Janet;
+import pl.edu.agh.icsr.janet.Writer;
+import pl.edu.agh.icsr.janet.reflect.ClassManager;
+import pl.edu.agh.icsr.janet.reflect.INativeMethodInfo;
+import pl.edu.agh.icsr.janet.yytree.*;
 
 public interface IWriter {
 

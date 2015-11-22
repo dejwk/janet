@@ -4,11 +4,20 @@
 
 package pl.edu.agh.icsr.janet.yytree;
 
-import java.lang.reflect.*;
-import java.util.*;
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.reflect.*;
-import pl.edu.agh.icsr.janet.natives.*;
+import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import pl.edu.agh.icsr.janet.AmbigiousReferenceException;
+import pl.edu.agh.icsr.janet.CompileException;
+import pl.edu.agh.icsr.janet.IDetailedLocationContext;
+import pl.edu.agh.icsr.janet.MethodNotAccessibleException;
+import pl.edu.agh.icsr.janet.NoAccessibleMethodsFoundException;
+import pl.edu.agh.icsr.janet.NoApplicableMethodsFoundException;
+import pl.edu.agh.icsr.janet.ParseException;
+import pl.edu.agh.icsr.janet.natives.IWriter;
+import pl.edu.agh.icsr.janet.reflect.IClassInfo;
+import pl.edu.agh.icsr.janet.reflect.IMethodInfo;
 
 public class YYMethodInvocationExpression extends YYExpression {
 

@@ -4,10 +4,10 @@
 
 package pl.edu.agh.icsr.janet;
 
-import pl.edu.agh.icsr.janet.yytree.YYVariableDeclarator;
-import pl.edu.agh.icsr.janet.yytree.YYVariableDeclaratorList;
-import pl.edu.agh.icsr.janet.yytree.IScope;
 import java.util.Stack;
+
+import pl.edu.agh.icsr.janet.yytree.IScope;
+import pl.edu.agh.icsr.janet.yytree.YYVariableDeclarator;
 
 public class VariableStack {
     Stack<YYVariableDeclarator> variables = new Stack<YYVariableDeclarator>();

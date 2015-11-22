@@ -4,8 +4,10 @@
 
 package pl.edu.agh.icsr.janet.reflect;
 
-import pl.edu.agh.icsr.janet.*;
-import java.util.*;
+import java.util.Map;
+import java.util.SortedMap;
+
+import pl.edu.agh.icsr.janet.CompileException;
 
 class NullType implements IClassInfo {
     ClassManager cm;

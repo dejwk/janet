@@ -4,13 +4,14 @@
 
 package pl.edu.agh.icsr.janet.natives.c;
 
-import pl.edu.agh.icsr.janet.IJavaContext;
-import pl.edu.agh.icsr.janet.yytree.*;
-import pl.edu.agh.icsr.janet.natives.*;
-import pl.edu.agh.icsr.janet.tree.Node;
+import java.io.IOException;
+import java.util.Iterator;
 
-import java.io.*;
-import java.util.*;
+import pl.edu.agh.icsr.janet.IJavaContext;
+import pl.edu.agh.icsr.janet.natives.IWriter;
+import pl.edu.agh.icsr.janet.natives.YYNativeCode;
+import pl.edu.agh.icsr.janet.tree.Node;
+import pl.edu.agh.icsr.janet.yytree.YYNode;
 
 public class YYCChunk extends YYNativeCode {
 

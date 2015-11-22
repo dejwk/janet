@@ -4,12 +4,24 @@
 
 package pl.edu.agh.icsr.janet;
 
-import java.io.*;
-import java.util.*;
-import java.lang.reflect.*;
-import pl.edu.agh.icsr.janet.reflect.*;
-import pl.edu.agh.icsr.janet.yytree.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Modifier;
+import java.util.Hashtable;
+import java.util.Vector;
+
 import pl.edu.agh.icsr.janet.natives.IWriter;
+import pl.edu.agh.icsr.janet.reflect.ClassManager;
+import pl.edu.agh.icsr.janet.reflect.IClassInfo;
+import pl.edu.agh.icsr.janet.reflect.IFieldInfo;
+import pl.edu.agh.icsr.janet.reflect.IMethodInfo;
+import pl.edu.agh.icsr.janet.reflect.INativeMethodInfo;
+import pl.edu.agh.icsr.janet.yytree.YYClass;
+import pl.edu.agh.icsr.janet.yytree.YYNativeMethodImplementation;
+import pl.edu.agh.icsr.janet.yytree.YYStaticNativeStatement;
+import pl.edu.agh.icsr.janet.yytree.YYVariableDeclarator;
 
 public class NativeWriter {
 

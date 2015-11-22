@@ -4,9 +4,14 @@
 
 package pl.edu.agh.icsr.janet.natives.c;
 
-import java.io.*;
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.yytree.*;
+import java.io.PrintWriter;
+
+import pl.edu.agh.icsr.janet.EmbeddedParser;
+import pl.edu.agh.icsr.janet.IMutableContext;
+import pl.edu.agh.icsr.janet.JanetSourceReader;
+import pl.edu.agh.icsr.janet.ParseException;
+import pl.edu.agh.icsr.janet.YYLocation;
+import pl.edu.agh.icsr.janet.YYResultReceiver;
 import pl.edu.agh.icsr.janet.natives.IParser;
 
 public class Parser implements IParser {

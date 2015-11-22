@@ -4,7 +4,7 @@
 
 package pl.edu.agh.icsr.janet;
 
-import java.io.*;
+import java.io.IOException;
 
 class Preprocessor {
 

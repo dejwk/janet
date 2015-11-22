@@ -4,15 +4,15 @@
 
 package pl.edu.agh.icsr.janet.natives;
 
-import pl.edu.agh.icsr.janet.JanetSourceReader;
-import pl.edu.agh.icsr.janet.YYToken;
-import pl.edu.agh.icsr.janet.YYLocation;
-import pl.edu.agh.icsr.janet.IMutableContext;
+import java.io.IOException;
+
 import pl.edu.agh.icsr.janet.EmbeddedParser;
+import pl.edu.agh.icsr.janet.IMutableContext;
+import pl.edu.agh.icsr.janet.JanetSourceReader;
 import pl.edu.agh.icsr.janet.LexException;
 import pl.edu.agh.icsr.janet.ParseException;
-
-import java.io.*;
+import pl.edu.agh.icsr.janet.YYLocation;
+import pl.edu.agh.icsr.janet.YYToken;
 
 public abstract class Lexer {
 

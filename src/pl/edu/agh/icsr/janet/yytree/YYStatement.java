@@ -4,12 +4,19 @@
 
 package pl.edu.agh.icsr.janet.yytree;
 
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.reflect.*;
-import pl.edu.agh.icsr.janet.tree.Node;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
-import java.util.*;
+import pl.edu.agh.icsr.janet.CompileException;
+import pl.edu.agh.icsr.janet.IDetailedLocationContext;
+import pl.edu.agh.icsr.janet.ParseException;
 import pl.edu.agh.icsr.janet.natives.IWriter;
+import pl.edu.agh.icsr.janet.reflect.ClassManager;
+import pl.edu.agh.icsr.janet.reflect.IClassInfo;
+import pl.edu.agh.icsr.janet.reflect.IFieldInfo;
+import pl.edu.agh.icsr.janet.reflect.IMethodInfo;
+import pl.edu.agh.icsr.janet.tree.Node;
 
 public class YYStatement extends YYNode implements IScope {
     boolean pure = true;

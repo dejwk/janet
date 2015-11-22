@@ -4,11 +4,14 @@
 
 package pl.edu.agh.icsr.janet;
 
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
-import java.io.*;
-import pl.edu.agh.icsr.janet.yytree.*;
-import pl.edu.agh.icsr.janet.reflect.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import pl.edu.agh.icsr.janet.reflect.ClassManager;
+import pl.edu.agh.icsr.janet.yytree.YYCompilationUnit;
 
 public class CompilationManager {
 

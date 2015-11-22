@@ -4,12 +4,13 @@
 
 package pl.edu.agh.icsr.janet.yytree;
 
-import java.util.*;
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.natives.*;
-import pl.edu.agh.icsr.janet.reflect.IClassInfo;
+import java.io.IOException;
+import java.util.HashMap;
 
-import java.io.*;
+import pl.edu.agh.icsr.janet.CompileException;
+import pl.edu.agh.icsr.janet.IJavaContext;
+import pl.edu.agh.icsr.janet.natives.IWriter;
+import pl.edu.agh.icsr.janet.reflect.IClassInfo;
 
 public class YYBooleanLiteral extends YYExpression {
     boolean val;

@@ -4,9 +4,12 @@
 
 package pl.edu.agh.icsr.janet.yytree;
 
-import java.util.*;
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.reflect.*;
+import java.util.Iterator;
+
+import pl.edu.agh.icsr.janet.CompileException;
+import pl.edu.agh.icsr.janet.IJavaContext;
+import pl.edu.agh.icsr.janet.ParseException;
+import pl.edu.agh.icsr.janet.reflect.IClassInfo;
 
 public class YYConditionalExpression extends YYExpression {
 

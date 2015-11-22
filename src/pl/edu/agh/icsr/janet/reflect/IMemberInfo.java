@@ -4,8 +4,6 @@
 
 package pl.edu.agh.icsr.janet.reflect;
 
-import pl.edu.agh.icsr.janet.*;
-
 public interface IMemberInfo {
     public IClassInfo getDeclaringClass();
     public String getName();

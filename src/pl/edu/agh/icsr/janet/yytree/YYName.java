@@ -4,8 +4,10 @@
 
 package pl.edu.agh.icsr.janet.yytree;
 
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.reflect.*;
+import pl.edu.agh.icsr.janet.IDetailedLocationContext;
+import pl.edu.agh.icsr.janet.IJavaContext;
+import pl.edu.agh.icsr.janet.ParseException;
+import pl.edu.agh.icsr.janet.reflect.ClassManager;
 
 public class YYName extends YYNode implements IDetailedLocationContext {
 

@@ -4,13 +4,10 @@
 
 package pl.edu.agh.icsr.janet;
 
-import java.io.*;
+import java.io.PrintWriter;
 import java.util.Hashtable;
+
 import pl.edu.agh.icsr.janet.natives.IParser;
-import pl.edu.agh.icsr.janet.natives.YYNativeCode;
-import pl.edu.agh.icsr.janet.LexException;
-import pl.edu.agh.icsr.janet.ParseException;
-import pl.edu.agh.icsr.janet.yytree.IScope;
 
 class Lexer {
 

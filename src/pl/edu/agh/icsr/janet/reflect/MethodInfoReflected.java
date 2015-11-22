@@ -5,8 +5,10 @@
 package pl.edu.agh.icsr.janet.reflect;
 
 import java.lang.reflect.Method;
-import java.util.*;
-import pl.edu.agh.icsr.janet.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import pl.edu.agh.icsr.janet.CompileException;
 
 public final class MethodInfoReflected implements IMethodInfo {
 

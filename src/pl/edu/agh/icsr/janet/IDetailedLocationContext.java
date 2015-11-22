@@ -4,8 +4,9 @@
 
 package pl.edu.agh.icsr.janet;
 
-import pl.edu.agh.icsr.janet.yytree.*;
-import pl.edu.agh.icsr.janet.reflect.*;
+import pl.edu.agh.icsr.janet.reflect.ClassManager;
+import pl.edu.agh.icsr.janet.yytree.IScope;
+import pl.edu.agh.icsr.janet.yytree.YYCompilationUnit;
 
 public interface IDetailedLocationContext extends ILocationContext {
     public ClassManager getClassManager();

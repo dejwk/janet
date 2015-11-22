@@ -4,7 +4,8 @@
 
 package pl.edu.agh.icsr.janet.yytree;
 
-import pl.edu.agh.icsr.janet.*;
+import pl.edu.agh.icsr.janet.ILocationContext;
+import pl.edu.agh.icsr.janet.ParseException;
 
 public interface IScope extends ILocationContext {
 

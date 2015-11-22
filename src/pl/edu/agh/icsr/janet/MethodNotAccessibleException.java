@@ -4,7 +4,7 @@
 
 package pl.edu.agh.icsr.janet;
 
-import pl.edu.agh.icsr.janet.reflect.*;
+import pl.edu.agh.icsr.janet.reflect.IMethodInfo;
 
 public class MethodNotAccessibleException extends CompileException {
 

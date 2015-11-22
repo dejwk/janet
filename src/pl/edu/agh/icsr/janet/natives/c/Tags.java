@@ -4,14 +4,22 @@
 
 package pl.edu.agh.icsr.janet.natives.c;
 
-import pl.edu.agh.icsr.janet.natives.IWriter;
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.Writer.Substituter;
-import pl.edu.agh.icsr.janet.yytree.*;
-import pl.edu.agh.icsr.janet.reflect.*;
-import java.io.*;
-import java.util.*;
-import java.lang.reflect.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.TreeMap;
+import java.util.Vector;
+
+import pl.edu.agh.icsr.janet.CompileException;
+import pl.edu.agh.icsr.janet.ParseException;
+import pl.edu.agh.icsr.janet.reflect.ClassManager;
+import pl.edu.agh.icsr.janet.reflect.IClassInfo;
+import pl.edu.agh.icsr.janet.yytree.YYCastExpression;
+import pl.edu.agh.icsr.janet.yytree.YYExpression;
+import pl.edu.agh.icsr.janet.yytree.YYLocalVariableAccessExpression;
+import pl.edu.agh.icsr.janet.yytree.YYNativeMethodImplementation;
+import pl.edu.agh.icsr.janet.yytree.YYStatement;
+import pl.edu.agh.icsr.janet.yytree.YYStringLiteral;
+import pl.edu.agh.icsr.janet.yytree.YYVariableDeclarator;
 
 /**
  * Convenience class to group all Tags classes.

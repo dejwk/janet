@@ -4,13 +4,21 @@
 
 package pl.edu.agh.icsr.janet.yytree;
 
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.reflect.*;
-import pl.edu.agh.icsr.janet.tree.Node;
-
 import java.lang.reflect.Modifier;
-import java.util.*;
-import java.util.Map.Entry;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import pl.edu.agh.icsr.janet.CompileException;
+import pl.edu.agh.icsr.janet.IJavaContext;
+import pl.edu.agh.icsr.janet.ILocationContext;
+import pl.edu.agh.icsr.janet.ParseException;
+import pl.edu.agh.icsr.janet.Writer;
+import pl.edu.agh.icsr.janet.reflect.ClassManager;
+import pl.edu.agh.icsr.janet.reflect.IClassInfo;
+import pl.edu.agh.icsr.janet.reflect.IMethodInfo;
+import pl.edu.agh.icsr.janet.tree.Node;
 
 public class YYMethod extends YYNode implements IMethodInfo, IScope {
 

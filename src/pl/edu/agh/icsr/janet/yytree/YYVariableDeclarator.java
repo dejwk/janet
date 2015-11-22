@@ -4,12 +4,13 @@
 
 package pl.edu.agh.icsr.janet.yytree;
 
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.reflect.*;
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 
+import pl.edu.agh.icsr.janet.IJavaContext;
+import pl.edu.agh.icsr.janet.ParseException;
 import pl.edu.agh.icsr.janet.natives.IWriter;
+import pl.edu.agh.icsr.janet.reflect.IClassInfo;
+import pl.edu.agh.icsr.janet.reflect.IFieldInfo;
 
 /**
  * This class represents a local variable declared in Java application.

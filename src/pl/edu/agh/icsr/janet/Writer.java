@@ -4,10 +4,14 @@
 
 package pl.edu.agh.icsr.janet;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+
 import pl.edu.agh.icsr.janet.yytree.YYCompilationUnit;
-import pl.edu.agh.icsr.janet.natives.IWriter;
 
 public class Writer {
 

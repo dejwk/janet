@@ -4,8 +4,6 @@
 
 package pl.edu.agh.icsr.janet;
 
-import pl.edu.agh.icsr.janet.yytree.YYNode;
-
 public class CompileException extends ParseException {
 
     public CompileException() {

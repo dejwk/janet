@@ -4,12 +4,13 @@
 
 package pl.edu.agh.icsr.janet.yytree;
 
-import java.lang.reflect.*;
-import java.util.*;
-import java.io.*;
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.reflect.*;
-import pl.edu.agh.icsr.janet.natives.*;
+import java.lang.reflect.Modifier;
+import java.util.HashMap;
+
+import pl.edu.agh.icsr.janet.IDetailedLocationContext;
+import pl.edu.agh.icsr.janet.ParseException;
+import pl.edu.agh.icsr.janet.natives.IWriter;
+import pl.edu.agh.icsr.janet.reflect.IClassInfo;
 
 public class YYLocalVariableAccessExpression extends YYExpression {
 

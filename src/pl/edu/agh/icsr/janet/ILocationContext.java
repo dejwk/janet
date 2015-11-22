@@ -4,10 +4,6 @@
 
 package pl.edu.agh.icsr.janet;
 
-import java.net.URL;
-import java.io.File;
-import pl.edu.agh.icsr.janet.yytree.*;
-
 public interface ILocationContext {
 
     public JanetSourceReader ibuf();

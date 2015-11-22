@@ -4,10 +4,12 @@
 
 package pl.edu.agh.icsr.janet.yytree;
 
-import java.util.*;
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.reflect.*;
-import pl.edu.agh.icsr.janet.natives.*;
+import java.util.HashMap;
+
+import pl.edu.agh.icsr.janet.CompileException;
+import pl.edu.agh.icsr.janet.IJavaContext;
+import pl.edu.agh.icsr.janet.natives.IWriter;
+import pl.edu.agh.icsr.janet.reflect.IClassInfo;
 
 public class YYIntegerLiteral extends YYExpression {
     int val;

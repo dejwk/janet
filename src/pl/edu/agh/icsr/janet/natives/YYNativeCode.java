@@ -4,9 +4,8 @@
 
 package pl.edu.agh.icsr.janet.natives;
 
-import java.util.*;
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.yytree.*;
+import pl.edu.agh.icsr.janet.IJavaContext;
+import pl.edu.agh.icsr.janet.yytree.YYStatement;
 
 public class YYNativeCode extends YYStatement {
 

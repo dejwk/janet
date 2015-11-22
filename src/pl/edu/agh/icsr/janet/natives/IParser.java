@@ -4,15 +4,12 @@
 
 package pl.edu.agh.icsr.janet.natives;
 
-import pl.edu.agh.icsr.janet.JanetSourceReader;
 import pl.edu.agh.icsr.janet.EmbeddedParser;
-import pl.edu.agh.icsr.janet.YYToken;
-import pl.edu.agh.icsr.janet.YYResultReceiver;
+import pl.edu.agh.icsr.janet.IMutableContext;
+import pl.edu.agh.icsr.janet.JanetSourceReader;
 import pl.edu.agh.icsr.janet.ParseException;
 import pl.edu.agh.icsr.janet.YYLocation;
-import pl.edu.agh.icsr.janet.IMutableContext;
-import pl.edu.agh.icsr.janet.natives.YYNativeCode;
-import pl.edu.agh.icsr.janet.yytree.IScope;
+import pl.edu.agh.icsr.janet.YYResultReceiver;
 
 public interface IParser {
 

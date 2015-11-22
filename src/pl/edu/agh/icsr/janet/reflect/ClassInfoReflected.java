@@ -4,9 +4,17 @@
 
 package pl.edu.agh.icsr.janet.reflect;
 
-import java.lang.reflect.*;
-import java.util.*;
-import pl.edu.agh.icsr.janet.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import pl.edu.agh.icsr.janet.CompileException;
+import pl.edu.agh.icsr.janet.ParseException;
 
 public final class ClassInfoReflected implements IClassInfo {
     private Class<?> cls;

@@ -12,10 +12,14 @@ package pl.edu.agh.icsr.janet.yytree;
  * @author Dawid Kurzyniec
  * @version 1.0
  */
+import java.util.Collection;
+import java.util.Collections;
 
-import java.util.*;
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.reflect.*;
+import pl.edu.agh.icsr.janet.CompileException;
+import pl.edu.agh.icsr.janet.IDetailedLocationContext;
+import pl.edu.agh.icsr.janet.ParseException;
+import pl.edu.agh.icsr.janet.reflect.ClassManager;
+import pl.edu.agh.icsr.janet.reflect.IClassInfo;
 
 public abstract class BinaryOperator {
 

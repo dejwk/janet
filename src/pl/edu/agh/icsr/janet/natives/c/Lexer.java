@@ -4,9 +4,13 @@
 
 package pl.edu.agh.icsr.janet.natives.c;
 
-import java.io.*;
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.yytree.*;
+import java.io.IOException;
+
+import pl.edu.agh.icsr.janet.EmbeddedParser;
+import pl.edu.agh.icsr.janet.IMutableContext;
+import pl.edu.agh.icsr.janet.JanetSourceReader;
+import pl.edu.agh.icsr.janet.LexException;
+import pl.edu.agh.icsr.janet.ParseException;
 
 class Lexer extends pl.edu.agh.icsr.janet.natives.Lexer {
 

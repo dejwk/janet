@@ -4,8 +4,6 @@
 
 package pl.edu.agh.icsr.janet;
 
-import pl.edu.agh.icsr.janet.yytree.YYStatement;
-
 public class YYToken implements YYResultReceiver {
 
     int token_type = TokenTypes.YYNONE;

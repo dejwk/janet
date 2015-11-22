@@ -4,8 +4,9 @@
 
 package pl.edu.agh.icsr.janet.reflect;
 
-import pl.edu.agh.icsr.janet.*;
-import java.util.*;
+import java.util.Map;
+
+import pl.edu.agh.icsr.janet.ParseException;
 
 public interface IMethodInfo extends IMemberInfo {
     public IClassInfo getReturnType() throws ParseException;

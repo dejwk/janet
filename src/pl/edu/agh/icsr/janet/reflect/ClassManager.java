@@ -4,13 +4,30 @@
 
 package pl.edu.agh.icsr.janet.reflect;
 
-import java.lang.reflect.*;
-import java.util.*;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.net.URL;
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.yytree.*;
-import pl.edu.agh.icsr.janet.reflect.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import pl.edu.agh.icsr.janet.AmbigiousReferenceException;
+import pl.edu.agh.icsr.janet.CompilationManager;
+import pl.edu.agh.icsr.janet.CompileException;
+import pl.edu.agh.icsr.janet.ILocationContext;
+import pl.edu.agh.icsr.janet.Janet;
+import pl.edu.agh.icsr.janet.MethodNotAccessibleException;
+import pl.edu.agh.icsr.janet.NoAccessibleMethodsFoundException;
+import pl.edu.agh.icsr.janet.NoApplicableMethodsFoundException;
+import pl.edu.agh.icsr.janet.ParseException;
+import pl.edu.agh.icsr.janet.yytree.YYClass;
+import pl.edu.agh.icsr.janet.yytree.YYCompilationUnit;
+import pl.edu.agh.icsr.janet.yytree.YYModifierList;
 
 public class ClassManager {
 

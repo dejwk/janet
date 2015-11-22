@@ -4,10 +4,14 @@
 
 package pl.edu.agh.icsr.janet.yytree;
 
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.reflect.*;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+
+import pl.edu.agh.icsr.janet.CompileException;
+import pl.edu.agh.icsr.janet.IJavaContext;
+import pl.edu.agh.icsr.janet.Writer;
+import pl.edu.agh.icsr.janet.reflect.INativeMethodInfo;
 
 public class YYNativeMethod extends YYMethod implements INativeMethodInfo {
 

@@ -4,9 +4,10 @@
 
 package pl.edu.agh.icsr.janet.reflect;
 
-import java.lang.reflect.*;
-import pl.edu.agh.icsr.janet.*;
-import java.util.*;
+import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.Map;
+
 import pl.edu.agh.icsr.janet.yytree.YYVariableDeclarator;
 
 public final class DefaultConstructor implements IMethodInfo { // JLS 8.6.7

@@ -2,19 +2,10 @@
 
 package pl.edu.agh.icsr.janet;
 
-/**************************************************/
-
-import java.util.*;
-import java.io.*;
 import jbf.Int_Stack;
 import jbf.Object_Stack;
 import jbf.YYlocation;
-
-import pl.edu.agh.icsr.janet.YYLocation;
-import pl.edu.agh.icsr.janet.YYLocationStack;
-import pl.edu.agh.icsr.janet.natives.IParser;
-
-/**************************************************/
+import pl.edu.agh.icsr.janet.yytree.*;
 
 
 /* This Source Code Form is subject to the terms of the Mozilla Public
@@ -26,11 +17,11 @@ import pl.edu.agh.icsr.janet.natives.IParser;
  * (see README.html for details).
  */
 
-import pl.edu.agh.icsr.janet.yytree.*;
-import pl.edu.agh.icsr.janet.reflect.*;
-import pl.edu.agh.icsr.janet.natives.*;
-//import pl.edu.agh.icsr.janet.ParseException;
 import java.lang.reflect.Modifier; // for Modifiers productions
+
+import pl.edu.agh.icsr.janet.natives.YYNativeCode;
+import pl.edu.agh.icsr.janet.reflect.ClassManager;
+
 
 
 

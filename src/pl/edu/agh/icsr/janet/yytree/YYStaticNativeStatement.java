@@ -4,12 +4,12 @@
 
 package pl.edu.agh.icsr.janet.yytree;
 
-import java.lang.reflect.*;
 import java.io.IOException;
-import java.util.*;
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.natives.*;
-import pl.edu.agh.icsr.janet.reflect.*;
+import java.util.Iterator;
+
+import pl.edu.agh.icsr.janet.IJavaContext;
+import pl.edu.agh.icsr.janet.Writer;
+import pl.edu.agh.icsr.janet.natives.YYNativeCode;
 
 public class YYStaticNativeStatement extends YYStatement {
 

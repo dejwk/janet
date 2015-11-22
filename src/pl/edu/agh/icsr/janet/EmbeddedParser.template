@@ -2,19 +2,10 @@
 
 @package@
 
-/**************************************************/
-
-import java.util.*;
-import java.io.*;
 import jbf.Int_Stack;
 import jbf.Object_Stack;
 import jbf.YYlocation;
-
-import pl.edu.agh.icsr.janet.YYLocation;
-import pl.edu.agh.icsr.janet.YYLocationStack;
-import pl.edu.agh.icsr.janet.natives.IParser;
-
-/**************************************************/
+import pl.edu.agh.icsr.janet.yytree.*;
 
 @PREFIX@
 

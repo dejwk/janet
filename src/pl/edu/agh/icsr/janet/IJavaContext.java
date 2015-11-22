@@ -4,9 +4,6 @@
 
 package pl.edu.agh.icsr.janet;
 
-import pl.edu.agh.icsr.janet.yytree.IScope;
-import pl.edu.agh.icsr.janet.yytree.YYCompilationUnit;
-
 public interface IJavaContext extends IDetailedLocationContext {
     public VariableStack getVariables();
 }

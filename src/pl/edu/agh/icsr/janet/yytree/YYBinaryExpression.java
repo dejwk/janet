@@ -4,6 +4,9 @@
 
 package pl.edu.agh.icsr.janet.yytree;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 /**
  * Title:        Janet
  * Description:  Java Native Extensions
@@ -12,11 +15,11 @@ package pl.edu.agh.icsr.janet.yytree;
  * @author Dawid Kurzyniec
  * @version 1.0
  */
-
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.natives.*;
-import pl.edu.agh.icsr.janet.reflect.*;
-import java.util.*;
+import pl.edu.agh.icsr.janet.CompileException;
+import pl.edu.agh.icsr.janet.IDetailedLocationContext;
+import pl.edu.agh.icsr.janet.ParseException;
+import pl.edu.agh.icsr.janet.natives.IWriter;
+import pl.edu.agh.icsr.janet.reflect.IClassInfo;
 
 public class YYBinaryExpression extends YYExpression {
 

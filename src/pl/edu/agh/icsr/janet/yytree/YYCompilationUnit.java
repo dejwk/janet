@@ -4,11 +4,19 @@
 
 package pl.edu.agh.icsr.janet.yytree;
 
-import java.util.*;
-import java.io.File;
-import java.net.URL;
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.reflect.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import pl.edu.agh.icsr.janet.CompilationManager;
+import pl.edu.agh.icsr.janet.CompileException;
+import pl.edu.agh.icsr.janet.IJavaContext;
+import pl.edu.agh.icsr.janet.Janet;
+import pl.edu.agh.icsr.janet.ParseException;
+import pl.edu.agh.icsr.janet.Writer;
+import pl.edu.agh.icsr.janet.reflect.ClassManager;
+import pl.edu.agh.icsr.janet.reflect.IClassInfo;
 import pl.edu.agh.icsr.janet.tree.Node;
 
 public class YYCompilationUnit extends YYNode implements IScope {

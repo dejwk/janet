@@ -4,16 +4,33 @@
 
 package pl.edu.agh.icsr.janet.natives.c;
 
-import pl.edu.agh.icsr.janet.natives.c.Tags.*;
-import pl.edu.agh.icsr.janet.natives.IWriter;
-import pl.edu.agh.icsr.janet.*;
-import pl.edu.agh.icsr.janet.yytree.*;
-import pl.edu.agh.icsr.janet.reflect.*;
-import pl.edu.agh.icsr.janet.tree.Node;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Modifier;
+import java.util.Iterator;
 
-import java.io.*;
-import java.util.*;
-import java.lang.reflect.*;
+import pl.edu.agh.icsr.janet.CompileException;
+import pl.edu.agh.icsr.janet.Janet;
+import pl.edu.agh.icsr.janet.NativeWriter;
+import pl.edu.agh.icsr.janet.ParseException;
+import pl.edu.agh.icsr.janet.natives.IWriter;
+import pl.edu.agh.icsr.janet.natives.c.Tags.DeclarationTag;
+import pl.edu.agh.icsr.janet.natives.c.Tags.ExpressionTag;
+import pl.edu.agh.icsr.janet.natives.c.Tags.ExpressionTagForCast;
+import pl.edu.agh.icsr.janet.natives.c.Tags.ExpressionTagForLiterals;
+import pl.edu.agh.icsr.janet.natives.c.Tags.ExpressionTagForStringLiteral;
+import pl.edu.agh.icsr.janet.natives.c.Tags.ExpressionTagForVariableAccess;
+import pl.edu.agh.icsr.janet.natives.c.Tags.FunctionDeclarationTag;
+import pl.edu.agh.icsr.janet.natives.c.Tags.OpaqueExpressionTag;
+import pl.edu.agh.icsr.janet.natives.c.Tags.ThisTag;
+import pl.edu.agh.icsr.janet.natives.c.Tags.VariableTag;
+import pl.edu.agh.icsr.janet.reflect.ClassManager;
+import pl.edu.agh.icsr.janet.reflect.IClassInfo;
+import pl.edu.agh.icsr.janet.reflect.INativeMethodInfo;
+import pl.edu.agh.icsr.janet.tree.Node;
+import pl.edu.agh.icsr.janet.yytree.*;
 
 public class Writer implements IWriter {
 

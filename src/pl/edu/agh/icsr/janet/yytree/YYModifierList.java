@@ -4,8 +4,9 @@
 
 package pl.edu.agh.icsr.janet.yytree;
 
-import pl.edu.agh.icsr.janet.CompileException;
 import java.lang.reflect.Modifier;
+
+import pl.edu.agh.icsr.janet.CompileException;
 import pl.edu.agh.icsr.janet.IJavaContext;
 
 // uses constants from java.lang.reflect.Modifier
