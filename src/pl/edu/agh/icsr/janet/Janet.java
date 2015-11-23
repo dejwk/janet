@@ -62,7 +62,7 @@ public class Janet {
                 File inFile = new File(args[i]);
                 URL url;
                 try {
-                    url = inFile.toURL();
+                    url = inFile.toURI().toURL();
                 } catch (MalformedURLException e) { throw new RuntimeException(); }
 
                 cm.parse(url, inFile, true);
@@ -229,7 +229,7 @@ public class Janet {
             String token = tokenizer.nextToken();
             File file = new File(token);
             try {
-                URL url = file.toURL();
+                URL url = file.toURI().toURL();
                 urls.add(url);
             }
             catch (java.net.MalformedURLException e) {
