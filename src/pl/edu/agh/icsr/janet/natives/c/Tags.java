@@ -55,8 +55,9 @@ class Tags {
 
         public void setUsesLocalExceptions() { usesLocalExceptions = true; }
         public void setUsesAbrupts() { abruptsUsed = true; }
-        public void setRequiresTryClause() { requiresDestructClause = true; }
+        public void setRequiresTryClause() { requiresTryClause = true; }
         public boolean requiresTryClause() { return requiresTryClause; }
+        public void setRequiresDestructClause() { requiresDestructClause = true; }
         public boolean requiresDestructClause() { return requiresDestructClause; }
         public Collection<VariableTag> getVariables() { return myVariables; }
         public FunctionDeclarationTag getMain() { return main; }

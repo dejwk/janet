@@ -1765,7 +1765,7 @@ public class Writer implements IWriter {
 
             s.tag = begDeclarationTag(s);
             // will be ignored if no exceptions come from inside
-            ((DeclarationTag)s.tag).setRequiresTryClause();
+            ((DeclarationTag)s.tag).setRequiresDestructClause();
 //            expression.write(this, PHASE_PREPARE | REUSABLE);
             expression.write(this, PHASE_PREPARE);
             body.write(this, PHASE_PREPARE);
