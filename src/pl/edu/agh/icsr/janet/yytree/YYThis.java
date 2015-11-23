@@ -37,11 +37,7 @@ public class YYThis extends YYExpression { // JLS 15.7.2, 15.10.2
         if (reftype == THIS) {
             this.expressionType = cls;
         } else if (reftype == SUPER) {
-            IClassInfo supercls = cls.getSuperclass();
-            if (cls == null) {
-                reportError(cls.toString() + " does not have a superclass");
-            }
-            this.expressionType = supercls;
+            this.expressionType = cls.getSuperclass();
         } else {
             throw new RuntimeException();
         }

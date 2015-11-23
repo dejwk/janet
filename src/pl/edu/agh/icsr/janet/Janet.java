@@ -91,11 +91,11 @@ public class Janet {
             ferr.println(e.getMessage());
             exitstatus = 1;
         }
-        catch(CompileException e) {
+        catch (CompileException e) {
             ferr.println("No output generated");
             exitstatus = 1;
         }
-        catch(Exception e) {
+        catch (Exception e) {
             e.printStackTrace(ferr);
             exitstatus = 1;
         }
@@ -240,17 +240,17 @@ public class Janet {
         return urls.toArray(new URL[urls.size()]);
     }
 
-    private static URL resolveFile(File f, Settings s) {
-        if (f.isAbsolute()) {
-            try {
-                return f.toURL();
-            } catch (MalformedURLException e) { throw new RuntimeException(); }
-        }
-        // relative
-        ClassLoader sourceLoader = s.getSourceLoader();
-        String fileNameAsRsrc = f.getPath().replace(File.separatorChar, '/');
-        return sourceLoader.getResource(fileNameAsRsrc);
-    }
+//    private static URL resolveFile(File f, Settings s) {
+//        if (f.isAbsolute()) {
+//            try {
+//                return f.toURL();
+//            } catch (MalformedURLException e) { throw new RuntimeException(); }
+//        }
+//        // relative
+//        ClassLoader sourceLoader = s.getSourceLoader();
+//        String fileNameAsRsrc = f.getPath().replace(File.separatorChar, '/');
+//        return sourceLoader.getResource(fileNameAsRsrc);
+//    }
 
     public static class Settings {
         private File targetDirectory = new File(System.getProperty("user.dir"));

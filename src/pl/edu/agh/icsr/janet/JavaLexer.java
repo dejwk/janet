@@ -647,7 +647,6 @@ havenumber:
     // main tokenize method
     public int yylex() throws LexException {
         int ch;
-        int cls;
         try {
             token.clear();
             skipWhites();

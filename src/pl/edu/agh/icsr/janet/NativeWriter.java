@@ -393,7 +393,7 @@ public class NativeWriter {
             return getNativeMethodHeader(mth.getDeclaringClass(),
                     (mth.getModifiers() & Modifier.STATIC) != 0,
                      mth.getReturnType(), mth.getName(),
-                     isNativeMethodOverridden(mth), mth.getParameters());
+                     isNativeMethodOverloaded(mth), mth.getParameters());
         } catch (ParseException e) {
             throw new RuntimeException();
         }
@@ -404,7 +404,6 @@ public class NativeWriter {
             IClassInfo rettype, String methodName, boolean overridden,
             YYVariableDeclarator[] parameters) {
         try {
-            YYVariableDeclarator v;
             String result =
                 "JNIEXPORT " + rettype.getJNIType() + " JNICALL\n" +
                 "Java_" +
@@ -444,12 +443,12 @@ public class NativeWriter {
         return "_janet_arg_" + ClassManager.mangle(name);
     }
 
-    public final static boolean isNativeMethodOverridden(
+    public final static boolean isNativeMethodOverloaded(
             INativeMethodInfo mth) {
         try {
             int no = 0;
             for (IMethodInfo m : mth.getDeclaringClass().getMethods(mth.getName()).values()) {
-                if (Modifier.isNative(mth.getModifiers())) {
+                if (Modifier.isNative(m.getModifiers())) {
                     no++;
                     if (no>1) return true;
                 }
@@ -475,7 +474,7 @@ public class NativeWriter {
             s += "Janet_" + ClassManager.mangle(cls.getFullName()) +
                     "_" + ClassManager.mangle(mth.getName());
 
-            if (NativeWriter.isNativeMethodOverridden(mth)) {
+            if (NativeWriter.isNativeMethodOverloaded(mth)) {
                 s += "__";
                 if (parameters != null) {
                     for (int i=0; i<parameters.length; i++) {

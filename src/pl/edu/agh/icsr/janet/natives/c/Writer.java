@@ -183,7 +183,7 @@ public class Writer implements IWriter {
                 ClassManager.mangle(cls.getFullName()) +
                     "_" + ClassManager.mangle(mth.getName()));
 
-            if (NativeWriter.isNativeMethodOverridden(mth)) {
+            if (NativeWriter.isNativeMethodOverloaded(mth)) {
                 write("__");
                 if (parameters != null) {
                     for (int i=0; i<parameters.length; i++) {
@@ -629,7 +629,6 @@ public class Writer implements IWriter {
             ExpressionTag myTag = getTag(e);
             ExpressionTag tgtTag = (target != null ? getTag(target) : null);
             boolean first = true;
-            int indent = currIndent;
             int invoc_mode = e.getInvocationMode();
 
             writeBegComment(e);
@@ -743,8 +742,6 @@ public class Writer implements IWriter {
         } else {
 
             ExpressionTag myTag = getTag(e);
-            boolean first = true;
-            int indent = currIndent;
 
             writeBegComment(e);
             openWriteContext("(");
@@ -1135,11 +1132,8 @@ public class Writer implements IWriter {
             return 0;
         } else {
 
-            ExpressionTag myTag = getTag(e);
-
             writeBegComment(e);
             cr();
-            IClassInfo casttype;
             switch (e.getType()) {
                 case YYRelationalExpression.TYPE_NUMERIC:
                     write("(");
@@ -1236,7 +1230,6 @@ public class Writer implements IWriter {
         String infix;
 
         DeclarationTag context;
-        IScope varScope = var.getEnclosingScope();
 
         switch (var.getDeclarationType()) {
         case YYVariableDeclarator.PARAMETER:
@@ -1317,20 +1310,6 @@ public class Writer implements IWriter {
         }
     }
 
-
-
-    private ExpressionTag writeAssignment(YYExpression leftHandSide,
-            YYExpression assignment, int param) throws IOException {
-
-        if ((param & PHASE_PREPARE) != 0) {
-
-        } else {
-
-
-        }
-        return null;
-    }
-
     public int write(YYAssignmentExpression e, int param) throws IOException {
         YYExpression leftHandSide = e.getLeftHandSide();
         YYExpression assignment = e.getAssignment();
@@ -1356,7 +1335,7 @@ public class Writer implements IWriter {
         {
             writeBegComment(e);
             openWriteContext("(");
-            ExpressionTag assignmentTag = getTag(assignment);
+//            ExpressionTag assignmentTag = getTag(assignment);
 //            if (assignmentTag.needsEvaluation()) {
 //                assignment.write(this, PHASE_WRITE + MULTIREF + EVALUATE_ONLY);
 //                write(",");
@@ -1926,13 +1905,6 @@ public class Writer implements IWriter {
         }
     }
 
-    private DeclarationTag getDclTag(YYStatement s) {
-        while (s.tag == null) {
-            s = (YYStatement)s.parent();
-        }
-        return (DeclarationTag)s.tag;
-    }
-
     private int writeAbrupt(YYStatement s, YYExpression expr, String action,
                             int param, boolean checknotnull) throws IOException {
         if ((param & PHASE_PREPARE) != 0) {
@@ -2190,7 +2162,6 @@ public class Writer implements IWriter {
         YYExpression l = e.getLeft();
         YYExpression r = e.getRight();
         BinaryOperator op = e.getOperator();
-        IClassInfo rtype = op.getResultType();
         int check = checkBinaryOperationReqs(op);
         boolean lreusable = (check & BINOP_MULTIEVAL_LEFT) != 0;
         boolean rreusable = (check & BINOP_MULTIEVAL_RIGHT) != 0;

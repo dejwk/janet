@@ -12,14 +12,12 @@ import pl.edu.agh.icsr.janet.yytree.YYVariableDeclarator;
 
 public final class DefaultConstructor implements IMethodInfo { // JLS 8.6.7
 
-    private ClassManager classMgr;
     private IClassInfo declCls;
     transient String signature;
     transient HashMap<String, IClassInfo> exceptionTypes;
     transient IClassInfo[] parameterTypes;
 
-    public DefaultConstructor(ClassManager mgr, IClassInfo cls) {
-        this.classMgr = mgr;
+    public DefaultConstructor(IClassInfo cls) {
         this.declCls = cls;
     }
 

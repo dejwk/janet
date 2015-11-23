@@ -189,7 +189,6 @@ static final int YYTRANSLATE(int x)
     }
 
     int _parse() throws ParseException {
-        int ok;
         yychar1 = 0;  /* lookahead Token as an internal (translated) */
         yystate = 0;
         yyerrstatus = 0;

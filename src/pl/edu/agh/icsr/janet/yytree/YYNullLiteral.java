@@ -14,8 +14,6 @@ import pl.edu.agh.icsr.janet.reflect.IClassInfo;
 
 public class YYNullLiteral extends YYExpression {
 
-    private boolean workingFlag;
-
     public YYNullLiteral(IJavaContext cxt) {
         super(cxt);
     }

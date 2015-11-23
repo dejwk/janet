@@ -5,7 +5,6 @@
 package pl.edu.agh.icsr.janet.yytree;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import pl.edu.agh.icsr.janet.CompileException;
@@ -122,9 +121,8 @@ public class YYStatement extends YYNode implements IScope {
     }
 
     public void resolve() throws ParseException {
-        boolean shared = false;
-        for (Iterator<Node> i = iterator(); i.hasNext();) {
-            YYStatement s = (YYStatement)i.next();
+        for (Node node : this) {
+            YYStatement s = (YYStatement)node;
             s.resolve();
             addExceptions(s.getExceptionsThrown());
         }

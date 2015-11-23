@@ -101,7 +101,6 @@ public class JanetSourceReader {
     }
 
     public String getLine(YYLocation l) {
-        char c;
         if (l.lineno > loc.lineno) {
             throw new IllegalArgumentException("No such line");
         } else if (l.lineno == loc.lineno) { // maybe line not complete

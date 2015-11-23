@@ -301,7 +301,7 @@ public class YYClass extends YYNode implements IClassInfo, IScope {
         }
         // add default constructor if neccessary (JLS 8.6.7)
         if (constructors.isEmpty()) {
-            constructors.put("()", new DefaultConstructor(classMgr, this));
+            constructors.put("()", new DefaultConstructor(this));
         }
         unresolvedMethods = null;
     }

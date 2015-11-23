@@ -41,7 +41,6 @@ class Tags {
         private YYStatement relatedStatement;
         //int vnum;
 
-        private boolean parentHandlesMyThrows;
         private int abruptingChildren;
         boolean abruptsUsed = false;
 

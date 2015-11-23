@@ -534,7 +534,6 @@ enumnew:
 enumnew:
         while (newmethods.hasNext()) { // JLS 8.4.6
             IMethodInfo newmth = newmethods.next();
-            int newmods = newmth.getModifiers();
             if (!shouldMemberBeIncluded(maincls, addcls, newmth)) {
                 continue enumnew; // member is not inherited
             }

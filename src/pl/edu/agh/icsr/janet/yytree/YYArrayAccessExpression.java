@@ -45,8 +45,6 @@ public class YYArrayAccessExpression extends YYExpression {
         addException(classMgr.NullPointerException);
         addException(classMgr.ArrayIndexOutOfBoundsException);
 
-        ArrayIndexOutOfBoundsException e;
-
         if (expressionType.isPrimitive()) {
             findImpl().addReferencedPrimitiveTypeArray();
         }
