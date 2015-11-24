@@ -83,6 +83,9 @@ class Tags {
                 /* if some variables need releasing, the try/destruct required */
                 if ((abruptingChildren > 0 || usesLocalExceptions) && parent != null) {
                     for (int i=0, len = myVariables.size(); i<len; i++) {
+                        // Even in C++, when we are declaring a destructor for a variable,
+                        // we need to put it in a new exception context, to capture any
+                        // longjmps.
                         if (myVariables.get(i).mustBeReleased()) {
     //                for (Iterator i = variablesIterator(); i.hasNext();) {
     //                    if (((VariableTag)i.next()).mustBeReleased()) {
@@ -484,6 +487,12 @@ class Tags {
             return (type != LOCAL_VARIABLE)
                 ? null
                 : "_JANET_DEC_MULTIREF(" + getName() + ")";
+        }
+
+        String getVariableCppDeleter() {
+            return (type != LOCAL_VARIABLE)
+                ? null
+                : "_JANET_DECLARE_LOCV_DELETER(" + getName() + ")";
         }
 
         String getCommonMacroSuffix() {

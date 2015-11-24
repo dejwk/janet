@@ -285,8 +285,21 @@ public class Writer implements IWriter {
     }
 
     void writeDclUnitBegin(DeclarationTag dt) throws IOException {
+        writeDclUnitBegin1(dt);
+        if (cplusplus()) {
+            writeDclUnitCppDeleters(dt);
+        }
+        writeDclUnitBegin2(dt);
+    }
+
+    void writeDclUnitBegin1(DeclarationTag dt) throws IOException {
         if (reallyRequiresTryClause(dt)) {
             cr(); write("_JANET_EXCEPTION_CONTEXT_BEGIN");
+        }
+    }
+
+    void writeDclUnitBegin2(DeclarationTag dt) throws IOException {
+        if (reallyRequiresTryClause(dt)) {
             cr(); write("_JANET_TRY {");
             currIndent += tabSize;
         }
@@ -296,7 +309,7 @@ public class Writer implements IWriter {
         if (reallyRequiresTryClause(dt)) {
             currIndent -= tabSize;
             cr();
-            if (dt.requiresDestructClause()) {
+            if (!cplusplus() && dt.requiresDestructClause()) {
                 write("} _JANET_DESTRUCT {");
                 currIndent += tabSize;
             }
@@ -305,7 +318,7 @@ public class Writer implements IWriter {
 
     private void writeDclUnitEnd2(DeclarationTag dt) throws IOException {
         if (reallyRequiresTryClause(dt)) {
-            if (dt.requiresDestructClause()) {
+            if (!cplusplus() && dt.requiresDestructClause()) {
                 currIndent -= tabSize;
             }
             cr(); write("} _JANET_END_TRY;");
@@ -326,8 +339,20 @@ public class Writer implements IWriter {
         for (Iterator<VariableTag> i = dt.variablesIterator(); i.hasNext();) {
             VariableTag vtag = i.next();
             hasVariables = true;
-            if (!cplusplus() || dt.getParent() != null) {
+            if (!cplusplus() && dt.getParent() != null) {
                 cr(); write(vtag.getVariableRelease() + ";");
+            }
+        }
+        return hasVariables;
+    }
+
+    boolean writeDclUnitCppDeleters(DeclarationTag dt) throws IOException {
+        boolean hasVariables = false;
+        for (Iterator<VariableTag> i = dt.variablesIterator(); i.hasNext();) {
+            VariableTag vtag = i.next();
+            hasVariables = true;
+            if (cplusplus()) {
+                cr(); write(vtag.getVariableCppDeleter() + ";");
             }
         }
         return hasVariables;
@@ -414,9 +439,6 @@ public class Writer implements IWriter {
             if (functionDclTag.maxMultiRefsUsed > 0) {
                 cr(); write("_JANET_DECLARE_MULTIREFS(" +
                     functionDclTag.maxMultiRefsUsed + ");");
-                if (cplusplus()) {
-                    cr(); write("_JANET_DECLARE_MULTIREF_DELETER;");
-                }
             }
 
             // if needed, declare auxiliary variables for exception handling
@@ -434,6 +456,9 @@ public class Writer implements IWriter {
                 } catch (ParseException e) { throw new RuntimeException(); }
             }
 
+            DeclarationTag dt = getDeclarationTag(nimpl);
+            writeDclUnitBegin1(dt);
+
             // write variable declarations
 
             boolean hasVariables = false;
@@ -446,6 +471,9 @@ public class Writer implements IWriter {
 
             if (hasVariables) { cr(); }
             hasVariables = writeDclUnitDeclarations(functionDclTag.getDeclarationTag());
+            if (cplusplus()) {
+                writeDclUnitCppDeleters(dt);
+            }
             if (hasVariables) { cr(); }
 
             // now, write the initializers
@@ -480,11 +508,10 @@ public class Writer implements IWriter {
                 }
             }
 
-            DeclarationTag dt = getDeclarationTag(nimpl);
             if (initializers && !cplusplus()) { // we must start a new block
                 openWriteContext("{ ");
             }
-            writeDclUnitBegin(dt);
+            writeDclUnitBegin2(dt);
             result = nimpl.getStatements().write(this, param);
             writeDclUnitEnd(dt);
             //writeDeclarationUnit(nimpl, param | BODY_SUFFIX);
@@ -1765,7 +1792,9 @@ public class Writer implements IWriter {
 
             s.tag = begDeclarationTag(s);
             // will be ignored if no exceptions come from inside
-            ((DeclarationTag)s.tag).setRequiresDestructClause();
+            if (!cplusplus()) {
+                ((DeclarationTag)s.tag).setRequiresDestructClause();
+            }
 //            expression.write(this, PHASE_PREPARE | REUSABLE);
             expression.write(this, PHASE_PREPARE);
             body.write(this, PHASE_PREPARE);
@@ -1777,7 +1806,11 @@ public class Writer implements IWriter {
             DeclarationTag dt = (DeclarationTag)s.tag;
             writeBegComment(s);
             openWriteContext("{");
-            writeDclUnitBegin(dt);
+            writeDclUnitBegin1(dt);
+            if (cplusplus()) {
+                cr(); write("_WITH_JANET_MONITOR(" + tag.getUse(false) + ");");
+            }
+            writeDclUnitBegin2(dt);
             if (tag.needsEvaluation()) {
                 expression.write(this, PHASE_WRITE | EVALUATE_ONLY);
                 write(";");
@@ -1786,14 +1819,18 @@ public class Writer implements IWriter {
 //                tag.getUse(false) + "); ");
 //            body.write(this, PHASE_WRITE);
 //
-            cr(); write("_JANET_MONITOR_ENTER(" + s.getSyncIdx() + ", " +
-                        tag.getUse(false) + "); ");
+            if (!cplusplus()) {
+                cr(); write("_JANET_MONITOR_ENTER(" + s.getSyncIdx() + ", " +
+                            tag.getUse(false) + "); ");
+            }
             body.write(this, PHASE_WRITE);
 
             writeDclUnitEnd1(dt);
             writeDclUnitDestructors(dt);
 //            cr(); write("JNI_MONITOR_EXIT(" + tag.getUse(false) + ");");
-            cr(); write("_JANET_MONITOR_EXIT(" + s.getSyncIdx() + ");");
+            if (!cplusplus()) {
+                cr(); write("_JANET_MONITOR_EXIT(" + s.getSyncIdx() + ");");
+            }
             writeDclUnitEnd2(dt);
             closeWriteContext("}");
             writeEndComment(s);
@@ -1828,6 +1865,9 @@ public class Writer implements IWriter {
             writeBegComment(s);
             cr(); write("{"); currIndent += tabSize;
             cr(); write("_JANET_EXCEPTION_CONTEXT_BEGIN");
+            if (cplusplus()) {
+                writeDclUnitCppDeleters(dt);
+            }
             cr(); write("_JANET_TRY "); currIndent += tabSize;
             body.write(this, PHASE_WRITE);
             if (catches != null) {

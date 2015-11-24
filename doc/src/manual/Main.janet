@@ -43,7 +43,7 @@ native "C++" {
             System.out.println("NullPointerException caught as expected.");
         }
 
-        main.fillArray();
+        fillArray(main.arr);
         System.out.println(Arrays.toString(main.arr));
         main.embeddedMethodCall();
 
@@ -125,7 +125,7 @@ native "C++" {
         `Main obj = null; obj.testMethod();`
     }
 
-    native "C++" void fillArray() {
+    static native "C++" void fillArray(int[] arr) {
         for (int i = 0; i < `arr.length`; ++i) {
             `arr[#(i)] = #(i)`;
         }

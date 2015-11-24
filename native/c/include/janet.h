@@ -110,31 +110,25 @@ static void _janet_dec_multiref(JNIEnv* _janet_jnienv, _janet_multiref* pref)
 }
 
 #ifdef __cplusplus
-// Top-level guard to release any resources acquired in the function that
-// have not yet been cleared. It allows us to omit _JANET_DESTRUCT at the
-// top-level scope.
-class _JanetMultirefDeleter {
-    public:
-        _JanetMultirefDeleter(JNIEnv* env, _janet_multiref* refs, size_t size)
-            : env_(env), refs_(refs), size_(size) {}
 
-        ~_JanetMultirefDeleter() {
-            for (int i = 0; i < size_; ++i) {
-                if (refs_[i].ref && refs_[i].refcount > 0) {
-                    _janet_destroy_multiref(env_, &refs_[i]);
-                }
-            }
-        }
+// Block-level guard to decrease the refcount on a reference, and possibly
+// delete it.
+class _JanetLocvDeleter {
+public:
+    _JanetLocvDeleter(JNIEnv* env, _janet_multiref* volatile* pref)
+        : env_(env), pref_(pref) {}
 
-    private:
-        JNIEnv* env_;
-        _janet_multiref* refs_;
-        size_t size_;
+    ~_JanetLocvDeleter() {
+        _janet_dec_multiref(env_, *pref_);
+    }
+
+private:
+    JNIEnv* env_;
+    _janet_multiref* volatile* pref_;
 };
 
-#define _JANET_DECLARE_MULTIREF_DELETER \
-    _JanetMultirefDeleter _janet_multiref_deleter( \
-        _janet_jnienv, _janet_multirefs, _janet_multirefs_size)
+#define _JANET_DECLARE_LOCV_DELETER(name) \
+    _JanetLocvDeleter _janet_locv_deleter_##name (_janet_jnienv, &name)
 
 #endif
 
@@ -708,6 +702,12 @@ static void _janet_eat_exception(JNIEnv* _janet_jnienv, volatile jthrowable* t) 
       _janet_ex.catched = 0;                   \
    }
 
+/* The 'context-end' macros terminate the current block, thus executing all
+ * destructors of automatic objects, and only then propagate any exceptions
+ * with longjmp(). This guarantees that the destructors of objects declared
+ * between the 'context begin' macro and the 'try' macro, get properly
+ * executed even in face of longjmp(). */
+
 #define _JANET_EXCEPTION_CONTEXT_END_LOCAL                   \
    _JANET_CLOSE_BRACKET _JANET_PROPAGATE_PENDING_LOCAL();
 
@@ -729,21 +729,27 @@ static void _janet_eat_exception(JNIEnv* _janet_jnienv, volatile jthrowable* t) 
  * Synchronization
  */
 
-#define _JANET_SYNCHRONIZED(obj) \
-   { \
-      struct janet_exstruct _janet_ex = { 0, 0 }; \
-      jobject _janetsobj = obj; \
-      if (setjmp(_janet_ex.jmpbuf) == 0) { \
-         JNI_MONITOR_ENTER(_janetsobj);
+#ifdef __cplusplus
+class _JanetMonitor {
+public:
+    _JanetMonitor(JNIEnv* env, jobject target)
+            : _janet_jnienv(env), target_(target) {
+        bool result = JNI_MONITOR_ENTER(target_);
+        _JANET_ASSERT(result == 0);
+    }
 
-#define _JANET_END_SYNCHRONIZED \
-      } \
-      JNI_MONITOR_EXIT(_janetsobj); /* can throw exception */ \
-      _JANET_EXCEPTION_EAT_AND_CHECK; \
-   } \
-   if (_janet_exception) _JANET_PROPAGATE;
+    ~_JanetMonitor() {
+        JNI_MONITOR_EXIT(target_);
+    }
 
+private:
+    JNIEnv* _janet_jnienv;
+    jobject target_;
+};
+#endif
 
+#define _WITH_JANET_MONITOR(target) \
+    _JanetMonitor _janet_monitor(_janet_jnienv, target)
 
 /**
  * Verification
