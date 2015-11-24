@@ -117,8 +117,10 @@ class Tags {
                 (parent != null && parent.isInLocalExceptionScope()));
         }
 
+        // Note: we need to make sure that finally clauses are executed even in case of
+        // an early return.
         boolean isInLocalReturnScope() {
-            return (requiresDestructClause() ||
+            return (requiresTryClause ||
                 (parent != null && parent.isInLocalReturnScope()));
         }
 
