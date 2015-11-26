@@ -28,6 +28,8 @@ import pl.edu.agh.icsr.janet.natives.c.Tags.ThisTag;
 import pl.edu.agh.icsr.janet.natives.c.Tags.VariableTag;
 import pl.edu.agh.icsr.janet.reflect.ClassManager;
 import pl.edu.agh.icsr.janet.reflect.IClassInfo;
+import pl.edu.agh.icsr.janet.reflect.IFieldInfo;
+import pl.edu.agh.icsr.janet.reflect.IMethodInfo;
 import pl.edu.agh.icsr.janet.reflect.INativeMethodInfo;
 import pl.edu.agh.icsr.janet.tree.Node;
 import pl.edu.agh.icsr.janet.yytree.*;
@@ -566,14 +568,43 @@ public class Writer implements IWriter {
         }
     }
 
+    private void writeClassRef(int clsidx, IClassInfo cls) throws IOException {
+        write("_janet_classes[" + clsidx + "].id");
+        if (settings.sourceComments()) {
+            write(" /* " + cls.getFullName() + " */");
+        }
+    }
 
+    private void writeClassRefNoId(int clsidx, IClassInfo cls) throws IOException {
+        write("&_janet_classes[" + clsidx + "]");
+        if (settings.sourceComments()) {
+            write(" /* " + cls.getFullName() + " */");
+        }
+    }
 
+    private void writeFieldRef(int fieldidx, IFieldInfo field) throws IOException {
+        write("_janet_fields[" + fieldidx + "].id");
+        if (settings.sourceComments()) {
+            write(" /* " + field.getName() + " */");
+        }
+    }
 
+    private void writeMethodRef(int methodidx, IMethodInfo method) throws IOException {
+        write("_janet_methods[" + methodidx + "].id");
+        try {
+            if (settings.sourceComments()) {
+                write(" /* " + method.getName() + method.getJLSSignature() + " */");
+            }
+        } catch (ParseException e) {
+            throw new AssertionError();
+        }
+    }
 
     private void writeJNIMethodCall(ExpressionTag tag, ExpressionTag tgttag,
         int invocation_mode,
         IClassInfo returntype, boolean useJNIThis, YYExpressionList arguments,
-        int clsidx, int mthidx) throws IOException
+        int clsidx, int mthidx,
+        YYMethodInvocationExpression e) throws IOException
     {
         if (cplusplus()) {
             write("_janet_jnienv->Call");
@@ -605,7 +636,7 @@ public class Writer implements IWriter {
             if (useJNIThis) {
                 write("_janet_jthisclass");
             } else {
-                write("_janet_classes[" + clsidx + "].id");
+                writeClassRef(clsidx, e.getMethod().getDeclaringClass());
             }
         }
 
@@ -613,11 +644,11 @@ public class Writer implements IWriter {
             case YYMethodInvocationExpression.IMODE_NONVIRTUAL:
             case YYMethodInvocationExpression.IMODE_SUPER:
                 write(",");
-                cr(); write("_janet_classes[" + clsidx + "].id");
+                writeClassRef(clsidx, e.getMethod().getDeclaringClass());
         }
 
         write(",");
-        cr(); write("_janet_methods[" + mthidx + "].id");
+        cr(); writeMethodRef(mthidx, e.getMethod());
 
         for (Iterator<Node> i = arguments.iterator(); i.hasNext();) {
             write(",");
@@ -725,7 +756,7 @@ public class Writer implements IWriter {
 
                 writeJNIMethodCall(myTag, tgtTag, invoc_mode,
                     e.getExpressionType(), useJNIThis, args, e.getClassIdx(),
-                    e.getMethodIdx());
+                    e.getMethodIdx(), e);
 
                 if (!isVoid) {
                     write(myTag.getEvaluationSuffix());
@@ -777,7 +808,8 @@ public class Writer implements IWriter {
             cr();
             write(myTag.getEvaluationPrefix(false));
             openWriteContextInline("JNI_ALLOC_OBJECT(");
-            cr(); write("_janet_classes[" + e.getClassIdx() + "].id");
+            cr(); writeClassRef(e.getClassIdx(), e.getExpressionType());
+
             closeWriteContext(")");
             write(myTag.getEvaluationSuffix(false));
             write(","); cr(); write("_JANET_LOCAL_HANDLE_EXCEPTION()");
@@ -804,8 +836,9 @@ public class Writer implements IWriter {
                 cr(); write("_janet_jnienv,");
             }
             cr(); write(getTag(e).getUse() + ",");
-            cr(); write("_janet_classes[" + e.getClassIdx() + "].id,");
-            cr(); write("_janet_methods[" + e.getMethodIdx() + "].id");
+            cr(); writeClassRef(e.getClassIdx(), e.getExpressionType());
+            write(",");
+            cr(); writeMethodRef(e.getMethodIdx(), e.getMethod());
             for (Iterator<Node> i = args.iterator(); i.hasNext();) {
                 write(","); cr();
                 write((getTag((YYExpression)i.next())).getUse());
@@ -887,12 +920,12 @@ public class Writer implements IWriter {
                 if (useJNIThis) {
                     write("_janet_jthisclass");
                 } else {
-                    write("_janet_classes[" + e.getClassIdx() + "].id");
+                    writeClassRef(e.getClassIdx(), e.getField().getDeclaringClass());
                 }
             }
 
             write(",");
-            cr(); write("_janet_fields[" + e.getFieldIdx() + "].id");
+            cr(); writeFieldRef(e.getFieldIdx(), e.getField());
             if (set) {
                 write(","); cr(); write(myTag.getUse());
             }
@@ -1134,7 +1167,7 @@ public class Writer implements IWriter {
                 openWriteContextInline("_JANET_IS_INSTANCE_OF(");
                 e.getTarget().write(this, PHASE_WRITE);
                 write(",");
-                cr(); write("_janet_classes[" + e.getClassIdx() + "].id\n");
+                cr(); writeClassRef(e.getClassIdx(), e.getTestedType());
                 closeWriteContext(")");
             }
             write(myTag.getEvaluationSuffix());
@@ -1618,7 +1651,7 @@ public class Writer implements IWriter {
                 YYExpression expr = (YYExpression)itr.next();
                 cr(); write(getTag(expr).getUse() + ", ");
                 if (classidxs[i] != -1) {
-                    write("_janet_classes[" + classidxs[i] + "].id");
+                    cr(); writeClassRef(classidxs[i], expr.getExpressionType());
                 } else {
                     // primitive base type
                     write("0, ");
@@ -1766,7 +1799,7 @@ public class Writer implements IWriter {
                 cr();
                 openWriteContextInline("_JANET_CAST_RTCHECK(");
                 cr(); write("(jobject)" + myTag.getUse(false) + ",");
-                cr(); write("&_janet_classes[" + e.getClassIdx() + "]");
+                cr(); writeClassRefNoId(e.getClassIdx(), e.getExpressionType());
                 closeWriteContext(")");
                 first = false;
             }
@@ -1924,8 +1957,13 @@ public class Writer implements IWriter {
             VariableTag vtag = (VariableTag)v.tag;
             writeBegComment(s);
             cr();
-            write("_JANET_CATCH" + vtag.getCommonMacroSuffix() + "(_janet_classes[" +
-                s.getExcClsIdx() + "].id, " + ((VariableTag)v.tag).getName() + ") ");
+            write("_JANET_CATCH" + vtag.getCommonMacroSuffix() + "(");
+            try {
+                writeClassRef(s.getExcClsIdx(), s.getCatchedExceptionType());
+            } catch (ParseException e) {
+                throw new AssertionError();
+            }
+            write(", " + ((VariableTag)v.tag).getName() + ") ");
             currIndent += tabSize;
             body.write(this, PHASE_WRITE);
             currIndent -= tabSize;

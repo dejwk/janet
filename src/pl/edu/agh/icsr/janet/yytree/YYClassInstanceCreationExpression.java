@@ -39,6 +39,10 @@ public class YYClassInstanceCreationExpression extends YYExpression {
         return arguments;
     }
 
+    public IMethodInfo getMethod() {
+        return method;
+    }
+
     public int getMethodIdx() {
         return mthidx;
     }
