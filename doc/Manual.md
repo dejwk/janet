@@ -27,8 +27,9 @@ For the most part, JANET does not understand your native code. It only does curs
 detect high-level constructs like comments, blocks, and paired parentheses. It makes certain
 things simpler - e.g. you don't need to provide paths to resolve the includes - but it also
 introduces some constraints on the native code you write, and some weirdness in the operator
-syntax. (In contrast, JANET does analyze all your Java code semantically, so it is much smarter
-about it than about your native code).
+syntax.
+
+JANET is much smarter about all your Java code, as it does analyze it semantically.
 
 ## Preliminaries
 
@@ -52,7 +53,7 @@ on your path, you should be able to resolve `${JAVA_HOME}` and `${PLATFORM}` in 
 ## Basic usage
 
 You may remember that Java allows you to _declare_ a method as `native`. JANET
-extends it by allowing you to immediately provide the native _implementation_ inline. As an
+additionally allows you to _implement_ that native method inline. As an
 example, let's create a file [manual/Main.janet](src/manual/Main.janet):
 
 ```Java
@@ -320,12 +321,12 @@ Which will print
     ...
     8
 
-As you can see, in the native block you can read local variables in the Java scope. Unfortunately,
+As you can see, in the native block you can read Java local variables. Unfortunately,
 you cannot set any such local variables. You still can set fields and call methods to change
 state, though.
 
 Use native blocks if you have pure-Java boilerplate either at the beginning or at the end of
-your native method. Running Java code in Java will generally be more efficient than calling it
+your native method. Running Java code in real Java will generally be more efficient than calling it
 via JNI calls. 
 
 ## Static native blocks
@@ -425,7 +426,7 @@ like in Java; for instance:
 
 ## Compound statements
 
-You can skip adjacend back-tick characters if you have a sequence of embedded Java statements;
+You can skip adjacent back-tick characters if you have a sequence of embedded Java statements;
 for example:
 
     native "C++" int foo() {
@@ -562,7 +563,7 @@ Just like with UTF-8 strings, the pointers are valid till the end of the block.
 
 At the discretion of the underlying JNI implementation, the '&' operator may or may not copy the
 original string content. In theory, JVM is more likely to internally represent strings in a format
-compatible with const jchar* arrays, but don't get your hopes too high; many JVMs will still make
+compatible with const jchar* arrays, but don't get your hopes up; many JVMs will still make
 a copy.
 
 ### Java APIs
@@ -674,11 +675,27 @@ case, the operator will return jint*, that is, a pointer to an array of signed 3
 
 Even though it feels like you're getting a direct pointer, the JVM is still at its discretion to
 internally make the copy of the array before returning the pointer to you, and then copy data back
-when the pointer is released (the release is performed implicitly at the end of the block).
-Obviously, it can be very inefficient for large arrays. If you compile your JANET-generated
-source files with a `#define JANET_USE_FAST_ARRAYS 1`, JANET will internally use a different
-JNI method (`GetPrimitiveArrayCritical`), which has higher likelihood of obtaining a direct
-pointer, but comes with
+when the pointer is released. The release is performed automatially by JANET, in a somewhat
+lazy fashion: when all _direct_ references to the array go out of scope, but no earlier than
+at the end of the block containing the `&` operator. For example, if the array is passed as a
+parameter (as in the example above), it is not released until the end of the method. But,
+iterating over a two-dimensional array like this:
+
+```Java
+native "C++" static void foo(int[][] arr) {
+    for (int i = 0; i < `arr.length`; ++i) {
+        jint* content = `&arr[i]`;
+        ...
+    }
+}
+```
+
+will release successive dimension arrays at the end of each iteration.
+
+Obviously, content copying can be very inefficient for large arrays. If you compile your
+JANET-generated source files with a `#define JANET_USE_FAST_ARRAYS 1`, JANET will internally
+use a different JNI method (`GetPrimitiveArrayCritical`), which has higher likelihood of
+obtaining a direct pointer, but comes with
 [its own set of restrictions](http://docs.oracle.com/javase/7/docs/technotes/guides/jni/spec/functions.html#GetPrimitiveArrayCritical).
 If you do decide to use this flag, make sure that the application of the `&` operator is the _only_
 backtick-embedded Java code in its block.
@@ -786,8 +803,8 @@ JANET uses `setjmp/longjmp` to implement Java exception handling semantics in yo
 It has the following caveats:
 
 * In both C and C++, control flow may be disrupted by statements like `break`,
-  `continue`, `goto`, and `return`. For example, breaking out of a `synchronized` block
-  would leave the lock held forever. Currently, the only way to avoid that is to
+  `continue`, `goto`, and `return`. For example, returning early from a `try` clause
+  would not execute the `finalize` clause. Currently, the only way to avoid that is to
   (1) always use the embedded Java `return` statement instead of the native return, and (2)
   never put put breaking statements in blocks that directly contain any
   embedded Java code. JANET will never put any important finalization code within such
@@ -800,17 +817,16 @@ It has the following caveats:
   examples earlier above. (JANET will generate a normal `return` statement to break out
   of the outer-most scope).
 
-For C, there is no good alternative to `setjmp/longjmp`, short of full semantic analysis
-and deep code rewriting. For C++, an arguably better alternative, that would allow to
-avoid all these issues, would be to use native C++ exceptions. It is likely to be
-implemented in a future version of JANET. (As with any other feature request, please use
-the [issue tracker](https://github.com/dejwk/janet/issues) if you would like it to be
-prioritized).
-
 Exception handling requires unwinding stack frames (nested blocks) and performing any
 necessary finalization (e.g. running Java finalizers, releasing local references, releasing
 monitors). To that end, JANET use custom macros that you will see a lot of in the
 generated code.
+
+There does not seem to be any viable alternative to `setjmp/longjmp`, short of full semantic
+analysis and deep code rewriting. For C++, native exceptions seem viable at first, until
+we realize that they do not provide any equivalent of the `finally` clause. In particular,
+in Java, abrupt returns from try/catch clauses can be 'overridden' by a return or throw
+from the `finally` clause. Such semantics are not possible to achieve with C++ exceptions.
 
 ### Reference management
 
@@ -844,7 +860,16 @@ beautifier:
 
     g++ ${CFLAGS} -E -P <your file> | indent
 
-## How to get more help
+## Troubleshooting
+
+JANET is still an early release, and may have bugs. Also, the parser is not super-friendly
+in reporting syntax errors.
+
+If your translation fails, try simplifying (breaking apart) the embedded exceptions. If
+your program fails at run time, try running with `-Xcheck:jni -verbose:jni`, and also,
+double-check for native control flow statements.
+
+### How to get more help
 
 Look also at more [examples](../examples) (including examples in pure C).
 Please visit the [project page](https://github.com/dejwk/janet/) if you want to learn more
