@@ -70,13 +70,22 @@ extern _janet_fld _jf_janet_fields[];
 #define _JANET_MTH_STRING_INTERN             (_jm_janet_methods[4].id)
 
 
-
+/*
+ * JANET_LINK_MODE defines how dependent classes, fields, and methods are
+ * resolved when a class with native methods that uses them is loaded.
+ * In EAGER, which is the default, all classes and members are loaded
+ * immediately when the class is loaded. With LAZY, all classes and members
+ * are loaded on first use. With MEDIUM, the classes are loaded immediately,
+ * but members are resolved on first use.
+ *
+ * MEDIUM and LAZY modes are currently discouraged as they are not thread-safe.
+ */
 #define JANET_LINK_MODE_LAZY   0
 #define JANET_LINK_MODE_MEDIUM 1
 #define JANET_LINK_MODE_EAGER  2
 
 #ifndef JANET_LINK_MODE
-#define JANET_LINK_MODE JANET_LINK_MODE_LAZY
+#define JANET_LINK_MODE JANET_LINK_MODE_EAGER
 #endif
 
 #define _JANET_CLASS(idx) (_janet_depclasses[idx].id)
