@@ -1,8 +1,6 @@
 
 # Java Native Extensions (JANET)
 
-
-
 ## Overview
 
 JANET allows you to use arbitrary native code C and C++ libraries in your Java
@@ -89,7 +87,7 @@ and its makefile.
 
 ## Supported syntax
 
-JANET allows for embedding native code inside Java source files. That embedded
+JANET allows for embedding C and C++ code inside Java source files. That embedded
 native code may in turn contain embedded Java statements and expressions,
 later translated by JANET into JNI function invocations. Ideally, any valid
 Java expression should be recognized by the translator. However, it is not yet
@@ -183,6 +181,17 @@ Most of these are easy to substitute by other constructs. For instance:
   specifications.
 
 ## Change Log
+
+### Version 1.2
+
+* Support for C++
+* User manual provided
+* New, Ant-based build file
+* More source comments in the generated code
+* It is now possible to omit generation of library loading code, and
+  specify directory of JANET header files, facilitating integration
+  into your existing build/deploy system
+* Several bugfixes
 
 ### Version 1.1
 
